@@ -198,22 +198,14 @@ view: ecom_orders_struct {
     sql: ${order_id};;
     drill_fields: [order_id]
     description: "Number of unique orders"
-    filters: {
-      field: calendar_dates.period_filtered_measures
-      value: "this"
-    }
   }
 
-  measure: previous_total_order_volume {
-    type: count_distinct
-    sql: ${order_id};;
-    drill_fields: [order_id]
-    description: "Number of unique orders"
-    filters: {
-      field: calendar_dates.period_filtered_measures
-      value: "last"
-    }
-  }
+  # measure: previous_total_order_volume {
+  #   type: count_distinct
+  #   sql: ${order_id};;
+  #   drill_fields: [order_id]
+  #   description: "Number of unique orders"
+  # }
 
   measure: total_customer_volume {
     type: count_distinct
@@ -228,11 +220,7 @@ view: ecom_orders_struct {
     drill_fields: [order_id, order_gross_value]
     value_format_name: usd
     description: "Average order gross value"
-    label: "Average booking value"
-    filters: {
-      field: calendar_dates.period_filtered_measures
-      value: "this"
-    }
+    label: "Average Boking Value"
   }
 
   measure: total_sales_gross_value {
@@ -241,10 +229,6 @@ view: ecom_orders_struct {
     value_format_name: usd
     description: "Sum of sales gross value"
     label: "Total Booking Value"
-    filters: {
-      field: calendar_dates.period_filtered_measures
-      value: "this"
-    }
   }
 
   measure: repeat_customer_rate {
@@ -259,6 +243,7 @@ view: ecom_orders_struct {
     sql: count(distinct if(${valid_order_ranking} = 1, ${customer_id}, Null));;
     label: "Acquired Customers"
   }
+
   measure: share_of_direct_orders {
     type: number
     sql: count(distinct if(${order_handler} = 'direct', ${order_id}, Null))/${total_order_volume} ;;
@@ -285,7 +270,7 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_acquired_customers {
     type:  number
-    sql: count(distinct if(${order_handler} = 1  and ${valid_order_ranking} = 1, ${customer_id}, Null} / new ${new_customer_volume}  ;;
+    sql: count(distinct if(${order_handler} = 'direct'  and ${valid_order_ranking} = 1, ${customer_id}, Null)) / ${new_customer_volume}  ;;
     value_format_name: percent_1
     label: "Share of Direct Acquisitions"
     description: "Percentage of Acquired Customers from direct channel"
@@ -466,6 +451,64 @@ view: ecom_orders_struct {
     ;;
     label: "Selected Dimension"
   }
+
+  parameter: orders_second_dimensions_selector {
+    type: string
+    label: "Select Second Dimension"
+    allowed_value: {
+      label: "Travel Reason"
+      value: "travel_reason"
+    }
+    allowed_value: {
+      label: "Order Handler"
+      value: "order_handler"
+    }
+    allowed_value: {
+      label: "First or Returning Booking"
+      value: "new_or_returning_order"
+    }
+    allowed_value: {
+      label: "Pet Type"
+      value: "pet_type"
+    }
+    allowed_value: {
+      label: "Building State"
+      value: "product_state"
+    }
+    allowed_value: {
+      label: "Building Name"
+      value: "product_name"
+    }
+
+    allowed_value: {
+      label: "Guest Count"
+      value: "guest_count"
+    }
+    allowed_value: {
+      label: "Nights Booked"
+      value: "product_variant_quantity"
+    }
+  }
+
+  dimension: orders_second_selected_dimension {
+    label_from_parameter: orders_pivot_dimensions_selector
+    type: string
+    sql:
+     {% if orders_second_dimensions_selector._parameter_value == "'travel_reason'" %} ${travel_reason}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'order_handler'" %} ${order_handler}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'pet_type'" %} ${pet_type}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'new_or_returning_order'" %} ${new_or_returning_order}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'product_state'" %} ${ecom_products_struct.product_state}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'product_category'" %} ${ecom_products_struct.product_category}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'product_name'" %} ${ecom_products_struct.product_name}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'guest_count'" %} ${guest_count}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'product_variant_quantity'" %} ${ecom_orders_struct__order_items.product_variant_quantity}
+     {% else %} NULL
+     {% endif %}
+    ;;
+    label: "Selected Second Dimension"
+  }
+
 }
 
 

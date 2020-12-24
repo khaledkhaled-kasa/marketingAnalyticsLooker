@@ -190,7 +190,8 @@ view: calendar_dates {
 
   dimension_group: date_in_period {
     description: "Use this as your grouping dimension when comparing periods. Aligns the previous periods onto the current period"
-    label: "Date"
+    label: "Date in Period"
+    hidden: yes
     type: time
     sql: TIMESTAMP(DATE_ADD(DATE({% date_start current_date_range %}), INTERVAL -${day_in_period} + 1 DAY)) ;;
     timeframes: [

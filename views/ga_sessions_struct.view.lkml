@@ -118,14 +118,14 @@ view: ga_sessions_struct {
     drill_fields: []
   }
 
-  measure: session_volume {
+  measure: sessions_volume {
     type: count_distinct
     sql: ${session_id};;
     drill_fields: [session_id]
     description: "Number of unique sessions"
   }
 
-  measure: user_volume {
+  measure: users_volume {
     type: count_distinct
     sql:  ${client_id} ;;
     drill_fields: [client_id]
@@ -135,19 +135,50 @@ view: ga_sessions_struct {
   measure: bounce_rate {
     type: number
     value_format_name: percent_1
-    sql: count(distinct if(${session_bounce} = 1,${session_id}, NULL))/${session_volume} ;;
+    sql: count(distinct if(${session_bounce} = 1,${session_id}, NULL))/${sessions_volume} ;;
     label: "Bounce Rate"
   }
+
   measure: average_session_duration {
     type: average
     sql: ${session_duration} ;;
     value_format_name: decimal_1
     label: "Average Session Duration"
-    description: "Average Duration of Sessions in Seconds"
+    description: "Average duration of sessions in seconds"
+  }
+
+  measure: average_page_views_per_session {
+    type: number
+    sql: if(${sessions_volume} = 0, null, ${ga_sessions_struct__page_views.page_views_volume}/${sessions_volume});;
+    value_format_name: decimal_1
+    description: "Average number of page views per one session"
+  }
+
+  measure: checkout_sessions_volume {
+    type: count_distinct
+    hidden: yes
+    sql: if(${ga_sessions_struct__website_events.website_event_category} = "Ecommerce" and ${ga_sessions_struct__website_events.website_event_action} = "checkout", ${session_id}, Null);;
+    description: "Ratio of sessions with Checkout Event to all session"
+}
+
+  measure: checkout_rate {
+    type: number
+    sql: if(${sessions_volume} = 0, Null, ${checkout_sessions_volume}/${sessions_volume});;
+    value_format_name:  percent_1
+    description: "Ratio of sessions with Checkout Event to all session"
+
+  }
+
+  measure: transaction_conversion_rate {
+    value_format_name: percent_1
+    type: number
+    description: "Percentage of website transactions divided by sessions"
+    sql: if(${sessions_volume} = 0, null, ${ga_sessions_struct__transaction_events.transaction_volume}/${sessions_volume}) ;;
   }
 }
 
 view: ga_sessions_struct__website_events {
+  label: "Website Events"
   dimension: website_event_action {
     type: string
     sql: ${TABLE}.website_event_action ;;
@@ -160,6 +191,7 @@ view: ga_sessions_struct__website_events {
 
   dimension: website_event_id {
     type: number
+    primary_key: yes
     sql: ${TABLE}.website_event_id ;;
   }
 
@@ -225,8 +257,10 @@ view: ga_sessions_struct__product_events {
 }
 
 view: ga_sessions_struct__transaction_events {
+  label: "Transaction Website Events"
   dimension: transaction_event_id {
     type: string
+    primary_key: yes
     sql: ${TABLE}.transaction_event_id ;;
   }
 
@@ -234,11 +268,18 @@ view: ga_sessions_struct__transaction_events {
     type: number
     sql: ${TABLE}.transaction_event_value ;;
   }
+
+  measure: transaction_volume {
+    type: count_distinct
+    sql: ${transaction_event_id};;
+  }
 }
 
 view: ga_sessions_struct__page_views {
+  label: "Page Views"
   dimension: page_view_id {
     type: number
+    primary_key: yes
     sql: ${TABLE}.page_view_id ;;
   }
 
@@ -269,6 +310,11 @@ view: ga_sessions_struct__page_views {
   dimension: page_view_url {
     type: string
     sql: ${TABLE}.page_view_url ;;
+  }
+
+  measure: page_views_volume {
+    type: count_distinct
+    sql: ${TABLE}.page_view_id ;;
   }
 }
 

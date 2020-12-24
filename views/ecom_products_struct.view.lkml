@@ -1,7 +1,7 @@
 view: ecom_products_struct {
   sql_table_name: `bigquery-analytics-272822.ME_BI.ECOM_products_struct`
     ;;
-
+  label: "Products"
   dimension: product_brand_name {
     type: string
     sql: ${TABLE}.product_brand_name ;;
@@ -71,6 +71,7 @@ view: ecom_products_struct {
 }
 
 view: ecom_products_struct__product_variants {
+  label: "Product Variants"
   dimension: product_variant_id {
     type: string
     primary_key: yes
