@@ -1,7 +1,7 @@
 view: ga_page_categories {
   sql_table_name: `bigquery-analytics-272822.ME_BI.GA_page_categories`
     ;;
-
+  label: "Page Categories"
   dimension: content_group {
     type: string
     sql: ${TABLE}.contentGroup ;;
@@ -24,6 +24,7 @@ view: ga_page_categories {
 
   dimension: url {
     type: string
+    primary_key: yes
     sql: ${TABLE}.url ;;
   }
 
@@ -35,5 +36,10 @@ view: ga_page_categories {
   measure: count {
     type: count
     drill_fields: [hostname]
+  }
+
+  dimension: is_on_kasa_com_website  {
+    type: yesno
+    sql: ${hostname} in ('kasa.com','www.kasa.com','bookings.kasa.com') ;;
   }
 }

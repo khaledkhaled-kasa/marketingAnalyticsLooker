@@ -36,10 +36,24 @@ explore: calendar_dates  {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
     relationship: one_to_many
   }
+  join: ga_sessions_struct__product_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
+    relationship: one_to_many
+  }
+  join: ga_utm_dictionary {
+    sql_on: ${ga_sessions_struct.utm_key_id} = ${ga_utm_dictionary.utm_key_id} ;;
+    relationship: many_to_one
+  }
+  join: ga_page_categories {
+    sql_on: ${ga_sessions_struct__page_views.page_view_url} = ${ga_page_categories.url} ;;
+    relationship: many_to_one
+  }
+
 }
 
 explore: users_analysis  {
   view_name: main_identity
+  fields: [ALL_FIELDS*, -ga_sessions_struct.is_on_kasa_com_website]
   join: anal_user_segments_recent {
     sql_on: ${main_identity.me_id} = ${anal_user_segments_recent.me_id} ;;
     relationship: one_to_many

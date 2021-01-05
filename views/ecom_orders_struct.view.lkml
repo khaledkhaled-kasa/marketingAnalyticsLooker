@@ -177,9 +177,19 @@ view: ecom_orders_struct {
   }
 
   dimension: valid_order_ranking {
-    type: string
+    type: number
     sql: ${TABLE}.user_valid_order_ranking;;
     label: "Customer Order Number"
+  }
+
+  dimension: valid_order_ranking_tiers {
+    type: string
+    sql:
+      case
+      when ${valid_order_ranking}<5 then CAST(${valid_order_ranking} AS STRING)
+      when ${valid_order_ranking}>=5 then '5+'
+      end ;;
+    label: "Customer Order Number (tiers)"
   }
 
   dimension: new_or_returning_order {
@@ -352,6 +362,11 @@ view: ecom_orders_struct {
     }
 
     allowed_value: {
+      label: "Average Days Before Check-in"
+      value: "average_days_before_checkin"
+    }
+
+    allowed_value: {
       label: "Share of Direct Orders"
       value: "share_of_direct_orders"
     }
@@ -379,6 +394,7 @@ view: ecom_orders_struct {
     {% elsif secondary_orders_metric_selector._parameter_value == "'average_quantity'" %} ${ecom_orders_struct__order_items.average_quantity}
     {% elsif secondary_orders_metric_selector._parameter_value == "'repeat_customer_rate'" %} ${repeat_customer_rate}
     {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_orders'" %} ${share_of_direct_orders}
+    {% elsif secondary_orders_metric_selector._parameter_value == "'average_days_before_checkin'" %} ${average_days_before_checking}
     {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_booking_value'" %} ${share_of_direct_booking_value}
     {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_customer_volume'" %} ${share_of_direct_customer_volume}
     {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_acquired_customers'" %} ${share_of_direct_acquired_customers}
@@ -488,6 +504,7 @@ view: ecom_orders_struct {
       label: "Nights Booked"
       value: "product_variant_quantity"
     }
+
   }
 
   dimension: orders_second_selected_dimension {
@@ -507,6 +524,21 @@ view: ecom_orders_struct {
      {% endif %}
     ;;
     label: "Selected Second Dimension"
+  }
+
+  dimension: days_before_checkin {
+    type: number
+    sql: DATE_DIFF(${checkin_timestamp_date},${order_timestamp_date},DAY) ;;
+    label: "Days Before Check-in"
+    description: "Number of days between order and checkin date"
+  }
+
+  measure: average_days_before_checking {
+    type: average
+    value_format_name: decimal_1
+    sql: ${days_before_checkin} ;;
+    label: "Average Days Before Check-in"
+    description: "Average number of days between order and checkin date"
   }
 
 }

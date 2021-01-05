@@ -135,7 +135,7 @@ view: ga_sessions_struct {
   measure: bounce_rate {
     type: number
     value_format_name: percent_1
-    sql: count(distinct if(${session_bounce} = 1,${session_id}, NULL))/${sessions_volume} ;;
+    sql: if(${sessions_volume}=0,NULL,count(distinct if(${session_bounce} = 1,${session_id}, NULL))/${sessions_volume}) ;;
     label: "Bounce Rate"
   }
 
@@ -166,7 +166,6 @@ view: ga_sessions_struct {
     sql: if(${sessions_volume} = 0, Null, ${checkout_sessions_volume}/${sessions_volume});;
     value_format_name:  percent_1
     description: "Ratio of sessions with Checkout Event to all session"
-
   }
 
   measure: transaction_conversion_rate {
@@ -175,6 +174,128 @@ view: ga_sessions_struct {
     description: "Percentage of website transactions divided by sessions"
     sql: if(${sessions_volume} = 0, null, ${ga_sessions_struct__transaction_events.transaction_volume}/${sessions_volume}) ;;
   }
+
+  measure: unbounced_session_volume {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${session_bounce} =  0,${session_id},NULL)) ;;
+    label: "Unbounced Sessions"
+    description: "Number of sessions that did not bounce"
+  }
+
+  parameter: primary_sessions_metric_selector {
+    type: string
+    label: "Select Primary Metric"
+    allowed_value: {
+      label: "Number of Sessions"
+      value: "sessions_volume"
+    }
+    allowed_value: {
+      label: "Number of Unique Users"
+      value: "users_volume"
+    }
+    allowed_value: {
+      label: "Number of Direct Orders"
+      value: "transaction_volume"
+    }
+
+    allowed_value: {
+      label: "Direct Booking Value"
+      value: "total_transaction_event_value"
+    }
+  }
+
+  measure: primary_sessions_selected_metric {
+    label_from_parameter: primary_sessions_metric_selector
+    type: number
+    value_format: "0.0,\"K\""
+    sql:
+      Case
+        WHEN {% parameter primary_sessions_metric_selector %} = 'sessions_volume' then ${sessions_volume}
+        WHEN {% parameter primary_sessions_metric_selector %} = 'users_volume' then ${users_volume}
+        WHEN {% parameter primary_sessions_metric_selector %} = 'transaction_volume' then ${ga_sessions_struct__transaction_events.transaction_volume}
+        WHEN {% parameter primary_sessions_metric_selector %} = 'total_transaction_event_value' then ${ga_sessions_struct__transaction_events.total_transaction_event_value}
+        ELSE NULL
+        END;;
+    html:
+      {% if primary_sessions_metric_selector._parameter_value ==  "'total_transaction_event_value'" %}
+      ${{rendered_value}}
+      {% else %}
+      {{rendered_value}}
+      {% endif %};;
+    label: "Primary Selected Metric"
+  }
+
+  parameter: secondary_sessions_metric_selector {
+    type:  string
+    label: "Select Secondary Metric"
+    allowed_value: {
+      label: "Transaction Conversion Rate"
+      value: "transaction_conversion_rate"
+    }
+    allowed_value: {
+      label: "Bounce Rate"
+      value: "bounce_rate"
+    }
+    allowed_value: {
+      label: "Average Page Views per Session"
+      value: "average_page_views_per_session"
+    }
+    allowed_value: {
+      label: "Average Session Duration"
+      value: "average_session_duration"
+    }
+    allowed_value: {
+        label: "Cart Abandonment Rate"
+        value: "cart_abandonment_rate"
+    }
+  }
+
+  measure: secondary_sessions_selected_metric {
+    label_from_parameter: secondary_sessions_metric_selector
+    type: number
+    value_format: "0.##"
+    sql:
+    {% if secondary_sessions_metric_selector._parameter_value == "'transaction_conversion_rate'" %} ${transaction_conversion_rate}
+    {% elsif secondary_sessions_metric_selector._parameter_value == "'bounce_rate'" %} ${bounce_rate}
+    {% elsif secondary_sessions_metric_selector._parameter_value == "'average_page_views_per_session'" %} ${average_page_views_per_session}
+    {% elsif secondary_sessions_metric_selector._parameter_value == "'average_session_duration'" %} ${average_session_duration}
+    {% elsif secondary_sessions_metric_selector._parameter_value == "'cart_abandonment_rate'" %} ${ga_sessions_struct__website_events.cart_abandonment_rate}
+        {% else %} NULL
+    {% endif %}
+    ;;
+    label: "Secondary Selected Metric"
+  }
+
+  dimension: is_on_kasa_com_website   {
+    type: yesno
+    sql:   (
+      SELECT
+        LOGICAL_OR(${ga_page_categories.is_on_kasa_com_website})
+      FROM
+        ${ga_sessions_struct.SQL_TABLE_NAME} AS sessions
+      LEFT JOIN
+        UNNEST(sessions.page_views) AS ga_sessions_struct__page_views
+      LEFT JOIN
+        ${ga_page_categories.SQL_TABLE_NAME} AS ga_page_categories
+      ON
+        ga_sessions_struct__page_views.page_view_url = ga_page_categories.url
+      where
+        sessions.session_id = ${session_id}
+        ) ;;
+    label: "Filter to Kasa.com Hostname"
+  }
+
+  parameter: max_rank {
+    type: number
+    label: "Show Top N Results in Table"
+  }
+
+  dimension: rank_limit {
+    type: number
+    sql: {% parameter max_rank %} ;;
+  }
+
 }
 
 view: ga_sessions_struct__website_events {
@@ -218,9 +339,137 @@ view: ga_sessions_struct__website_events {
     type: string
     sql: ${TABLE}.website_event_url ;;
   }
+
+  measure: add_to_carts {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='addToCart',${website_event_id},NULL));;
+    label: "Add to Carts"
+    description: "Number of add to cart events registerd by Google Analytics"
+  }
+
+  measure: add_to_carts_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='addToCart',${ga_sessions_struct.session_id},NULL));;
+    label: "Sessions with Add to Carts"
+    description: "Number of sessions with add to cart events registerd by Google Analytics"
+  }
+
+  measure: cart_abandonment_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: ${add_to_carts_sessions}-${checkout_complete_sessions} ;;
+    label: "Sessions with Cart Abandonment"
+    description: "Number of sessions with cart abandonment registerd by Google Analytics"
+  }
+
+  measure: add_to_carts_ratio {
+    type: number
+    value_format_name: percent_1
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${add_to_carts_sessions}/${ga_sessions_struct.sessions_volume}) ;;
+    label: "Add to Carts Ratio"
+    description: "Ratio of sessions with Add To Cart to all sessions"
+  }
+
+  measure: cart_abandonment_rate {
+    type: number
+    value_format_name: percent_1
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, 1-${checkout_complete_sessions}/${add_to_carts_sessions}) ;;
+    label: "Cart Abandonment Rate"
+    description: "Ratio of Sessions with Completed Checkout to All sessions with Add To Cart"
+  }
+
+  measure: categoryView {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='categoryView',${website_event_id},NULL));;
+    label: "Location Views"
+    description: "Number of location view events registerd by Google Analytics"
+  }
+
+  measure: categoryView_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='categoryView',${ga_sessions_struct.session_id},NULL));;
+    label: "Sessions with Location Views"
+    description: "Number of sessions with location view events registerd by Google Analytics"
+  }
+
+  measure: category_view_ratio {
+    type: number
+    value_format_name: percent_1
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${categoryView_sessions}/${ga_sessions_struct.sessions_volume}) ;;
+    label: "Location View Ratio"
+    description: "Ratio of sessions with Location View to all sessions"
+  }
+
+  measure: checkout_start {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${website_event_id},NULL));;
+    label:"Checkout Start Events"
+    description: "Number of checkout start events captured by Google Analytics"
+  }
+
+  measure: checkout_start_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${ga_sessions_struct.session_id},NULL));;
+    label:"Sessions with Checkout Start Events"
+    description: "Number of sessions with checkout start events captured by Google Analytics"
+  }
+
+  measure: checkout_start_ratio {
+    type: number
+    value_format_name: percent_1
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${checkout_start_sessions}/${ga_sessions_struct.sessions_volume}) ;;
+    label: "Checkout Start Ratio"
+    description: "Ratio of sessions with Checkout Start to all sessions"
+  }
+
+  measure: help_contact {type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='help' and ${website_event_action}='help',${website_event_id},NULL));;
+    label: "Help Contact Events"
+    description: "Number of help contact events registerd by Google Analytics"
+  }
+
+    measure: partnership_contact {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='partnership' and ${website_event_action}='partnership',${website_event_id},NULL));;
+    label: "Partnership Contact Events"
+    description: "Number of partnership contact events registerd by Google Analytics"
+  }
+
+  measure: checkout_complete {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${website_event_id},NULL));;
+    label:"Checkout Complete Events"
+    description: "Number of checkout complete events captured by Google Analytics"
+  }
+
+  measure: checkout_complete_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${ga_sessions_struct.session_id},NULL));;
+    label:"Sessions with Checkout Complete Events"
+    description: "Number of sessions with checkout complete events captured by Google Analytics"
+  }
+
+  measure: checkout_complete_ratio {
+    type: number
+    value_format_name: percent_1
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${checkout_complete_sessions}/${ga_sessions_struct.sessions_volume}) ;;
+    label: "Checkout Complete Ratio"
+    description: "Ratio of sessions with Checkout Complete to all sessions"
+  }
 }
 
 view: ga_sessions_struct__product_events {
+  label: "Product Website Events"
   dimension: product_event_action_type {
     type: string
     sql: ${TABLE}.product_event_action_type ;;
@@ -254,6 +503,30 @@ view: ga_sessions_struct__product_events {
     ]
     sql: ${TABLE}.product_event_timestamp ;;
   }
+
+  measure: product_view {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${product_event_action_type}="DetailViews",${product_event_id},NULL)) ;;
+    label: "Property Views"
+    description: "Number of property views registered in Google Analytics"
+  }
+
+  measure: product_view_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${product_event_action_type}="DetailViews",${ga_sessions_struct.session_id},NULL)) ;;
+    label: "Sessions with Property Views"
+    description: "Number of sessions with property views registered in Google Analytics"
+  }
+
+  measure: product_view_ratio {
+    type: number
+    value_format_name: percent_1
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${product_view_sessions}/${ga_sessions_struct.sessions_volume}) ;;
+    label: "Property View Ratio"
+    description: "Ratio of sessions with Property View to all sessions"
+  }
 }
 
 view: ga_sessions_struct__transaction_events {
@@ -272,6 +545,14 @@ view: ga_sessions_struct__transaction_events {
   measure: transaction_volume {
     type: count_distinct
     sql: ${transaction_event_id};;
+  }
+
+  measure: total_transaction_event_value {
+    type: sum
+    value_format_name: usd
+    sql: ${transaction_event_value} ;;
+    label: "Direct Booking Value"
+    description: "Value of bookings registered on site by Google Analytics"
   }
 }
 

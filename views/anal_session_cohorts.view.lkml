@@ -28,8 +28,45 @@ view: anal_session_cohorts {
     sql: ${TABLE}.session_id ;;
   }
 
+  dimension: weeks_since_cohort_event {
+    type: number
+    sql: TRUNC(${days_since_cohort_event}/7);;
+  }
+
+  dimension: quarters_since_cohort_event {
+    type: number
+    sql: TRUNC(${months_since_cohort_event}/3);;
+  }
+
+  dimension: years_since_cohort_event {
+    type: number
+    sql: TRUNC(${months_since_cohort_event}/12);;
+  }
+
   measure: count {
     type: count
     drill_fields: []
+  }
+
+  parameter: sessions_since_granularity  {
+    allowed_value: { value: "Days" }
+    allowed_value: { value: "Weeks" }
+    allowed_value: { value: "Months" }
+    allowed_value: { value: "Quarters" }
+    allowed_value: { value: "Years" }
+    label: "Define Time Intervals Since Acquisition"
+  }
+
+  dimension: dynamic_periods_since {
+    label_from_parameter: sessions_since_granularity
+    type: number
+    sql:
+    CASE
+      WHEN {% parameter sessions_since_granularity %} = 'Days' THEN ${days_since_cohort_event}
+      WHEN {% parameter sessions_since_granularity %} = 'Weeks' THEN ${weeks_since_cohort_event}
+      WHEN {% parameter sessions_since_granularity %} = 'Months' THEN ${months_since_cohort_event}
+      WHEN {% parameter sessions_since_granularity %} = 'Quarters' THEN ${quarters_since_cohort_event}
+      WHEN {% parameter sessions_since_granularity %} = 'Years' THEN ${years_since_cohort_event}
+      END ;;
   }
 }
