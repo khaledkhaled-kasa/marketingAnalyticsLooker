@@ -11,4 +11,9 @@ view: main_identity {
     type: count
     drill_fields: []
   }
+
+  #measure: test_customer_volume {
+  #  type: number
+  #  sql: COUNT(DISTINCT if(${ecom_users.customer_id} IS NOT NULL,${me_id},NULL))  ;;
+  #}
 }

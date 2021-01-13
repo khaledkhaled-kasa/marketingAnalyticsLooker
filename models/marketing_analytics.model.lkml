@@ -58,6 +58,10 @@ explore: users_analysis  {
     sql_on: ${main_identity.me_id} = ${anal_user_segments_recent.me_id} ;;
     relationship: one_to_many
   }
+  join: anal_user_segments_recent2 {
+    sql_on: ${main_identity.me_id} = ${anal_user_segments_recent2.me_id} ;;
+    relationship: one_to_many
+  }
   join: anal_user_segments {
     sql_on: ${main_identity.me_id} = ${anal_user_segments.me_id} ;;
     relationship: one_to_many

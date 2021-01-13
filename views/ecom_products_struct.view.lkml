@@ -97,6 +97,11 @@ view: ecom_products_struct__product_variants {
     label: "Is Apartment with Pets"
   }
 
+  dimension: guesty_id {
+    type: string
+    sql: ${TABLE}.guesty_id ;;
+  }
+
   dimension: product_variant_short_name {
     type: string
     sql: ${TABLE}.product_variant_short_name ;;

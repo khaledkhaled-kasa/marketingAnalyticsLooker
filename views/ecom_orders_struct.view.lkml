@@ -207,7 +207,14 @@ view: ecom_orders_struct {
     type: count_distinct
     sql: ${order_id};;
     drill_fields: [order_id]
-    description: "Number of unique orders"
+    description: "Number of all orders"
+  }
+
+  measure: valid_order_volume {
+    type: number
+    sql: COUNT(DISTINCT if(${order_status}="valid" and ${payment_status}="paid",${order_id},NULL)) ;;
+    drill_fields: [order_id]
+    description: "Number of valid orders"
   }
 
   # measure: previous_total_order_volume {
@@ -222,6 +229,13 @@ view: ecom_orders_struct {
     sql: ${customer_id};;
     drill_fields: [customer_id]
     description: "Number of unique customers"
+  }
+
+  measure: valid_orders_per_customer {
+    type: number
+    value_format_name: decimal_2
+    sql: ${valid_order_volume}/${total_customer_volume} ;;
+    label: "Orders per Customer "
   }
 
   measure: average_order_gross_value {
@@ -445,7 +459,11 @@ view: ecom_orders_struct {
     }
     allowed_value: {
       label: "Nights Booked"
-      value: "product_variant_quantity"
+      value: "product_variant_quantity_buckets"
+    }
+    allowed_value: {
+      label: "Price per Night"
+      value: "item_order_value_per_night_buckets"
     }
   }
 
@@ -461,7 +479,8 @@ view: ecom_orders_struct {
      {% elsif orders_pivot_dimensions_selector._parameter_value == "'product_category'" %} ${ecom_products_struct.product_category}
      {% elsif orders_pivot_dimensions_selector._parameter_value == "'product_name'" %} ${ecom_products_struct.product_name}
      {% elsif orders_pivot_dimensions_selector._parameter_value == "'guest_count'" %} ${guest_count}
-     {% elsif orders_pivot_dimensions_selector._parameter_value == "'product_variant_quantity'" %} ${ecom_orders_struct__order_items.product_variant_quantity}
+     {% elsif orders_pivot_dimensions_selector._parameter_value == "'product_variant_quantity_buckets'" %} ${ecom_orders_struct__order_items.product_variant_quantity_buckets}
+     {% elsif orders_pivot_dimensions_selector._parameter_value == "'item_order_value_per_night_buckets'" %} ${ecom_orders_struct__order_items.item_order_value_per_night_buckets}
      {% else %} NULL
      {% endif %}
     ;;
@@ -502,9 +521,12 @@ view: ecom_orders_struct {
     }
     allowed_value: {
       label: "Nights Booked"
-      value: "product_variant_quantity"
+      value: "product_variant_quantity_buckets"
     }
-
+    allowed_value: {
+      label: "Price per Night"
+      value: "item_order_value_per_night_buckets"
+    }
   }
 
   dimension: orders_second_selected_dimension {
@@ -519,7 +541,9 @@ view: ecom_orders_struct {
      {% elsif orders_second_dimensions_selector._parameter_value == "'product_category'" %} ${ecom_products_struct.product_category}
      {% elsif orders_second_dimensions_selector._parameter_value == "'product_name'" %} ${ecom_products_struct.product_name}
      {% elsif orders_second_dimensions_selector._parameter_value == "'guest_count'" %} ${guest_count}
-     {% elsif orders_second_dimensions_selector._parameter_value == "'product_variant_quantity'" %} ${ecom_orders_struct__order_items.product_variant_quantity}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'product_variant_quantity_buckets'" %} ${ecom_orders_struct__order_items.product_variant_quantity_buckets}
+     {% elsif orders_second_dimensions_selector._parameter_value == "'item_order_value_per_night_buckets'" %} ${ecom_orders_struct__order_items.item_order_value_per_night_buckets}
+
      {% else %} NULL
      {% endif %}
     ;;
@@ -607,6 +631,14 @@ view: ecom_orders_struct__order_items {
     label: "Number of nights booked"
   }
 
+  dimension: product_variant_quantity_buckets {
+    type: tier
+    tiers: [0,1,2,3,4,5,6,7,8,15,30]
+    sql: ${product_variant_quantity} ;;
+    style: integer
+    label: "Number of Nights booked - tiers"
+  }
+
   dimension: product_variant_unit_currency {
     type: string
     sql: ${TABLE}.product_variant_unit_currency ;;
@@ -632,6 +664,23 @@ view: ecom_orders_struct__order_items {
     value_format_name: usd
     description: "Average booking value per night"
     label: "Average Booking Value per Night"
+  }
+
+  dimension: item_order_value_per_night {
+    type: number
+    sql: if(${product_variant_quantity}=0,NULL,${order_item_gross_value}/${product_variant_quantity}) ;;
+    value_format_name: usd
+    description: "Price per Night"
+    label: "Price per Night"
+  }
+
+  dimension: item_order_value_per_night_buckets{
+    type: tier
+    tiers: [0,50,100,150,200,250,300]
+    sql: ${item_order_value_per_night} ;;
+    style: integer
+    value_format_name: usd
+    label: "Price per Night Tiers"
   }
 
   measure: average_quantity {
