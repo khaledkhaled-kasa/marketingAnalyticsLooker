@@ -14,7 +14,7 @@ explore: calendar_dates  {
   }
   join: ecom_products_struct {
     sql: LEFT JOIN (ME_BI.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_orders_struct__order_items.product_variant_id} = pv.product_variant_id  ;;
-    relationship: one_to_many
+    relationship: many_to_one
   }
   join: ecom_products_struct__product_variants {
     sql: LEFT JOIN (ME_BI.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
@@ -92,7 +92,7 @@ explore: users_analysis  {
   }
   join: ecom_products_struct {
     sql: LEFT JOIN (ME_BI.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_orders_struct__order_items.product_variant_id} = pv.product_variant_id  ;;
-    relationship: one_to_many
+    relationship: many_to_one
   }
   join: ecom_products_struct__product_variants {
     sql: LEFT JOIN (ME_BI.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
@@ -124,6 +124,58 @@ explore: users_analysis  {
   }
 }
 
+explore: attribution {
+  view_name: ga_utm_dictionary
+  fields: [ALL_FIELDS*, -ga_sessions_struct.is_on_kasa_com_website]
+  join: anal_attribution {
+    sql_on: ${ga_utm_dictionary.utm_key_id} = ${anal_attribution.attribution_utm_key_id} ;;
+    relationship: one_to_many
+  }
+  join: anal_ads_costs {
+    sql_on: ${anal_attribution.attribution_utm_key_id} = ${anal_ads_costs.utm_key_id} and ${anal_attribution.attribution_date} = ${anal_ads_costs.date_date};;
+    relationship: many_to_many
+  }
+  join: ga_sessions_struct {
+    sql_on: ${anal_attribution.session_id} = ${ga_sessions_struct.session_id} ;;
+    relationship: one_to_one
+  }
+  join: ga_sessions_struct__page_views {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
+    relationship: one_to_many
+  }
+  join: ga_sessions_struct__website_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.website_events}) as ga_sessions_struct__website_events  ;;
+    relationship: one_to_many
+  }
+  join: ga_sessions_struct__transaction_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
+    relationship: one_to_many
+  }
+  join: ga_sessions_struct__product_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
+    relationship: one_to_many
+  }
+  join: ga_sessions_struct__checkout_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.checkout_events}) as ga_sessions_struct__checkout_events  ;;
+    relationship: one_to_many
+  }
+  join: ecom_orders_struct {
+    sql_on: ${anal_attribution.order_id} = ${ecom_orders_struct.order_id} ;;
+    relationship: one_to_many
+  }
+  join: ecom_orders_struct__order_items {
+    sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
+    relationship: one_to_many
+  }
+  join: ecom_products_struct {
+    sql: LEFT JOIN (ME_BI.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_orders_struct__order_items.product_variant_id} = pv.product_variant_id  ;;
+    relationship: many_to_one
+  }
+  join: ecom_products_struct__product_variants {
+    sql: LEFT JOIN (ME_BI.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
+    relationship: many_to_one
+  }
+}
 
 datagroup: marketing_analytics_default_datagroup {
   # sql_trigger: SELECT MAX(id) FROM etl_log;;

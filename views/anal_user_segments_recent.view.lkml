@@ -4,6 +4,7 @@ view: anal_user_segments_recent {
 
   dimension: me_id {
     type: number
+    primary_key: yes
     sql: ${TABLE}.me_id ;;
   }
 
@@ -36,4 +37,8 @@ view: anal_user_segments_recent {
     type: count
     drill_fields: []
   }
+}
+
+view: anal_user_segments_recent2 {
+  extends: [anal_user_segments_recent]
 }

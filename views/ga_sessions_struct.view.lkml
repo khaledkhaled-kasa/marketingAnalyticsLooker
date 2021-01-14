@@ -607,6 +607,7 @@ view: ga_sessions_struct__checkout_events {
 
   dimension: checkout_event_id {
     type: number
+    primary_key: yes
     sql: ${TABLE}.checkout_event_id ;;
   }
 
