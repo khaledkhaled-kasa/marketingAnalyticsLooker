@@ -333,7 +333,7 @@ view: ecom_orders_struct {
   measure: primary_orders_selected_metric {
     label_from_parameter: primary_orders_metric_selector
     type: number
-    value_format: "0.0,\"K\""
+    value_format: "[>=1000000]0.0,,\"M\";[>=1000]0.0,\"K\";0"
     sql:
       Case
         WHEN {% parameter primary_orders_metric_selector %} = 'total_customer_volume' then ${total_customer_volume}
@@ -343,6 +343,7 @@ view: ecom_orders_struct {
         ELSE NULL
         END;;
       html:
+
       {% if primary_orders_metric_selector._parameter_value ==  "'total_sales_gross_value'" %}
       ${{rendered_value}}
       {% else %}
@@ -403,25 +404,39 @@ view: ecom_orders_struct {
     type: number
     value_format: "0.##"
     sql:
-    {% if secondary_orders_metric_selector._parameter_value == "'average_order_gross_value'" %} ${average_order_gross_value}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'average_item_order_value_per_night'" %} ${ecom_orders_struct__order_items.average_item_order_value_per_night}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'average_quantity'" %} ${ecom_orders_struct__order_items.average_quantity}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'repeat_customer_rate'" %} ${repeat_customer_rate}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_orders'" %} ${share_of_direct_orders}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'average_days_before_checkin'" %} ${average_days_before_checking}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_booking_value'" %} ${share_of_direct_booking_value}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_customer_volume'" %} ${share_of_direct_customer_volume}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'share_of_direct_acquired_customers'" %} ${share_of_direct_acquired_customers}
-    {% elsif secondary_orders_metric_selector._parameter_value == "'average_guest_count'" %} ${average_guest_count}
+    {% case secondary_orders_metric_selector._parameter_value %}
+    {% when "'average_order_gross_value'"%}
+      ${average_order_gross_value}
+    {% when "'average_item_order_value_per_night'"%}
+      ${ecom_orders_struct__order_items.average_item_order_value_per_night}
+    {% when "'average_quantity'"%}
+      ${ecom_orders_struct__order_items.average_quantity}
+    {% when "'repeat_customer_rate'"%}
+      ${repeat_customer_rate}
+    {% when "'share_of_direct_orders'"%}
+      ${share_of_direct_orders}
+    {% when "'average_days_before_checkin'"%}
+      ${average_days_before_checking}
+    {% when "'share_of_direct_booking_value'"%}
+      ${share_of_direct_booking_value}
+    {% when "'share_of_direct_customer_volume'"%}
+      ${share_of_direct_customer_volume}
+    {% when "'share_of_direct_acquired_customers'"%}
+      ${share_of_direct_acquired_customers}
+    {% when "'average_guest_count'"%}
+      ${average_guest_count}
     {% else %} NULL
-    {% endif %}
+    {% endcase %}
     ;;
     html:
-    {% if secondary_orders_metric_selector._parameter_value ==  "'average_order_gross_value'" %}
+    {% case secondary_orders_metric_selector._parameter_value %}
+    {% when "'average_order_gross_value'" or "'average_item_order_value_per_night'" %}
     ${{rendered_value}}
+    {% when "'repeat_customer_rate'" or "'share_of_direct_orders'" or "'share_of_direct_booking_value'" or "'share_of_direct_customer_volume'" or "'share_of_direct_acquired_customers'" %}
+    {{value |times: 100 | round: 2 | append: "%"}}
     {% else %}
     {{rendered_value}}
-    {% endif %};;
+    {% endcase %};;
   label: "Secondary Selected Metric"
   }
 

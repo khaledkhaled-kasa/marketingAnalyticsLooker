@@ -208,21 +208,26 @@ view: ga_sessions_struct {
   measure: primary_sessions_selected_metric {
     label_from_parameter: primary_sessions_metric_selector
     type: number
-    value_format: "0.0,\"K\""
+    value_format: "[>=1000000]0.0,,\"M\";[>=1000]0.0,\"K\";0"
     sql:
-      Case
-        WHEN {% parameter primary_sessions_metric_selector %} = 'sessions_volume' then ${sessions_volume}
-        WHEN {% parameter primary_sessions_metric_selector %} = 'users_volume' then ${users_volume}
-        WHEN {% parameter primary_sessions_metric_selector %} = 'transaction_volume' then ${ga_sessions_struct__transaction_events.transaction_volume}
-        WHEN {% parameter primary_sessions_metric_selector %} = 'total_transaction_event_value' then ${ga_sessions_struct__transaction_events.total_transaction_event_value}
-        ELSE NULL
-        END;;
+    {% case primary_sessions_metric_selector._parameter_value %}
+    {% when "'sessions_volume'"%}
+      ${sessions_volume}
+    {% when "'users_volume'"%}
+      ${users_volume}
+    {% when "'transaction_volume'"%}
+      ${ga_sessions_struct__transaction_events.transaction_volume}
+    {% when "'total_transaction_event_value'"%}
+      ${ga_sessions_struct__transaction_events.total_transaction_event_value}
+    {% else %} NULL
+    {% endcase %};;
     html:
-      {% if primary_sessions_metric_selector._parameter_value ==  "'total_transaction_event_value'" %}
-      ${{rendered_value}}
+      {% case primary_sessions_metric_selector._parameter_value %}
+      {% when "'total_transaction_event_value'" %}
+        ${{rendered_value}}
       {% else %}
-      {{rendered_value}}
-      {% endif %};;
+        {{rendered_value}}
+      {% endcase %};;
     label: "Primary Selected Metric"
   }
 
@@ -254,16 +259,31 @@ view: ga_sessions_struct {
   measure: secondary_sessions_selected_metric {
     label_from_parameter: secondary_sessions_metric_selector
     type: number
-    value_format: "0.##"
+    value_format: "0.00%"
     sql:
-    {% if secondary_sessions_metric_selector._parameter_value == "'transaction_conversion_rate'" %} ${transaction_conversion_rate}
-    {% elsif secondary_sessions_metric_selector._parameter_value == "'bounce_rate'" %} ${bounce_rate}
-    {% elsif secondary_sessions_metric_selector._parameter_value == "'average_page_views_per_session'" %} ${average_page_views_per_session}
-    {% elsif secondary_sessions_metric_selector._parameter_value == "'average_session_duration'" %} ${average_session_duration}
-    {% elsif secondary_sessions_metric_selector._parameter_value == "'cart_abandonment_rate'" %} ${ga_sessions_struct__website_events.cart_abandonment_rate}
-        {% else %} NULL
-    {% endif %}
+    {% case secondary_sessions_metric_selector._parameter_value %}
+    {% when "'transaction_conversion_rate'"%}
+      ${transaction_conversion_rate}
+    {% when "'bounce_rate'"%}
+      ${bounce_rate}
+    {% when "'average_page_views_per_session'"%}
+      ${average_page_views_per_session}
+    {% when "'average_session_duration'"%}
+      ${average_session_duration}
+    {% when "'cart_abandonment_rate'"%}
+      ${ga_sessions_struct__website_events.cart_abandonment_rate}
+    {% else %} NULL
+    {% endcase %}
     ;;
+    html:
+    {% case secondary_sessions_metric_selector._parameter_value %}
+    {% when "'average_page_views_per_session'" %}
+      {{value | round: 2 }}
+    {% when "'average_session_duration'" %}
+      {{value | round: 0 }}
+    {% else %}
+      {{rendered_value}}
+    {% endcase %};;
     label: "Secondary Selected Metric"
   }
 
