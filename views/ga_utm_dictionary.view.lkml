@@ -5,31 +5,86 @@ view: ga_utm_dictionary {
   dimension: ga_ad_content {
     type: string
     sql: ${TABLE}.ga_ad_content ;;
-    label: "Ad Content"
+  }
+
+  dimension: ga_ad_content_clean {
+    type: string
+    # label: "Ad Content"
+    sql: ${TABLE}.ga_ad_content_clean ;;
   }
 
   dimension: ga_campaign {
     type: string
     sql: ${TABLE}.ga_campaign ;;
-    label: "Campaign"
+  }
+
+  dimension: ga_campaign_clean {
+    type: string
+    # label: "Campaign"
+    sql: ${TABLE}.ga_campaign_clean ;;
   }
 
   dimension: ga_keyword {
     type: string
     sql: ${TABLE}.ga_keyword ;;
-    label: "Keyword"
+  }
+
+  dimension: ga_keyword_clean {
+    type: string
+    # label: "Keyword"
+    sql: ${TABLE}.ga_keyword_clean ;;
   }
 
   dimension: ga_medium {
     type: string
     sql: ${TABLE}.ga_medium ;;
-    label: "Medium"
+  }
+
+  dimension: ga_medium_clean {
+    type: string
+    # label: "Medium"
+    sql: ${TABLE}.ga_medium_clean ;;
   }
 
   dimension: ga_source {
     type: string
     sql: ${TABLE}.ga_source ;;
-    label: "Source"
+  }
+
+  dimension: ga_source_clean {
+    type: string
+    # label: "Source"
+    sql: ${TABLE}.ga_source_clean ;;
+  }
+
+  dimension: mkt_account {
+    type: string
+    sql: ${TABLE}.mkt_account ;;
+  }
+
+  dimension: mkt_ad {
+    type: string
+    sql: ${TABLE}.mkt_ad ;;
+  }
+
+  dimension: mkt_ad_group {
+    type: string
+    sql: ${TABLE}.mkt_ad_group ;;
+  }
+
+  dimension: mkt_campaign {
+    type: string
+    sql: ${TABLE}.mkt_campaign ;;
+  }
+
+  dimension: mkt_channel {
+    type: string
+    sql: ${TABLE}.mkt_channel ;;
+  }
+
+  dimension: paid_unpaid_traffic {
+    type: string
+    sql: ${TABLE}.paid_unpaid_traffic ;;
   }
 
   dimension: utm_key_id {
@@ -41,35 +96,5 @@ view: ga_utm_dictionary {
   measure: count {
     type: count
     drill_fields: []
-  }
-
-  dimension: ga_source_medium {
-    type: string
-    sql: CONCAT(${ga_source}," / ",${ga_medium});;
-    label: "Source/Medium"
-  }
-
-  parameter: utm_level_parameter  {
-    type: unquoted
-    allowed_value: { value: "Source" }
-    allowed_value: { value: "Medium" }
-    allowed_value: { value: "Campaign" }
-    allowed_value: { value: "Ad Content" }
-    allowed_value: { value: "Keyword" }
-    allowed_value: { value: "Source_Medium"}
-    label: "Select UTM Level"
-  }
-
-  dimension: selected_utm_level {
-    label_from_parameter: utm_level_parameter
-    type: string
-    sql:
-      {% if utm_level_parameter._parameter_value == "Source" %} ${ga_source}
-      {% elsif utm_level_parameter._parameter_value == "Medium" %} ${ga_medium}
-      {% elsif utm_level_parameter._parameter_value == "Campaign" %} ${ga_campaign}
-      {% elsif utm_level_parameter._parameter_value == "Ad Content" %} ${ga_ad_content}
-      {% elsif utm_level_parameter._parameter_value == "Source_Medium" %} ${ga_source_medium}
-      {% endif %} ;;
-    label: "Selected UTM Level"
   }
 }
