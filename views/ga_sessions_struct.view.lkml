@@ -1,5 +1,5 @@
 view: ga_sessions_struct {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.GA_sessions_struct`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.GA_sessions_struct`
     ;;
   label: "Sessions"
 
@@ -16,11 +16,13 @@ view: ga_sessions_struct {
   dimension: client_id {
     type: string
     sql: ${TABLE}.client_id ;;
+    hidden: yes
   }
 
   dimension: device_category {
     type: string
     sql: ${TABLE}.device_category ;;
+    drill_fields: [browser]
   }
 
   dimension: page_views {
@@ -57,6 +59,7 @@ view: ga_sessions_struct {
     type: string
     primary_key: yes
     sql: ${TABLE}.session_id ;;
+    hidden: yes
   }
 
   dimension: session_latitude {
@@ -85,7 +88,7 @@ view: ga_sessions_struct {
       quarter,
       year
     ]
-    sql: ${TABLE}.session_timestamp ;;
+    sql:TIMESTAMP(DATETIME(${TABLE}.session_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: shopping_stages {
@@ -101,6 +104,7 @@ view: ga_sessions_struct {
   dimension: utm_key_id {
     type: number
     sql: ${TABLE}.utm_key_id ;;
+    hidden: yes
   }
 
   dimension: view_id {
@@ -116,6 +120,7 @@ view: ga_sessions_struct {
   measure: count {
     type: count
     drill_fields: []
+    hidden: yes
   }
 
   measure: sessions_volume {
@@ -137,6 +142,12 @@ view: ga_sessions_struct {
     value_format_name: percent_1
     sql: if(${sessions_volume}=0,NULL,count(distinct if(${session_bounce} = 1,${session_id}, NULL))/${sessions_volume}) ;;
     label: "Bounce Rate"
+  }
+
+  measure: did_not_bounce_ratio {
+    type: number
+    value_format_name: percent_1
+    sql: 1-${bounce_rate} ;;
   }
 
   measure: average_session_duration {
@@ -200,7 +211,7 @@ view: ga_sessions_struct {
     }
 
     allowed_value: {
-      label: "Direct Booking Value"
+      label: "Website Booking Value"
       value: "total_transaction_event_value"
     }
   }
@@ -229,6 +240,7 @@ view: ga_sessions_struct {
         {{rendered_value}}
       {% endcase %};;
     label: "Primary Selected Metric"
+    drill_fields: [ga_utm_dictionary.ga_source_medium, primary_sessions_selected_metric]
   }
 
   parameter: secondary_sessions_metric_selector {
@@ -285,6 +297,8 @@ view: ga_sessions_struct {
       {{rendered_value}}
     {% endcase %};;
     label: "Secondary Selected Metric"
+    drill_fields: [ga_utm_dictionary.ga_source_medium, secondary_sessions_selected_metric]
+
   }
 
   dimension: is_on_kasa_com_website   {
@@ -352,8 +366,8 @@ view: ga_sessions_struct__website_events {
       quarter,
       year
     ]
-    sql: ${TABLE}.website_event_timestamp ;;
-  }
+    sql:TIMESTAMP(DATETIME(${TABLE}.website_event_timestamp,"America/Los_Angeles")) ;;
+    }
 
   dimension: website_event_url {
     type: string
@@ -498,6 +512,7 @@ view: ga_sessions_struct__product_events {
   dimension: product_event_id {
     type: number
     sql: ${TABLE}.product_event_id ;;
+    hidden: yes
   }
 
   dimension: product_event_product_name {
@@ -521,7 +536,13 @@ view: ga_sessions_struct__product_events {
       quarter,
       year
     ]
-    sql: ${TABLE}.product_event_timestamp ;;
+    sql:TIMESTAMP(DATETIME(${TABLE}.product_event_timestamp,"America/Los_Angeles")) ;;
+  }
+
+  filter: product_analysis_date {
+    type: date
+    label: "Date Range"
+    description: "Select Date Range for Product Analysis"
   }
 
   measure: product_view {
@@ -530,6 +551,22 @@ view: ga_sessions_struct__product_events {
     sql: count(distinct if(${product_event_action_type}="DetailViews",${product_event_id},NULL)) ;;
     label: "Property Views"
     description: "Number of property views registered in Google Analytics"
+  }
+
+  measure: product_add_to_cart {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${product_event_action_type}="AddsToCart",${product_event_id},NULL)) ;;
+    label: "Property Adds to Cart"
+    description: "Number of property adds to cart registered in Google Analytics"
+  }
+
+  measure: product_checkouts {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${product_event_action_type}="Checkouts",${product_event_id},NULL)) ;;
+    label: "Property Checkouts"
+    description: "Number of property checkouts registered in Google Analytics"
   }
 
   measure: product_view_sessions {
@@ -551,27 +588,33 @@ view: ga_sessions_struct__product_events {
 
 view: ga_sessions_struct__transaction_events {
   label: "Transaction Website Events"
+
   dimension: transaction_event_id {
     type: string
     primary_key: yes
     sql: ${TABLE}.transaction_event_id ;;
+    hidden: yes
   }
 
   dimension: transaction_event_value {
     type: number
     sql: ${TABLE}.transaction_event_value ;;
+    hidden: yes
   }
 
   measure: transaction_volume {
     type: count_distinct
     sql: ${transaction_event_id};;
+    label: "Website Booking Volume"
+    description: "Volume of bookings registered on site by Google Analytics"
+
   }
 
   measure: total_transaction_event_value {
     type: sum
     value_format_name: usd
     sql: ${transaction_event_value} ;;
-    label: "Direct Booking Value"
+    label: "Website Booking Value"
     description: "Value of bookings registered on site by Google Analytics"
   }
 }
@@ -605,7 +648,7 @@ view: ga_sessions_struct__page_views {
       quarter,
       year
     ]
-    sql: ${TABLE}.page_view_timestamp ;;
+    sql: TIMESTAMP(DATETIME(${TABLE}.page_view_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: page_view_url {
@@ -620,6 +663,7 @@ view: ga_sessions_struct__page_views {
 }
 
 view: ga_sessions_struct__checkout_events {
+  label: "Checkout Events"
   dimension: checkout_event_cart_id {
     type: string
     sql: ${TABLE}.checkout_event_cart_id ;;
@@ -657,6 +701,14 @@ view: ga_sessions_struct__checkout_events {
       quarter,
       year
     ]
-    sql: ${TABLE}.checkout_event_timestamp ;;
+    sql:TIMESTAMP(DATETIME(${TABLE}.checkout_event_timestamp,"America/Los_Angeles")) ;;
+  }
+
+  measure: product_checkouts_by_sku {
+  type: count_distinct
+  sql: ${checkout_event_cart_id} ;;
+  value_format_name: decimal_0
+  label: "Property Checkouts by SKU"
+  description: "Number of time a specific SKU has been added to checkout"
   }
 }

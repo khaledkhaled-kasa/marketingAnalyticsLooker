@@ -1,10 +1,11 @@
 view: ecom_orders_struct {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ECOM_orders_struct`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ECOM_orders_struct`
     ;;
   label: "Orders"
   dimension: cart_id {
     type: string
     sql: ${TABLE}.cart_id ;;
+    hidden: yes
   }
 
   dimension_group: checkin_timestamp {
@@ -19,7 +20,7 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-    sql: ${TABLE}.checkin_timestamp ;;
+    sql:TIMESTAMP(DATETIME(${TABLE}.checkin_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: checkindate {
@@ -38,7 +39,7 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-    sql: ${TABLE}.checkout_timestamp ;;
+  sql:TIMESTAMP(DATETIME(${TABLE}.checkout_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: confirmation_code {
@@ -49,6 +50,7 @@ view: ecom_orders_struct {
   dimension: customer_id {
     type: string
     sql: ${TABLE}.customer_id ;;
+    hidden: yes
   }
 
   dimension: guest_count {
@@ -66,6 +68,7 @@ view: ecom_orders_struct {
   dimension: order_currency {
     type: string
     sql: ${TABLE}.order_currency ;;
+    hidden: yes
   }
 
   dimension: order_discount {
@@ -89,6 +92,7 @@ view: ecom_orders_struct {
     type: string
     sql: ${TABLE}.order_id ;;
     primary_key: yes
+    hidden: no
   }
 
   dimension: order_items {
@@ -112,7 +116,7 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-    sql: ${TABLE}.order_timestamp ;;
+    sql:TIMESTAMP(DATETIME(${TABLE}.order_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension_group: order_updated {
@@ -146,7 +150,7 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-    sql: ${TABLE}.payment_timestamp ;;
+    sql:TIMESTAMP(DATETIME(${TABLE}.payment_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: payment_type {
@@ -203,6 +207,12 @@ view: ecom_orders_struct {
     label: "New or Returning Order"
   }
 
+  dimension: is_from_extension {
+    type: yesno
+    sql: ${TABLE}.is_from_extension;;
+    label: "Is Order an Extension"
+  }
+
   measure: total_order_volume {
     type: count_distinct
     sql: ${order_id};;
@@ -217,12 +227,6 @@ view: ecom_orders_struct {
     description: "Number of valid orders"
   }
 
-  # measure: previous_total_order_volume {
-  #   type: count_distinct
-  #   sql: ${order_id};;
-  #   drill_fields: [order_id]
-  #   description: "Number of unique orders"
-  # }
 
   measure: total_customer_volume {
     type: count_distinct
@@ -250,7 +254,7 @@ view: ecom_orders_struct {
   measure: total_sales_gross_value {
     type: sum
     sql: ${order_gross_value} ;;
-    value_format_name: usd
+    value_format_name: usd_0
     description: "Sum of sales gross value"
     label: "Total Booking Value"
   }
@@ -270,7 +274,7 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_orders {
     type: number
-    sql: count(distinct if(${order_handler} = 'direct', ${order_id}, Null))/${total_order_volume} ;;
+    sql: count(distinct if(${order_handler} = 'direct' or ${order_handler}= 'website', ${order_id}, Null))/${total_order_volume} ;;
     value_format_name: percent_1
     label: "Share of Direct Orders"
     description: "Percentage of Orders from direct channel"
@@ -278,15 +282,15 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_booking_value {
     type: number
-    sql: sum( if(${order_handler} = 'direct', ${order_gross_value}, Null))/${total_sales_gross_value} ;;
-    value_format_name: usd
+    sql: sum( if(${order_handler} = 'direct' or ${order_handler}= 'website', ${order_gross_value}, Null))/${total_sales_gross_value} ;;
+    value_format_name: percent_1
     label: "Share of Direct Booking Value"
     description: "Percentage of Booking Value from direct channel "
   }
 
   measure: share_of_direct_customer_volume {
     type: number
-    sql: count(distinct if(${order_handler} = 'direct', ${customer_id}, NULL))/${total_customer_volume} ;;
+    sql: count(distinct if(${order_handler} = 'direct' or ${order_handler} = 'website' , ${customer_id}, NULL))/${total_customer_volume} ;;
     value_format_name: percent_1
     label: "Share of Direct Customers"
     description: "Percentage of Customers from direct channel"
@@ -294,7 +298,7 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_acquired_customers {
     type:  number
-    sql: count(distinct if(${order_handler} = 'direct'  and ${valid_order_ranking} = 1, ${customer_id}, Null)) / ${new_customer_volume}  ;;
+    sql: count(distinct if((${order_handler} = 'direct' or ${order_handler}= 'website')  and ${valid_order_ranking} = 1, ${customer_id}, Null)) / ${new_customer_volume}  ;;
     value_format_name: percent_1
     label: "Share of Direct Acquisitions"
     description: "Percentage of Acquired Customers from direct channel"
@@ -350,6 +354,7 @@ view: ecom_orders_struct {
       {{rendered_value}}
       {% endif %};;
     label: "Primary Selected Metric"
+    drill_fields: [ecom_products_struct.product_name, primary_orders_selected_metric]
   }
 
   parameter: secondary_orders_metric_selector {
@@ -359,18 +364,22 @@ view: ecom_orders_struct {
       label: "Average Booking Value"
       value: "average_order_gross_value"
     }
+
     allowed_value: {
       label: "Average Booking Value per Night"
       value: "average_item_order_value_per_night"
     }
+
     allowed_value: {
       label: "Average Nights per Booking"
       value: "average_quantity"
     }
+
     allowed_value: {
       label: "Average Guest Count"
       value: "average_guest_count"
     }
+
     allowed_value: {
       label: "Repeat Customer Rate"
       value: "repeat_customer_rate"
@@ -385,14 +394,17 @@ view: ecom_orders_struct {
       label: "Share of Direct Orders"
       value: "share_of_direct_orders"
     }
+
     allowed_value: {
       label: "Share of Direct Booking Value"
       value: "share_of_direct_booking_value"
     }
+
     allowed_value: {
       label: "Share of Direct Customers"
       value: "share_of_direct_customer_volume"
     }
+
     allowed_value: {
       label: "Share of Direct Acquisitions"
       value: "share_of_direct_acquired_customers"
@@ -438,6 +450,7 @@ view: ecom_orders_struct {
     {{rendered_value}}
     {% endcase %};;
   label: "Secondary Selected Metric"
+  drill_fields: [ecom_products_struct.product_name, secondary_orders_selected_metric]
   }
 
   parameter: orders_pivot_dimensions_selector {
@@ -480,6 +493,10 @@ view: ecom_orders_struct {
       label: "Price per Night"
       value: "item_order_value_per_night_buckets"
     }
+    allowed_value: {
+      label: "Is Booking an Extension"
+      value: "is_from_extension"
+    }
   }
 
   dimension: orders_pivot_selected_dimension {
@@ -496,6 +513,7 @@ view: ecom_orders_struct {
      {% elsif orders_pivot_dimensions_selector._parameter_value == "'guest_count'" %} ${guest_count}
      {% elsif orders_pivot_dimensions_selector._parameter_value == "'product_variant_quantity_buckets'" %} ${ecom_orders_struct__order_items.product_variant_quantity_buckets}
      {% elsif orders_pivot_dimensions_selector._parameter_value == "'item_order_value_per_night_buckets'" %} ${ecom_orders_struct__order_items.item_order_value_per_night_buckets}
+     {% elsif orders_pivot_dimensions_selector._parameter_value == "'is_from_extension'" %} ${is_from_extension}
      {% else %} NULL
      {% endif %}
     ;;
@@ -542,6 +560,10 @@ view: ecom_orders_struct {
       label: "Price per Night"
       value: "item_order_value_per_night_buckets"
     }
+    allowed_value: {
+      label: "Is Booking an Extension"
+      value: "is_from_extension"
+    }
   }
 
   dimension: orders_second_selected_dimension {
@@ -558,7 +580,7 @@ view: ecom_orders_struct {
      {% elsif orders_second_dimensions_selector._parameter_value == "'guest_count'" %} ${guest_count}
      {% elsif orders_second_dimensions_selector._parameter_value == "'product_variant_quantity_buckets'" %} ${ecom_orders_struct__order_items.product_variant_quantity_buckets}
      {% elsif orders_second_dimensions_selector._parameter_value == "'item_order_value_per_night_buckets'" %} ${ecom_orders_struct__order_items.item_order_value_per_night_buckets}
-
+     {% elsif orders_second_dimensions_selector._parameter_value == "'is_from_extension'" %} ${is_from_extension}
      {% else %} NULL
      {% endif %}
     ;;

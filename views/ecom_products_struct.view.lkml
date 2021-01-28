@@ -1,5 +1,5 @@
 view: ecom_products_struct {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ECOM_products_struct`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ECOM_products_struct`
     ;;
   label: "Products"
   dimension: product_brand_name {
@@ -12,6 +12,7 @@ view: ecom_products_struct {
     type: string
     sql: ${TABLE}.product_category ;;
     label: "Buidling City"
+    drill_fields: [product_name]
   }
 
   dimension: product_id {
@@ -36,6 +37,7 @@ view: ecom_products_struct {
     type: string
     sql: ${TABLE}.product_state ;;
     label: "Building State"
+    drill_fields: [product_category, product_name]
   }
 
   dimension_group: product_updated {
@@ -99,7 +101,7 @@ view: ecom_products_struct__product_variants {
 
   dimension: guesty_id {
     type: string
-    sql: ${TABLE}.guesty_id ;;
+    sql: ${TABLE}.product_variant_guesty_id ;;
   }
 
   dimension: product_variant_short_name {

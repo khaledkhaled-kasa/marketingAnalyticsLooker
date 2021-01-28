@@ -1,5 +1,5 @@
 view: anal_session_cohorts {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ANAL_session_cohorts`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_session_cohorts`
     ;;
 
   dimension: cohort_definition {
@@ -26,6 +26,7 @@ view: anal_session_cohorts {
     type: string
     primary_key: yes
     sql: ${TABLE}.session_id ;;
+    hidden: yes
   }
 
   dimension: weeks_since_cohort_event {
@@ -46,6 +47,7 @@ view: anal_session_cohorts {
   measure: count {
     type: count
     drill_fields: []
+    hidden: yes
   }
 
   parameter: sessions_since_granularity  {

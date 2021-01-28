@@ -1,5 +1,5 @@
 view: anal_order_cohorts {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ANAL_order_cohorts`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_order_cohorts`
     ;;
 
   dimension: cohort_definition {
@@ -15,6 +15,7 @@ view: anal_order_cohorts {
   dimension: hours_since_cohort_event {
     type: number
     sql: ${TABLE}.hours_since_cohort_event ;;
+    hidden: yes
   }
 
   dimension: months_since_cohort_event {
@@ -26,6 +27,7 @@ view: anal_order_cohorts {
     type: string
     primary_key: yes
     sql: ${TABLE}.order_id ;;
+    hidden: yes
   }
 
   dimension: weeks_since_cohort_event {
@@ -46,6 +48,7 @@ view: anal_order_cohorts {
   measure: count {
     type: count
     drill_fields: []
+    hidden: yes
   }
 
   parameter: orders_since_granularity  {

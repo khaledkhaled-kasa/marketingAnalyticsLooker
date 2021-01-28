@@ -1,5 +1,5 @@
 view: ecom_users {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ECOM_users`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ECOM_users`
     ;;
 
   dimension: birth_year {
@@ -22,6 +22,7 @@ view: ecom_users {
     type: string
     primary_key: yes
     sql: ${TABLE}.customer_id ;;
+    hidden: yes
   }
 
   dimension: email {
@@ -75,6 +76,7 @@ view: ecom_users {
       year
     ]
     sql: ${TABLE}.user_updated_at ;;
+    hidden: yes
   }
 
   dimension: zip {

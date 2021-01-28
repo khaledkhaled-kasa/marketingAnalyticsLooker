@@ -1,10 +1,11 @@
 view: anal_user_segments {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ANAL_user_segments`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_user_segments`
     ;;
 
   dimension: me_id {
     type: number
     sql: ${TABLE}.me_id ;;
+    hidden: yes
   }
 
   dimension: segment_definition {
@@ -35,36 +36,43 @@ view: anal_user_segments {
   measure: count {
     type: count
     drill_fields: []
+    hidden: yes
   }
 
   dimension: double_segments_value {
     type: string
     sql: CONCAT(${segment_value}," - ",${anal_user_segments_recent.segment_value});;
+    hidden: yes
   }
 
   dimension: triple_segments_value {
     type: string
     sql: CONCAT(${segment_value}," - ",${anal_user_segments_recent.segment_value}," - ",${anal_user_segments_recent2.segment_value});;
+    hidden: yes
   }
 
   dimension: single_cohorts_segments_value {
     type: string
     sql: CONCAT(${segment_value}," from ",${anal_user_cohorts.dynamic_cohort_date});;
+    hidden: yes
   }
 
   dimension: double_cohorts_segments_value {
     type: string
     sql: CONCAT(${double_segments_value}," from ",${anal_user_cohorts.dynamic_cohort_date});;
+    hidden: yes
   }
 
   dimension: triple_cohorts_segments_value {
     type: string
-    sql: CONCAT(${triple_segments_value}_segments_value}," from ",${anal_user_cohorts.dynamic_cohort_date});;
+    sql: CONCAT(${triple_segments_value}," from ",${anal_user_cohorts.dynamic_cohort_date});;
+    hidden: yes
   }
 
   dimension: only_cohorts_value {
     type: string
     sql: CONCAT("All customers from ",${anal_user_cohorts.dynamic_cohort_date});;
+    hidden: yes
   }
 
   parameter: segment_combinations_parameter  {
@@ -113,6 +121,7 @@ view: anal_user_segments {
       {% elsif segment_combinations_parameter._parameter_value == "cohorts" %} ${only_cohorts_value}
       {% endif %} ;;
     label: "Selected Segment Combination"
+    drill_fields: [ecom_users.email]
   }
 
 }

@@ -1,5 +1,5 @@
 view: anal_user_cohorts {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ANAL_user_cohorts`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_user_cohorts`
     ;;
 
   dimension: cohort_definition {
@@ -72,7 +72,7 @@ view: anal_user_cohorts {
       quarter_of_year,
       year
     ]
-    sql: ${TABLE}.cohort_event_timestamp ;;
+    sql:TIMESTAMP(DATETIME(${TABLE}.cohort_event_timestamp,"America/Los_Angeles")) ;;
     label: "Show Users Acquired At"
   }
 

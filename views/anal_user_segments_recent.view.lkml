@@ -1,11 +1,12 @@
 view: anal_user_segments_recent {
-  sql_table_name: `bigquery-analytics-272822.ME_BI.ANAL_user_segments_recent`
+  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_user_segments_recent`
     ;;
 
   dimension: me_id {
     type: number
     primary_key: yes
     sql: ${TABLE}.me_id ;;
+    hidden: yes
   }
 
   dimension: segment_definition {
@@ -36,6 +37,7 @@ view: anal_user_segments_recent {
   measure: count {
     type: count
     drill_fields: []
+    hidden: yes
   }
 }
 
