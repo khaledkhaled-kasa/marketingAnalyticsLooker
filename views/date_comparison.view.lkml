@@ -168,14 +168,14 @@ label: "Timeline Comparison Fields"
   dimension: period {
     view_label: "Timeline Comparison Fields"
     label: "Period"
-    description: "Pivot me! Returns the period the metric covers, i.e. either the 'This Period', 'Previous Period' or '3 Periods Ago'"
+    description: "Pivot me! Returns the period the metric covers, i.e. either the 'Current Period', 'Previous Period' or '3 Periods Ago'"
     type: string
     order_by_field: order_for_period
     sql:
        {% if current_date_range._is_filtered %}
          CASE
            WHEN {% condition current_date_range %}  ${event_raw} {% endcondition %}
-           THEN "This {% parameter compare_to %}"
+           THEN "Current {% parameter compare_to %}"
            WHEN ${event_raw} between ${period_2_start} and ${period_2_end}
            THEN "Last {% parameter compare_to %}"
            WHEN ${event_raw} between ${period_3_start} and ${period_3_end}

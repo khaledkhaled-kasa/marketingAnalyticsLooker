@@ -78,14 +78,14 @@ view: ecom_orders_struct {
 
   dimension: order_gross_value {
     type: number
-    value_format_name: usd
+    value_format_name: usd_0
     sql: ${TABLE}.order_gross_value ;;
   }
 
   dimension: order_handler {
     type: string
     sql: ${TABLE}.order_handler ;;
-    label: "Order Handler"
+    label: "Booking Source"
   }
 
   dimension: order_id {
@@ -182,8 +182,26 @@ view: ecom_orders_struct {
 
   dimension: valid_order_ranking {
     type: number
-    sql: ${TABLE}.user_valid_order_ranking;;
-    label: "Customer Order Number"
+    sql:
+
+      (with ranking_table as
+      (SELECT
+        order_id,
+        RANK() OVER (PARTITION BY me_id ORDER BY order_timestamp ASC) AS user_paid_order_ranking,
+        LEAD(order_timestamp) OVER (PARTITION BY me_id ORDER BY order_timestamp ASC) AS next_paid_order_timestamp,
+      FROM
+        `bigquery-analytics-272822.ME_BI_prod.ECOM_orders_struct` as ecom
+      LEFT JOIN
+      `bigquery-analytics-272822.ME_BI_prod.ECOM_identity_resolution`
+      USING
+        (customer_id)
+      WHERE
+        order_status in ('valid') and if({% parameter exclude_extension_orders %},ecom.is_from_extension=false,ecom.is_from_extension=true or ecom.is_from_extension=false))
+    SELECT
+    user_paid_order_ranking from ranking_table
+    WHERE ranking_table.order_id=${TABLE}.order_id
+        );;
+    label: "Customer Booking Number"
   }
 
   dimension: valid_order_ranking_tiers {
@@ -193,7 +211,7 @@ view: ecom_orders_struct {
       when ${valid_order_ranking}<5 then CAST(${valid_order_ranking} AS STRING)
       when ${valid_order_ranking}>=5 then '5+'
       end ;;
-    label: "Customer Order Number (tiers)"
+    label: "Customer Bookings Number (tiers)"
   }
 
   dimension: new_or_returning_order {
@@ -204,27 +222,38 @@ view: ecom_orders_struct {
       when ${valid_order_ranking}>1 then 'returning order'
       else NULL
       end;;
-    label: "New or Returning Order"
+    label: "New or Returning Bookings"
+  }
+
+  parameter: exclude_extension_orders {
+    type: yesno
+    label: "Exclude Extensions Bookings"
   }
 
   dimension: is_from_extension {
     type: yesno
     sql: ${TABLE}.is_from_extension;;
-    label: "Is Order an Extension"
+    label: "Is Booking an Extension"
+    hidden: yes
+  }
+
+  dimension: dynamic_extension_filter {
+    type: yesno
+    sql: if({% parameter exclude_extension_orders %},${is_from_extension}=false,${is_from_extension}=true or ${is_from_extension}=false);;
   }
 
   measure: total_order_volume {
     type: count_distinct
     sql: ${order_id};;
     drill_fields: [order_id]
-    description: "Number of all orders"
+    description: "Number of all bookings"
   }
 
   measure: valid_order_volume {
     type: number
     sql: COUNT(DISTINCT if(${order_status}="valid" and ${payment_status}="paid",${order_id},NULL)) ;;
     drill_fields: [order_id]
-    description: "Number of valid orders"
+    description: "Number of valid bookings"
   }
 
 
@@ -239,16 +268,16 @@ view: ecom_orders_struct {
     type: number
     value_format_name: decimal_2
     sql: ${valid_order_volume}/${total_customer_volume} ;;
-    label: "Orders per Customer "
+    label: "Bookings per Customer "
   }
 
   measure: average_order_gross_value {
     type: average
     sql: ${order_gross_value};;
     drill_fields: [order_id, order_gross_value]
-    value_format_name: usd
+    value_format_name: usd_0
     description: "Average order gross value"
-    label: "Average Boking Value"
+    label: "Average Booking Value"
   }
 
   measure: total_sales_gross_value {
@@ -276,8 +305,24 @@ view: ecom_orders_struct {
     type: number
     sql: count(distinct if(${order_handler} = 'direct' or ${order_handler}= 'website', ${order_id}, Null))/${total_order_volume} ;;
     value_format_name: percent_1
-    label: "Share of Direct Orders"
-    description: "Percentage of Orders from direct channel"
+    label: "Share of Direct Bookings"
+    description: "Percentage of Bookgings from direct channel"
+  }
+
+  measure: website_orders_volume {
+    type: number
+    sql: count(distinct if(${order_handler}= 'website', ${order_id}, Null)) ;;
+    value_format_name: decimal_0
+    label: "Number of Website Bookings"
+    description: "Number of Bookings from website"
+  }
+
+  measure: website_orders_value {
+    type: number
+    sql: sum(distinct if(${order_handler}= 'website', ${order_gross_value}, Null)) ;;
+    value_format_name: usd_0
+    label: "Website Bookings Value"
+    description: "Value of Bookings from website"
   }
 
   measure: share_of_direct_booking_value {
@@ -320,7 +365,7 @@ view: ecom_orders_struct {
       value: "total_sales_gross_value"
     }
     allowed_value: {
-      label: "Number of Unique Orders"
+      label: "Number of Unique Bookings"
       value: "total_order_volume"
     }
     allowed_value: {
@@ -371,7 +416,7 @@ view: ecom_orders_struct {
     }
 
     allowed_value: {
-      label: "Average Nights per Booking"
+      label: "Average Length of Stay"
       value: "average_quantity"
     }
 
@@ -391,7 +436,7 @@ view: ecom_orders_struct {
     }
 
     allowed_value: {
-      label: "Share of Direct Orders"
+      label: "Share of Direct Bookings"
       value: "share_of_direct_orders"
     }
 
@@ -461,7 +506,7 @@ view: ecom_orders_struct {
       value: "travel_reason"
     }
     allowed_value: {
-      label: "Order Handler"
+      label: "Booking Source"
       value: "order_handler"
     }
     allowed_value: {
@@ -486,7 +531,7 @@ view: ecom_orders_struct {
       value: "guest_count"
     }
     allowed_value: {
-      label: "Nights Booked"
+      label: "Length of Stay"
       value: "product_variant_quantity_buckets"
     }
     allowed_value: {
@@ -528,7 +573,7 @@ view: ecom_orders_struct {
       value: "travel_reason"
     }
     allowed_value: {
-      label: "Order Handler"
+      label: "Booking Source"
       value: "order_handler"
     }
     allowed_value: {
@@ -553,7 +598,7 @@ view: ecom_orders_struct {
       value: "guest_count"
     }
     allowed_value: {
-      label: "Nights Booked"
+      label: "Lenght of Stay"
       value: "product_variant_quantity_buckets"
     }
     allowed_value: {
@@ -665,7 +710,7 @@ view: ecom_orders_struct__order_items {
   dimension: product_variant_quantity {
     type: number
     sql: ${TABLE}.product_variant_quantity ;;
-    label: "Number of nights booked"
+    label: "Lenght of Stay"
   }
 
   dimension: product_variant_quantity_buckets {
@@ -673,7 +718,7 @@ view: ecom_orders_struct__order_items {
     tiers: [0,1,2,3,4,5,6,7,8,15,30]
     sql: ${product_variant_quantity} ;;
     style: integer
-    label: "Number of Nights booked - tiers"
+    label: "Length of Stay - tiers"
   }
 
   dimension: product_variant_unit_currency {
@@ -691,14 +736,14 @@ view: ecom_orders_struct__order_items {
   measure: total_item_sales_gross_value {
     type: sum
     sql: ${order_item_gross_value} ;;
-    value_format_name: usd
+    value_format_name: usd_0
     description: "Sum of items sales gross value"
   }
 
   measure: average_item_order_value_per_night {
     type: number
     sql: ${total_item_sales_gross_value}/sum(${product_variant_quantity})    ;;
-    value_format_name: usd
+    value_format_name: usd_0
     description: "Average booking value per night"
     label: "Average Booking Value per Night"
   }
@@ -706,7 +751,7 @@ view: ecom_orders_struct__order_items {
   dimension: item_order_value_per_night {
     type: number
     sql: if(${product_variant_quantity}=0,NULL,${order_item_gross_value}/${product_variant_quantity}) ;;
-    value_format_name: usd
+    value_format_name: usd_0
     description: "Price per Night"
     label: "Price per Night"
   }
@@ -716,7 +761,7 @@ view: ecom_orders_struct__order_items {
     tiers: [0,50,100,150,200,250,300]
     sql: ${item_order_value_per_night} ;;
     style: integer
-    value_format_name: usd
+    value_format_name: usd_0
     label: "Price per Night Tiers"
   }
 
@@ -724,7 +769,7 @@ view: ecom_orders_struct__order_items {
     type:  average
     value_format_name: decimal_1
     sql:  ${product_variant_quantity} ;;
-    description: "Average nights per order"
-    label: "Average nights per booking"
+    description: "Average Length fo Stay"
+    label: "Average Length of Stay"
   }
 }

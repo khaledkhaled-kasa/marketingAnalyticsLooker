@@ -143,4 +143,20 @@ view: ga_utm_dictionary {
     label: "Selected UTM Level"
   }
 
+  dimension: custom_utm_grouping {
+    type: string
+    sql:
+    Case
+    when ${ga_source}='google' and ${ga_medium}='cpc' then 'Google Ads'
+    when ${ga_source}='kasa' and ${ga_medium}='crm' then 'Braze CRM'
+    when ${ga_source}='tripadvisor'  then 'tripadvisor'
+    when ${ga_medium}='organic' then 'Organic Search'
+    when ${ga_source}='facebook.com' and ${ga_medium}='referral' then 'Facebook Organic'
+    when ${ga_source}='instagram.com' and ${ga_medium}='referral' then 'Instagram Organic'
+    else 'Remaining Unpaid Traffic'
+    end;;
+    drill_fields: [ga_campaign, ga_ad_content, ga_keyword]
+    label: "Custom Channel Grouping"
+  }
+
 }

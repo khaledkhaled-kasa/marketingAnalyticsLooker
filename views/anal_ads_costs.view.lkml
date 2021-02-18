@@ -154,7 +154,7 @@ view: anal_ads_costs {
 
   measure: total_roas {
     type: number
-    sql: if(${ecom_orders_struct.total_sales_gross_value}=0,NULL, ${ecom_orders_struct.total_sales_gross_value}/${total_ad_spend}) ;;
+    sql: if(${total_ad_spend}=0,NULL, ${ecom_orders_struct.total_sales_gross_value}/${total_ad_spend}) ;;
     value_format_name: percent_1
     label: "Total ROAS"
     description: "Total Value of Attributed Bookings divided by Total Ad Spend"
@@ -163,13 +163,13 @@ view: anal_ads_costs {
   measure: 30_day_sales_gross_value {
     type: number
     sql: sum(if(${anal_attribution.days_since_emmission}<=30, ${ecom_orders_struct.order_gross_value}, NULL)) ;;
-    value_format_name: usd
+    value_format_name: usd_0
     hidden: yes
   }
 
   measure: 30_day_roas {
     type: number
-    sql: if(${ecom_orders_struct.total_sales_gross_value}=0 ,NULL, ${30_day_sales_gross_value}/${total_ad_spend}) ;;
+    sql: if(${total_ad_spend}=0 ,NULL, ${30_day_sales_gross_value}/${total_ad_spend}) ;;
     value_format_name: percent_1
     label: "30-Day ROAS"
     description: "Total Value of Attributed Bookings within 30 days from Acquisiton divided by Total Ad Spend"
@@ -180,6 +180,11 @@ view: anal_ads_costs {
     sql: if(${ga_sessions_struct__website_events.add_to_carts}=0,NULL, ${total_ad_spend}/${ga_sessions_struct__website_events.add_to_carts}) ;;
     value_format_name: usd
     label: "Cost per Add to Cart"
+  }
+
+  measure: attribution_conversion_rate {
+    type: number
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${ecom_orders_struct.website_orders_volume}/${ga_sessions_struct.sessions_volume})  ;;
   }
 
   parameter: primary_attribution_metric_selector {
@@ -217,7 +222,7 @@ view: anal_ads_costs {
     sql:
       Case
         WHEN {% parameter primary_attribution_metric_selector %} = 'total_ad_spend' then ${total_ad_spend}
-        WHEN {% parameter primary_attribution_metric_selector %} = 'total_sales_gross_value' then ${ecom_orders_struct.total_sales_gross_value}
+        WHEN {% parameter primary_attribution_metric_selector %} = 'total_sales_gross_value' then ${ecom_orders_struct.website_orders_value}
         WHEN {% parameter primary_attribution_metric_selector %} = 'total_ad_clicks' then ${total_ad_clicks}
     WHEN {% parameter primary_attribution_metric_selector %} = 'total_ad_impressions' then ${total_ad_impressions}
         WHEN {% parameter primary_attribution_metric_selector %} = 'new_customer_volume' then ${ecom_orders_struct.new_customer_volume}
@@ -285,7 +290,7 @@ view: anal_ads_costs {
     {% when "'click_through_rate'"%}
       ${click_through_rate}
     {% when "'transaction_conversion_rate'"%}
-      ${ga_sessions_struct.transaction_conversion_rate}
+      ${attribution_conversion_rate}
     {% when "'total_roas'"%}
       ${total_roas}
     {% when "'30_day_roas'"%}

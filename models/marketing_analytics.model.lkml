@@ -56,6 +56,10 @@ explore: calendar_dates  {
     sql_on: ${ga_sessions_struct__page_views.page_view_url} = ${ga_page_categories.url} ;;
     relationship: many_to_one
   }
+  join: anal_website_funnel {
+    sql_on: ${ga_sessions_struct.session_id} = ${anal_website_funnel.session_id} ;;
+    relationship: one_to_many
+  }
   sql_always_where:
   {% if calendar_dates.current_date_range._is_filtered %}
   {% condition calendar_dates.current_date_range %} ${event_raw} {% endcondition %}
@@ -123,7 +127,7 @@ explore: users_analysis  {
     relationship: one_to_many
   }
   join: anal_order_cohorts {
-    sql_on: ${ecom_orders_struct.order_id} = ${anal_order_cohorts.order_id} ;;
+    sql_on: ${ecom_orders_struct.order_id} = ${anal_order_cohorts.order_id} and ${anal_user_cohorts.cohort_definition} = ${anal_order_cohorts.cohort_definition} ;;
     relationship: one_to_one
   }
   join: ecom_products_struct {

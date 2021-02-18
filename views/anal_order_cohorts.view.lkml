@@ -78,11 +78,11 @@ view: anal_order_cohorts {
     label_from_parameter: orders_since_granularity
     type: number
     sql:
-      {% if orders_since_granularity._parameter_value == "Days" %} ${days_since_cohort_event}
-      {% elsif orders_since_granularity._parameter_value == "Weeks" %} ${weeks_since_cohort_event}
-      {% elsif orders_since_granularity._parameter_value == "Months" %} ${months_since_cohort_event}
-      {% elsif orders_since_granularity._parameter_value == "Quarters" %} ${quarters_since_cohort_event}
-      {% elsif orders_since_granularity._parameter_value == "Years" %} ${years_since_cohort_event}
+      {% if orders_since_granularity._parameter_value == "Days" %} if(${days_since_cohort_event}>=0,${days_since_cohort_event},0)
+      {% elsif orders_since_granularity._parameter_value == "Weeks" %} if(${weeks_since_cohort_event}>=0,${weeks_since_cohort_event},0)
+      {% elsif orders_since_granularity._parameter_value == "Months" %} if(${months_since_cohort_event}>=0,${months_since_cohort_event},0)
+      {% elsif orders_since_granularity._parameter_value == "Quarters" %} if(${quarters_since_cohort_event}>=0,${quarters_since_cohort_event},0)
+      {% elsif orders_since_granularity._parameter_value == "Years" %} if(${years_since_cohort_event}>=0,${years_since_cohort_event},0)
       {% endif %} + 1 ;;
   }
 }

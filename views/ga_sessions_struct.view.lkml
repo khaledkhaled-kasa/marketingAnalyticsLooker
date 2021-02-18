@@ -206,7 +206,7 @@ view: ga_sessions_struct {
       value: "users_volume"
     }
     allowed_value: {
-      label: "Number of Direct Orders"
+      label: "Number of Direct Bookings"
       value: "transaction_volume"
     }
 
@@ -378,7 +378,7 @@ view: ga_sessions_struct__website_events {
     type: number
     value_format_name: decimal_0
     sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='addToCart',${website_event_id},NULL));;
-    label: "Add to Carts"
+    label: "Click Book Button Events"
     description: "Number of add to cart events registerd by Google Analytics"
   }
 
@@ -386,8 +386,8 @@ view: ga_sessions_struct__website_events {
     type: number
     value_format_name: decimal_0
     sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='addToCart',${ga_sessions_struct.session_id},NULL));;
-    label: "Sessions with Add to Carts"
-    description: "Number of sessions with add to cart events registerd by Google Analytics"
+    label: "Sessions with Click Book Button"
+    description: "Number of sessions with click book button events registerd by Google Analytics"
   }
 
   measure: cart_abandonment_sessions {
@@ -402,8 +402,8 @@ view: ga_sessions_struct__website_events {
     type: number
     value_format_name: percent_1
     sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${add_to_carts_sessions}/${ga_sessions_struct.sessions_volume}) ;;
-    label: "Add to Carts Ratio"
-    description: "Ratio of sessions with Add To Cart to all sessions"
+    label: "Click Book Button Ratio"
+    description: "Ratio of sessions with Click Book Button to all sessions"
   }
 
   measure: cart_abandonment_rate {
@@ -481,24 +481,24 @@ view: ga_sessions_struct__website_events {
     type: number
     value_format_name: decimal_0
     sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${website_event_id},NULL));;
-    label:"Checkout Complete Events"
-    description: "Number of checkout complete events captured by Google Analytics"
+    label:"Checkout Click Book Button Events"
+    description: "Number of checkout click book button events captured by Google Analytics"
   }
 
   measure: checkout_complete_sessions {
     type: number
     value_format_name: decimal_0
     sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${ga_sessions_struct.session_id},NULL));;
-    label:"Sessions with Checkout Complete Events"
-    description: "Number of sessions with checkout complete events captured by Google Analytics"
+    label:"Sessions with Checkout Click Book Button"
+    description: "Number of sessions with checkout click book button events captured by Google Analytics"
   }
 
   measure: checkout_complete_ratio {
     type: number
     value_format_name: percent_1
     sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${checkout_complete_sessions}/${ga_sessions_struct.sessions_volume}) ;;
-    label: "Checkout Complete Ratio"
-    description: "Ratio of sessions with Checkout Complete to all sessions"
+    label: "Checkout  Click Book Button Ratio"
+    description: "Ratio of sessions with Checkout Click Book Button to all sessions"
   }
 }
 
@@ -607,12 +607,18 @@ view: ga_sessions_struct__transaction_events {
     sql: ${transaction_event_id};;
     label: "Website Booking Volume"
     description: "Volume of bookings registered on site by Google Analytics"
+  }
 
+  measure: sessions_with_transaction {
+    type: count_distinct
+    sql: ${transaction_event_id};;
+    label: "Sessions with Transaction"
+    description: "Number of sessions with transaction"
   }
 
   measure: total_transaction_event_value {
     type: sum
-    value_format_name: usd
+    value_format_name: usd_0
     sql: ${transaction_event_value} ;;
     label: "Website Booking Value"
     description: "Value of bookings registered on site by Google Analytics"
