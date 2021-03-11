@@ -20,7 +20,8 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-    sql:TIMESTAMP(DATETIME(${TABLE}.checkin_timestamp,"America/Los_Angeles")) ;;
+    sql:${TABLE}.checkin_timestamp ;;
+    # sql:TIMESTAMP(DATETIME(${TABLE}.checkin_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: checkindate {
@@ -39,7 +40,8 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-  sql:TIMESTAMP(DATETIME(${TABLE}.checkout_timestamp,"America/Los_Angeles")) ;;
+  sql:${TABLE}.checkout_timestamp ;;
+  # sql:TIMESTAMP(DATETIME(${TABLE}.checkout_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: confirmation_code {
@@ -116,7 +118,9 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-    sql:TIMESTAMP(DATETIME(${TABLE}.order_timestamp,"America/Los_Angeles")) ;;
+    # sql:TIMESTAMP(DATETIME(${TABLE}.order_timestamp,"America/Los_Angeles")) ;;
+    sql:${TABLE}.order_timestamp ;;
+    label: "Booking Timestamp"
   }
 
   dimension_group: order_updated {
@@ -150,7 +154,8 @@ view: ecom_orders_struct {
       quarter,
       year
     ]
-    sql:TIMESTAMP(DATETIME(${TABLE}.payment_timestamp,"America/Los_Angeles")) ;;
+    sql:${TABLE}.payment_timestamp ;;
+    # sql:TIMESTAMP(DATETIME(${TABLE}.payment_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: payment_type {
@@ -298,7 +303,7 @@ view: ecom_orders_struct {
   measure: new_customer_volume {
     type: number
     sql: count(distinct if(${valid_order_ranking} = 1, ${customer_id}, Null));;
-    label: "Acquired Customers"
+    label: "Acquired New Customers"
   }
 
   measure: share_of_direct_orders {

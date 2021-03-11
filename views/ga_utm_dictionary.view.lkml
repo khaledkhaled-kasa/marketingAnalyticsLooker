@@ -101,7 +101,7 @@ view: ga_utm_dictionary {
   }
 
   dimension: utm_key_id {
-    type: number
+    type: string
     primary_key: yes
     sql: ${TABLE}.utm_key_id ;;
   }
@@ -147,16 +147,32 @@ view: ga_utm_dictionary {
     type: string
     sql:
     Case
-    when ${ga_source}='google' and ${ga_medium}='cpc' then 'Google Ads'
+    when ${ga_source}='(direct)' and ${ga_medium}='(none)' then 'Direct'
+    when ${ga_source}='google' and ${ga_medium}='cpc' and LOWER(${mkt_campaign}) like '%brand%' then 'Google Ads Branded Search'
+    when ${ga_source}='google' and ${ga_medium}='cpc' and LOWER(${mkt_campaign}) like '%remarketing%' then 'Google Ads Display'
+    when ${ga_source}='google' and ${ga_medium}='cpc'and LOWER(${mkt_campaign}) not like '%remarketing%' and   LOWER(${mkt_campaign}) not like '%brand%'  then 'Google Ads Non-Branded Search'
     when ${ga_source}='kasa' and ${ga_medium}='crm' then 'Braze CRM'
     when ${ga_source}='tripadvisor'  then 'tripadvisor'
     when ${ga_medium}='organic' then 'Organic Search'
     when ${ga_source}='facebook.com' and ${ga_medium}='referral' then 'Facebook Organic'
     when ${ga_source}='instagram.com' and ${ga_medium}='referral' then 'Instagram Organic'
+    when LOWER(${ga_source})='facebook' and LOWER(${ga_medium})='paid' then 'Facebook Paid'
     else 'Remaining Unpaid Traffic'
     end;;
-    drill_fields: [ga_campaign, ga_ad_content, ga_keyword]
+    drill_fields: [ga_source, ga_medium, ga_campaign, ga_ad_content, ga_keyword]
     label: "Custom Channel Grouping"
+  }
+
+ dimension: custom_paid_media_grouping {
+  type: string
+  sql:
+  Case
+  when ${mkt_channel} = 'Google Ads' and LOWER(${mkt_campaign}) like '%brand%' then 'Google Ads Branded Search'
+  when ${mkt_channel} = 'Google Ads' and LOWER(${mkt_campaign}) like '%remarketing%' then 'Google Ads Display'
+  when ${mkt_channel} = 'Google Ads' and LOWER(${mkt_campaign}) not like '%remarketing%' and  LOWER(${mkt_campaign}) not like '%brand%'  then 'Google Ads Non-Branded Search'
+  else ${mkt_channel}
+  end;;
+  drill_fields: [mkt_campaign, mkt_ad_group, mkt_ad]
   }
 
 }

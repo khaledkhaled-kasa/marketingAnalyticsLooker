@@ -37,6 +37,29 @@ view: anal_website_funnel {
     sql: ${TABLE}.step_5 ;;
   }
 
+  dimension: is_property_view_in_path {
+    type: yesno
+    sql: if(
+    ${step_1} like ('propertyView') or
+    ${step_2} like ('propertyView') or
+    ${step_3} like ('propertyView') or
+    ${step_4} like ('propertyView') or
+    ${step_5} like ('propertyView')
+    ,true,false) ;;
+  }
+
+  dimension: is_location_view_in_path {
+    type: yesno
+    sql:
+    if(
+    ${step_1} like ('locationView') or
+    ${step_2} like ('locationView') or
+    ${step_3} like ('locationView') or
+    ${step_4} like ('locationView') or
+    ${step_5} like ('locationView')
+    ,true,false);;
+  }
+
   measure: count {
     type: count
     drill_fields: []

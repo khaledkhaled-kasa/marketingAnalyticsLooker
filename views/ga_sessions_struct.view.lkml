@@ -88,7 +88,8 @@ view: ga_sessions_struct {
       quarter,
       year
     ]
-    sql:TIMESTAMP(DATETIME(${TABLE}.session_timestamp,"America/Los_Angeles")) ;;
+    sql:${TABLE}.session_timestamp ;;
+    # sql:TIMESTAMP(DATETIME(${TABLE}.session_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: shopping_stages {
@@ -102,7 +103,7 @@ view: ga_sessions_struct {
   }
 
   dimension: utm_key_id {
-    type: number
+    type: string
     sql: ${TABLE}.utm_key_id ;;
     hidden: yes
   }
@@ -355,6 +356,15 @@ view: ga_sessions_struct__website_events {
     sql: ${TABLE}.website_event_label ;;
   }
 
+  dimension: website_event_location_label {
+    type: string
+    sql: RIGHT(IF(INSTR(${website_event_url},'?')=0,${website_event_url},LEFT(${website_event_url},INSTR(${website_event_url},'?')-1)),
+    IF(LENGTH(IF(INSTR(${website_event_url},'?')=0,${website_event_url},LEFT(${website_event_url},INSTR(${website_event_url},'?')-1)))-INSTR(${website_event_url},'locations/')-10<0,0,
+    LENGTH(IF(INSTR(${website_event_url},'?')=0,${website_event_url},LEFT(${website_event_url},INSTR(${website_event_url},'?')-1)))-INSTR(${website_event_url},'locations/')-9))
+    ;;
+    label: "Location - Search List"
+  }
+
   dimension_group: website_event_timestamp {
     type: time
     timeframes: [
@@ -366,7 +376,8 @@ view: ga_sessions_struct__website_events {
       quarter,
       year
     ]
-    sql:TIMESTAMP(DATETIME(${TABLE}.website_event_timestamp,"America/Los_Angeles")) ;;
+    sql:(${TABLE}.website_event_timestamp ;;
+    # sql:TIMESTAMP(DATETIME(${TABLE}.website_event_timestamp,"America/Los_Angeles")) ;;
     }
 
   dimension: website_event_url {
@@ -536,7 +547,8 @@ view: ga_sessions_struct__product_events {
       quarter,
       year
     ]
-    sql:TIMESTAMP(DATETIME(${TABLE}.product_event_timestamp,"America/Los_Angeles")) ;;
+    sql:${TABLE}.product_event_timestamp ;;
+    # sql:TIMESTAMP(DATETIME(${TABLE}.product_event_timestamp,"America/Los_Angeles")) ;;
   }
 
   filter: product_analysis_date {
@@ -654,7 +666,8 @@ view: ga_sessions_struct__page_views {
       quarter,
       year
     ]
-    sql: TIMESTAMP(DATETIME(${TABLE}.page_view_timestamp,"America/Los_Angeles")) ;;
+    sql: ${TABLE}.page_view_timestamp ;;
+    # sql: TIMESTAMP(DATETIME(${TABLE}.page_view_timestamp,"America/Los_Angeles")) ;;
   }
 
   dimension: page_view_url {
@@ -707,12 +720,13 @@ view: ga_sessions_struct__checkout_events {
       quarter,
       year
     ]
-    sql:TIMESTAMP(DATETIME(${TABLE}.checkout_event_timestamp,"America/Los_Angeles")) ;;
+    sql:${TABLE}.checkout_event_timestamp ;;
+    # sql:TIMESTAMP(DATETIME(${TABLE}.checkout_event_timestamp,"America/Los_Angeles")) ;;
   }
 
   measure: product_checkouts_by_sku {
   type: count_distinct
-  sql: ${checkout_event_cart_id} ;;
+  sql: ${checkout_event_id} ;;
   value_format_name: decimal_0
   label: "Property Checkouts by SKU"
   description: "Number of time a specific SKU has been added to checkout"

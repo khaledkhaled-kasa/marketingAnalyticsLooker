@@ -26,6 +26,7 @@ view: ecom_products_struct {
     type: string
     sql: ${TABLE}.product_name ;;
     label: "Building Name"
+    drill_fields: [product_variants.product_variant_name]
   }
 
   dimension: product_picture_url {
@@ -107,7 +108,13 @@ view: ecom_products_struct__product_variants {
   dimension: product_variant_short_name {
     type: string
     sql: ${TABLE}.product_variant_short_name ;;
-    label: "Apartment Short Name"
+    label: "Apartment Type Name"
+  }
+
+  dimension: product_variant_category_id {
+    type: string
+    sql: ${TABLE}.product_variant_category_id ;;
+    label: "Apartment Type ID"
   }
 
   dimension: product_variant_sku {

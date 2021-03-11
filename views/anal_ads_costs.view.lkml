@@ -138,7 +138,7 @@ view: anal_ads_costs {
 
   measure: cost_per_order {
     type: number
-    sql: if(${ecom_orders_struct.valid_order_volume}=0,NULL,${total_ad_spend}/${ecom_orders_struct.valid_order_volume}) ;;
+    sql: if(${anal_simple_attribution.attributed_total_order_volume}=0,NULL,${total_ad_spend}/${anal_simple_attribution.attributed_total_order_volume}) ;;
     value_format_name: usd
     label: "Cost per Booking"
     description: "The cost for total attributed bookings"
@@ -146,7 +146,7 @@ view: anal_ads_costs {
 
   measure: cost_per_acquisition {
     type: number
-    sql: if(${ecom_orders_struct.new_customer_volume}=0,NULL,${total_ad_spend}/${ecom_orders_struct.new_customer_volume}) ;;
+    sql: if(${anal_simple_attribution.attributed_acquisitions_volume}=0,NULL,${total_ad_spend}/${anal_simple_attribution.attributed_acquisitions_volume}) ;;
     value_format_name: usd
     label: "Cost per Acquisition"
     description: "The cost for acquiring a new customer"
@@ -154,26 +154,26 @@ view: anal_ads_costs {
 
   measure: total_roas {
     type: number
-    sql: if(${total_ad_spend}=0,NULL, ${ecom_orders_struct.total_sales_gross_value}/${total_ad_spend}) ;;
+    sql: if(${total_ad_spend}=0,NULL, ${anal_simple_attribution.attributed_total_order_gross_value}/${total_ad_spend}) ;;
     value_format_name: percent_1
     label: "Total ROAS"
     description: "Total Value of Attributed Bookings divided by Total Ad Spend"
   }
 
-  measure: 30_day_sales_gross_value {
-    type: number
-    sql: sum(if(${anal_attribution.days_since_emmission}<=30, ${ecom_orders_struct.order_gross_value}, NULL)) ;;
-    value_format_name: usd_0
-    hidden: yes
-  }
+  # measure: 30_day_sales_gross_value {
+  #   type: number
+  #   sql: sum(if(${anal_attribution.days_since_emmission}<=30, ${ecom_orders_struct.order_gross_value}, NULL)) ;;
+  #   value_format_name: usd_0
+  #   hidden: yes
+  # }
 
-  measure: 30_day_roas {
-    type: number
-    sql: if(${total_ad_spend}=0 ,NULL, ${30_day_sales_gross_value}/${total_ad_spend}) ;;
-    value_format_name: percent_1
-    label: "30-Day ROAS"
-    description: "Total Value of Attributed Bookings within 30 days from Acquisiton divided by Total Ad Spend"
-  }
+  # measure: 30_day_roas {
+  #   type: number
+  #   sql: if(${total_ad_spend}=0 ,NULL, ${30_day_sales_gross_value}/${total_ad_spend}) ;;
+  #   value_format_name: percent_1
+  #   label: "30-Day ROAS"
+  #   description: "Total Value of Attributed Bookings within 30 days from Acquisiton divided by Total Ad Spend"
+  # }
 
   measure: cost_per_add_to_cart {
     type: number
@@ -184,7 +184,7 @@ view: anal_ads_costs {
 
   measure: attribution_conversion_rate {
     type: number
-    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${ecom_orders_struct.website_orders_volume}/${ga_sessions_struct.sessions_volume})  ;;
+    sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${anal_simple_attribution.attributed_total_order_volume}/${ga_sessions_struct.sessions_volume})  ;;
   }
 
   parameter: primary_attribution_metric_selector {
@@ -222,10 +222,10 @@ view: anal_ads_costs {
     sql:
       Case
         WHEN {% parameter primary_attribution_metric_selector %} = 'total_ad_spend' then ${total_ad_spend}
-        WHEN {% parameter primary_attribution_metric_selector %} = 'total_sales_gross_value' then ${ecom_orders_struct.website_orders_value}
+        WHEN {% parameter primary_attribution_metric_selector %} = 'total_sales_gross_value' then ${anal_simple_attribution.attributed_total_order_gross_value}
         WHEN {% parameter primary_attribution_metric_selector %} = 'total_ad_clicks' then ${total_ad_clicks}
     WHEN {% parameter primary_attribution_metric_selector %} = 'total_ad_impressions' then ${total_ad_impressions}
-        WHEN {% parameter primary_attribution_metric_selector %} = 'new_customer_volume' then ${ecom_orders_struct.new_customer_volume}
+        WHEN {% parameter primary_attribution_metric_selector %} = 'new_customer_volume' then ${anal_simple_attribution.attributed_acquisitions_volume}
         ELSE NULL
         END;;
     html:
@@ -256,10 +256,10 @@ view: anal_ads_costs {
       label: "Total ROAS"
       value: "total_roas"
     }
-    allowed_value: {
-      label: "30-Day ROAS"
-      value: "30_day_roas"
-    }
+    # allowed_value: {
+    #   label: "30-Day ROAS"
+    #   value: "30_day_roas"
+    # }
     allowed_value: {
       label: "Cost per Mile"
       value: "cost_per_mile"
@@ -294,8 +294,6 @@ view: anal_ads_costs {
     {% when "'total_roas'"%}
       ${total_roas}
     {% when "'30_day_roas'"%}
-      ${30_day_roas}
-    {% when "'cost_per_mile'"%}
       ${cost_per_mile}
     {% when "'cost_per_click'"%}
       ${cost_per_click}
@@ -320,6 +318,47 @@ view: anal_ads_costs {
     drill_fields: [ga_umt_dictionary.mkt_channel, secondary_attribution_selected_metric]
 
   }
+
+  # measure: secondary_attribution_selected_metric {
+  #   label_from_parameter: secondary_attribution_metric_selector
+  #   type: number
+  #   value_format: "0.##"
+  #   sql:
+  #   {% case secondary_attribution_metric_selector._parameter_value %}
+  #   {% when "'click_through_rate'"%}
+  #     ${click_through_rate}
+  #   {% when "'transaction_conversion_rate'"%}
+  #     ${attribution_conversion_rate}
+  #   {% when "'total_roas'"%}
+  #     ${total_roas}
+  #   {% when "'30_day_roas'"%}
+  #     ${30_day_roas}
+  #   {% when "'cost_per_mile'"%}
+  #     ${cost_per_mile}
+  #   {% when "'cost_per_click'"%}
+  #     ${cost_per_click}
+  #   {% when "'cost_per_acquisition'"%}
+  #     ${cost_per_acquisition}
+  #   {% when "'cost_per_order'"%}
+  #     ${cost_per_order}
+  #   {% else %} NULL
+  #   {% endcase %}
+  #   ;;
+  #   html:
+  #   {% case secondary_attribution_metric_selector._parameter_value %}
+  #   {% when "'cost_per_mile'" or "'cost_per_click'" or "'cost_per_acquisition'" or "'cost_per_order'" %}
+  #   ${{rendered_value}}
+  #   {% when "'click_through_rate'" or "'transaction_conversion_rate'" or "'total_roas'" or "'30_day_roas'" %}
+  #   {{value |times: 100 | round: 2 | append: "%"}}
+  #   {% else %}
+  #   {{rendered_value}}
+  #   {% endcase %};;
+  #   label: "Secondary Selected Metric"
+  #   description: "Selected Metrics from Attribution Analysis"
+  #   drill_fields: [ga_umt_dictionary.mkt_channel, secondary_attribution_selected_metric]
+
+  # }
+
 
   dimension: dummy_five {
     case: {

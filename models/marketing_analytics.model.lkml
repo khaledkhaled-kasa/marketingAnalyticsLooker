@@ -164,87 +164,87 @@ explore: users_analysis  {
   }
 }
 
-explore: attribution {
-  view_name: anal_attribution
-  fields: [ALL_FIELDS*, -ga_sessions_struct.is_on_kasa_com_website, -ga_sessions_struct__product_events.product_analysis_date]
-  join: ga_utm_dictionary {
-    sql_on: ${anal_attribution.attribution_utm_key_id} = ${ga_utm_dictionary.utm_key_id}  ;;
-    relationship: many_to_one
-  }
-  join: anal_ads_costs {
-    sql_on: ${anal_attribution.attribution_utm_key_id} = ${anal_ads_costs.utm_key_id} and ${anal_attribution.attribution_date} = ${anal_ads_costs.date_date};;
-    relationship: many_to_many
-  }
-  join: ga_sessions_struct {
-    sql_on: ${anal_attribution.session_id} = ${ga_sessions_struct.session_id} ;;
-    relationship: one_to_one
-  }
-  join: ga_sessions_struct__page_views {
-    sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
-    relationship: one_to_many
-  }
-  join: ga_sessions_struct__website_events {
-    sql: LEFT JOIN UNNEST(${ga_sessions_struct.website_events}) as ga_sessions_struct__website_events  ;;
-    relationship: one_to_many
-  }
-  join: ga_sessions_struct__transaction_events {
-    sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
-    relationship: one_to_many
-  }
-  join: ga_sessions_struct__product_events {
-    sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
-    relationship: one_to_many
-  }
-  join: ga_sessions_struct__checkout_events {
-    sql: LEFT JOIN UNNEST(${ga_sessions_struct.checkout_events}) as ga_sessions_struct__checkout_events  ;;
-    relationship: one_to_many
-  }
-  join: ecom_orders_struct {
-    sql_on: ${anal_attribution.order_id} = ${ecom_orders_struct.order_id} ;;
-    relationship: one_to_many
-  }
-  join: ecom_orders_struct__order_items {
-    sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
-    relationship: one_to_many
-  }
-  join: ecom_products_struct {
-    sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_products_struct__product_variants.product_variant_id} = pv.product_variant_id  ;;
-    relationship: many_to_one
-  }
-  join: ecom_products_struct__product_variants {
-    sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
-    relationship: many_to_one
-  }
-  sql_always_where:
-  {% if anal_attribution.current_date_range._is_filtered %}
-  {% condition anal_attribution.current_date_range %} ${event_raw} {% endcondition %}
+# explore: attribution {
+#   view_name: anal_attribution
+#   fields: [ALL_FIELDS*, -ga_sessions_struct.is_on_kasa_com_website, -ga_sessions_struct__product_events.product_analysis_date]
+#   join: ga_utm_dictionary {
+#     sql_on: ${anal_attribution.attribution_utm_key_id} = ${ga_utm_dictionary.utm_key_id}  ;;
+#     relationship: many_to_one
+#   }
+#   join: anal_ads_costs {
+#     sql_on: ${anal_attribution.attribution_utm_key_id} = ${anal_ads_costs.utm_key_id} and ${anal_attribution.attribution_date} = ${anal_ads_costs.date_date};;
+#     relationship: many_to_many
+#   }
+#   join: ga_sessions_struct {
+#     sql_on: ${anal_attribution.session_id} = ${ga_sessions_struct.session_id} ;;
+#     relationship: one_to_one
+#   }
+#   join: ga_sessions_struct__page_views {
+#     sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
+#     relationship: one_to_many
+#   }
+#   join: ga_sessions_struct__website_events {
+#     sql: LEFT JOIN UNNEST(${ga_sessions_struct.website_events}) as ga_sessions_struct__website_events  ;;
+#     relationship: one_to_many
+#   }
+#   join: ga_sessions_struct__transaction_events {
+#     sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
+#     relationship: one_to_many
+#   }
+#   join: ga_sessions_struct__product_events {
+#     sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
+#     relationship: one_to_many
+#   }
+#   join: ga_sessions_struct__checkout_events {
+#     sql: LEFT JOIN UNNEST(${ga_sessions_struct.checkout_events}) as ga_sessions_struct__checkout_events  ;;
+#     relationship: one_to_many
+#   }
+#   join: ecom_orders_struct {
+#     sql_on: ${anal_attribution.order_id} = ${ecom_orders_struct.order_id} ;;
+#     relationship: one_to_many
+#   }
+#   join: ecom_orders_struct__order_items {
+#     sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
+#     relationship: one_to_many
+#   }
+#   join: ecom_products_struct {
+#     sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_products_struct__product_variants.product_variant_id} = pv.product_variant_id  ;;
+#     relationship: many_to_one
+#   }
+#   join: ecom_products_struct__product_variants {
+#     sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
+#     relationship: many_to_one
+#   }
+#   sql_always_where:
+#   {% if anal_attribution.current_date_range._is_filtered %}
+#   {% condition anal_attribution.current_date_range %} ${event_raw} {% endcondition %}
 
-  {% if anal_attribution.previous_date_range._is_filtered or anal_attribution.compare_to._in_query %}
-  {% if anal_attribution.comparison_periods._parameter_value == "2" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
+#   {% if anal_attribution.previous_date_range._is_filtered or anal_attribution.compare_to._in_query %}
+#   {% if anal_attribution.comparison_periods._parameter_value == "2" %}
+#   or
+#   ${event_raw} between ${period_2_start} and ${period_2_end}
 
-  {% elsif anal_attribution.comparison_periods._parameter_value == "3" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
-  or
-  ${event_raw} between ${period_3_start} and ${period_3_end}
+#   {% elsif anal_attribution.comparison_periods._parameter_value == "3" %}
+#   or
+#   ${event_raw} between ${period_2_start} and ${period_2_end}
+#   or
+#   ${event_raw} between ${period_3_start} and ${period_3_end}
 
 
-  {% elsif anal_attribution.comparison_periods._parameter_value == "4" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
-  or
-  ${event_raw} between ${period_3_start} and ${period_3_end}
-  or
-  ${event_raw} between ${period_4_start} and ${period_4_end}
+#   {% elsif anal_attribution.comparison_periods._parameter_value == "4" %}
+#   or
+#   ${event_raw} between ${period_2_start} and ${period_2_end}
+#   or
+#   ${event_raw} between ${period_3_start} and ${period_3_end}
+#   or
+#   ${event_raw} between ${period_4_start} and ${period_4_end}
 
-  {% else %} 1 = 1
-  {% endif %}
-  {% endif %}
-  {% else %} 1 = 1
-  {% endif %};;
-}
+#   {% else %} 1 = 1
+#   {% endif %}
+#   {% endif %}
+#   {% else %} 1 = 1
+#   {% endif %};;
+# }
 
 
 explore: product_analysis {
@@ -273,4 +273,108 @@ explore: product_analysis {
   ${ga_sessions_struct__checkout_events.checkout_event_timestamp_date} <= CAST({% date_end ga_sessions_struct__product_events.product_analysis_date %} as DATE) and
   ${ecom_orders_struct.order_timestamp_date} >= CAST({% date_start ga_sessions_struct__product_events.product_analysis_date %} AS DATE) and
   ${ecom_orders_struct.order_timestamp_date} <= CAST({% date_end ga_sessions_struct__product_events.product_analysis_date %} AS DATE)  ;;
+}
+
+
+explore: new_attribution {
+
+  view_name: anal_utm_dates_crossjoin
+  fields: [ALL_FIELDS*, -ga_sessions_struct.is_on_kasa_com_website, -ga_sessions_struct__product_events.product_analysis_date]
+
+  join: ga_utm_dictionary {
+    sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${ga_utm_dictionary.utm_key_id} ;;
+    relationship: many_to_one
+  }
+
+  join: anal_ads_costs {
+    sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${anal_ads_costs.utm_key_id} and ${anal_utm_dates_crossjoin.date_date} = ${anal_ads_costs.date_date} ;;
+    relationship: one_to_many
+  }
+
+  join: ga_sessions_struct {
+    sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${ga_sessions_struct.utm_key_id} and ${anal_utm_dates_crossjoin.date_date} = ${ga_sessions_struct.session_timestamp_date} ;;
+    relationship: one_to_many
+  }
+
+  join: ga_sessions_struct__website_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.website_events}) as ga_sessions_struct__website_events  ;;
+    relationship: one_to_many
+  }
+
+  join: ga_sessions_struct__page_views {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
+    relationship: one_to_many
+  }
+
+  join: ga_sessions_struct__transaction_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
+    relationship: one_to_many
+  }
+
+  join: ga_sessions_struct__product_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
+    relationship: one_to_many
+  }
+
+  join: ga_sessions_struct__checkout_events {
+    sql: LEFT JOIN UNNEST(${ga_sessions_struct.checkout_events}) as ga_sessions_struct__checkout_events  ;;
+    relationship: one_to_many
+  }
+
+  join: anal_simple_attribution {
+    sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${anal_simple_attribution.attributed_utm_key_id} and ${anal_utm_dates_crossjoin.date_date} = ${anal_simple_attribution.attributed_date_date}  ;;
+    relationship: one_to_many
+  }
+
+  # join: anal_simple_attribution {
+  #   sql: LEFT JOIN(ME_BI_prod.ANAL_simple_attribution as anal_simple_attribution LEFT JOIN UNNEST(lw) as anal_simple_attribution__lw LEFT JOIN UNNEST(attribution_models) as anal_simple_attribution__lw__attribution_models) ON anal_simple_attribution__lw__attribution_models.attributed_utm_key_id = ${anal_utm_dates_crossjoin.utm_key_id} and DATE(anal_simple_attribution__lw__attribution_models.attributed_timestamp,'America/Los_Angeles')=  ${anal_utm_dates_crossjoin.date_date}  ;;
+  #   relationship:one_to_many
+  # }
+
+  # join: anal_simple_attribution__lw {
+  #   view_label: "Anal Simple Attribution: Lw"
+  #   sql: left join (select 1) on 1=1  ;;
+  #   relationship: one_to_many
+  # }
+
+  # join: anal_simple_attribution__lw__attribution_models {
+  #   view_label: "Anal Simple Attribution: Lw Attribution Models"
+  #   sql: left join (select 1) on 1=1  ;;
+  #   relationship: one_to_many
+  #}
+
+  # join: ecom_orders_struct {
+  #   sql_on: ${ecom_orders_struct.order_id} = ${anal_simple_attribution.attributed_order_id}  ;;
+  #   relationship: one_to_many
+  # }
+
+  sql_always_where:
+  {% if anal_utm_dates_crossjoin.current_date_range._is_filtered %}
+  {% condition anal_utm_dates_crossjoin.current_date_range %} ${event_raw} {% endcondition %}
+
+  {% if anal_utm_dates_crossjoin.previous_date_range._is_filtered or anal_utm_dates_crossjoin.compare_to._in_query %}
+  {% if anal_utm_dates_crossjoin.comparison_periods._parameter_value == "2" %}
+  or
+  ${event_raw} between ${period_2_start} and ${period_2_end}
+
+  {% elsif anal_utm_dates_crossjoin.comparison_periods._parameter_value == "3" %}
+  or
+  ${event_raw} between ${period_2_start} and ${period_2_end}
+  or
+  ${event_raw} between ${period_3_start} and ${period_3_end}
+
+
+  {% elsif anal_utm_dates_crossjoin.comparison_periods._parameter_value == "4" %}
+  or
+  ${event_raw} between ${period_2_start} and ${period_2_end}
+  or
+  ${event_raw} between ${period_3_start} and ${period_3_end}
+  or
+  ${event_raw} between ${period_4_start} and ${period_4_end}
+
+  {% else %} 1 = 1
+  {% endif %}
+  {% endif %}
+  {% else %} 1 = 1
+  {% endif %};;
 }
