@@ -160,6 +160,15 @@ view: anal_ads_costs {
     description: "Total Value of Attributed Bookings divided by Total Ad Spend"
   }
 
+  measure: inverted_roas {
+    type: number
+    sql: if(${anal_simple_attribution.attributed_total_order_gross_value}=0,NULL,${total_ad_spend}/ ${anal_simple_attribution.attributed_total_order_gross_value}) ;;
+    value_format_name: percent_1
+    label: "% CPS"
+    description: "Total Ad Spend divided by Total Value of Attributed Bookings"
+
+  }
+
   # measure: 30_day_sales_gross_value {
   #   type: number
   #   sql: sum(if(${anal_attribution.days_since_emmission}<=30, ${ecom_orders_struct.order_gross_value}, NULL)) ;;
