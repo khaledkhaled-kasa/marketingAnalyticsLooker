@@ -26,7 +26,7 @@ view: ecom_products_struct {
     type: string
     sql: ${TABLE}.product_name ;;
     label: "Building Name"
-    drill_fields: [product_variants.product_variant_name]
+    drill_fields: [product_variants.product_variant_name, product_variants.product_variant_bedroom]
   }
 
   dimension: product_picture_url {
