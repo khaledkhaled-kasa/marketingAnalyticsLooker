@@ -137,4 +137,14 @@ view: ecom_products_struct__product_variants {
     sql: ${TABLE}.product_variant_updated_at ;;
     hidden: yes
   }
+
+  parameter: max_rank {
+    type: number
+    label: "Show Top N Results in Table"
+  }
+
+  dimension: rank_limit {
+    type: number
+    sql: {% parameter max_rank %} ;;
+  }
 }
