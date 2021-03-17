@@ -2,6 +2,7 @@ connection: "bigquery"
 
 # include all the views
 include: "/views/**/*.view"
+include: "/**/*.dashboard"
 
 datagroup: default_refresh_settings {
   sql_trigger: SELECT max(date(order_timestamp)) FROM `bigquery-analytics-272822.ME_BI_prod.ECOM_orders_struct`   ;;
