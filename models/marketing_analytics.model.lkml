@@ -279,50 +279,40 @@ explore: product_analysis {
 
 
 explore: new_attribution {
-
   view_name: anal_utm_dates_crossjoin
   fields: [ALL_FIELDS*, -ga_sessions_struct.is_on_kasa_com_website, -ga_sessions_struct__product_events.product_analysis_date]
-
   join: ga_utm_dictionary {
     sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${ga_utm_dictionary.utm_key_id} ;;
     relationship: many_to_one
   }
-
   join: anal_ads_costs {
     sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${anal_ads_costs.utm_key_id} and ${anal_utm_dates_crossjoin.date_date} = ${anal_ads_costs.date_date} ;;
     relationship: one_to_many
   }
-
   join: ga_sessions_struct {
     sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${ga_sessions_struct.utm_key_id} and ${anal_utm_dates_crossjoin.date_date} = ${ga_sessions_struct.session_timestamp_date} ;;
     relationship: one_to_many
   }
-
   join: ga_sessions_struct__website_events {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.website_events}) as ga_sessions_struct__website_events  ;;
     relationship: one_to_many
   }
-
   join: ga_sessions_struct__page_views {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
     relationship: one_to_many
   }
-
   join: ga_sessions_struct__transaction_events {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
     relationship: one_to_many
   }
-
   join: ga_sessions_struct__product_events {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
     relationship: one_to_many
   }
-
   join: ga_sessions_struct__checkout_events {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.checkout_events}) as ga_sessions_struct__checkout_events  ;;
     relationship: one_to_many
   }
-
   join: anal_simple_attribution {
     sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${anal_simple_attribution.attributed_utm_key_id} and ${anal_utm_dates_crossjoin.date_date} = ${anal_simple_attribution.attributed_date_date}  ;;
     relationship: one_to_many
@@ -379,4 +369,12 @@ explore: new_attribution {
   {% endif %}
   {% else %} 1 = 1
   {% endif %};;
+}
+
+explore: external_hotels_attribution {
+  view_name: anal_external_hotels_attribution
+  join: ga_utm_dictionary {
+    sql_on: anal_external_hotels_attribution.attributed_utm_key_id = ga_utm_dictionary.utm_key_id ;;
+    relationship: many_to_one
+  }
 }
