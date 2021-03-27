@@ -143,6 +143,7 @@ view: ga_utm_dictionary {
     label: "Selected UTM Level"
   }
 
+  # changes in custom_utm_grouping need to be propagated to anal_conversion_paths view in BQ
   dimension: custom_utm_grouping {
     type: string
     sql:
