@@ -1,5 +1,6 @@
 include: "date_comparison.view"
 view: anal_attribution {
+  view_label: "Attribution"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_attribution`
     ;;
 

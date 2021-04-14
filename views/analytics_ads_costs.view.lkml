@@ -1,4 +1,5 @@
 view: anal_ads_costs {
+  view_label: "Ads Costs"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_ads_costs`
     ;;
 

@@ -1,4 +1,5 @@
 view: anal_user_segments_recent {
+  view_label: "User Segments Recent"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_user_segments_recent`
     ;;
 
@@ -42,5 +43,6 @@ view: anal_user_segments_recent {
 }
 
 view: anal_user_segments_recent2 {
+  view_label: "analytics_user_segments_recent2"
   extends: [anal_user_segments_recent]
 }

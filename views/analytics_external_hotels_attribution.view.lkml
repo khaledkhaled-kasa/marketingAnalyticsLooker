@@ -1,4 +1,5 @@
 view: anal_external_hotels_attribution {
+  view_label: "External Hotels Attribution"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_external_hotels_attribution`
     ;;
 
@@ -95,6 +96,12 @@ view: anal_external_hotels_attribution {
     type: string
     sql: ${TABLE}.order_status ;;
     label: "Booking Status"
+  }
+
+  dimension: confirmation_code {
+    type: string
+    sql: ${TABLE}.confirmation_code ;;
+    label: "Confirmation Code"
   }
 
   dimension: guest_email {

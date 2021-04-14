@@ -1,5 +1,6 @@
 include: "date_comparison.view"
 view: anal_utm_dates_crossjoin {
+  view_label: "Utm Dates Crossjoin"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_utm_dates_crossjoin`
     ;;
 

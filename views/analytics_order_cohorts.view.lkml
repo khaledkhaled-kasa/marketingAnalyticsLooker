@@ -1,4 +1,5 @@
 view: anal_order_cohorts {
+  view_label: "Order Cohorts"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_order_cohorts`
     ;;
 

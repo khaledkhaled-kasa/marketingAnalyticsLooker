@@ -1,4 +1,5 @@
 view: anal_website_funnel {
+  view_label: "Website Funnel"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_website_funnel`
     ;;
 

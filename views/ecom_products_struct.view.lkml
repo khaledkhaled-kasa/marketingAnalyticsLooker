@@ -115,6 +115,7 @@ view: ecom_products_struct__product_variants {
     type: string
     sql: ${TABLE}.product_variant_category_id ;;
     label: "Apartment Type ID"
+    description: "Roomtype ID"
   }
 
   dimension: product_variant_sku {

@@ -1,4 +1,5 @@
 view: anal_conversion_paths {
+  view_label: "Conversion Paths"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_conversion_paths`
     ;;
 
