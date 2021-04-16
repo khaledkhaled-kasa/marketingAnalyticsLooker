@@ -304,7 +304,7 @@ explore: conversion_paths_analysis {
   view_name: anal_conversion_paths
   fields: [ALL_FIELDS*, -ecom_orders_struct.secondary_orders_selected_metric, -ecom_orders_struct.orders_pivot_selected_dimension, -ecom_orders_struct.orders_second_selected_dimension]
   join: ecom_orders_struct {
-    sql_on: ${anal_conversion_paths.transaction_order_id} = ${ecom_orders_struct.confirmation_code} ;;
+    sql_on: ${anal_conversion_paths.transaction_order_id} = ${ecom_orders_struct.ga_matching_id} ;;
     relationship: many_to_one
     }
   }

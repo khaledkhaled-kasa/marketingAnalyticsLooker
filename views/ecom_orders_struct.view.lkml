@@ -97,6 +97,12 @@ view: ecom_orders_struct {
     hidden: no
   }
 
+  dimension: ga_matching_id {
+    type: string
+    sql: ${TABLE}.ga_matching_id ;;
+    hidden: yes
+  }
+
   dimension: order_items {
     hidden: yes
     sql: ${TABLE}.order_items ;;
