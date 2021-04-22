@@ -10,6 +10,13 @@ view: anal_utm_dates_crossjoin {
     sql: CONCAT(${date_date}, ${utm_key_id} ) ;;
   }
 
+  dimension: date {
+    type: date
+    primary_key: no
+    hidden: yes
+    sql: timestamp(${TABLE}.date) ;;
+  }
+
   dimension_group: date {
     type: time
     timeframes: [
@@ -21,9 +28,9 @@ view: anal_utm_dates_crossjoin {
       quarter,
       year
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
-    sql: ${TABLE}.date ;;
+    sql: timestamp(${TABLE}.date) ;;
   }
 
   dimension: utm_key_id {
