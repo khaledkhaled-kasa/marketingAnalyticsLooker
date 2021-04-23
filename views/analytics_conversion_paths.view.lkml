@@ -18,6 +18,16 @@ view: anal_conversion_paths {
     sql: ${TABLE}.default_channel_grouping_path ;;
   }
 
+  dimension: paid_unpaid_path {
+    type: string
+    sql:
+      CASE
+        when ${default_channel_grouping_path} like '%Google Ads%' then 'paid'
+        when ${default_channel_grouping_path} like '%Facebook Paid%' then 'paid'
+        else 'non paid'
+        end;;
+  }
+
   dimension: lookback_window {
     type: number
     sql: ${TABLE}.lookback_window ;;
