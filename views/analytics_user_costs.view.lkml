@@ -1,4 +1,5 @@
 view: anal_user_costs {
+  view_label: "User Costs"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_user_costs`
     ;;
 

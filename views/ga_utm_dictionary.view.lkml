@@ -143,6 +143,7 @@ view: ga_utm_dictionary {
     label: "Selected UTM Level"
   }
 
+  # changes in custom_utm_grouping need to be propagated to anal_conversion_paths view in BQ
   dimension: custom_utm_grouping {
     type: string
     sql:
@@ -157,6 +158,7 @@ view: ga_utm_dictionary {
     when ${ga_source}='facebook.com' and ${ga_medium}='referral' then 'Facebook Organic'
     when ${ga_source}='instagram.com' and ${ga_medium}='referral' then 'Instagram Organic'
     when LOWER(${ga_source})='facebook' and LOWER(${ga_medium})='paid' then 'Facebook Paid'
+    when ${ga_source}='untracked' then 'Untracked'
     else 'Remaining Unpaid Traffic'
     end;;
     drill_fields: [ga_source, ga_medium, ga_campaign, ga_ad_content, ga_keyword]

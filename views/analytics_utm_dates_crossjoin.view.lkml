@@ -1,5 +1,6 @@
 include: "date_comparison.view"
 view: anal_utm_dates_crossjoin {
+  view_label: "Utm Dates Crossjoin"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_utm_dates_crossjoin`
     ;;
 
@@ -7,6 +8,13 @@ view: anal_utm_dates_crossjoin {
     primary_key: yes
     hidden: yes
     sql: CONCAT(${date_date}, ${utm_key_id} ) ;;
+  }
+
+  dimension: date {
+    type: date
+    primary_key: no
+    hidden: yes
+    sql: timestamp(${TABLE}.date) ;;
   }
 
   dimension_group: date {
@@ -20,9 +28,9 @@ view: anal_utm_dates_crossjoin {
       quarter,
       year
     ]
-    convert_tz: no
+    convert_tz: yes
     datatype: date
-    sql: ${TABLE}.date ;;
+    sql: timestamp(${TABLE}.date) ;;
   }
 
   dimension: utm_key_id {

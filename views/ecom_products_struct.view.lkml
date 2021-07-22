@@ -26,7 +26,7 @@ view: ecom_products_struct {
     type: string
     sql: ${TABLE}.product_name ;;
     label: "Building Name"
-    drill_fields: [product_variants.product_variant_name]
+    drill_fields: [product_variants.product_variant_name, product_variants.product_variant_bedroom]
   }
 
   dimension: product_picture_url {
@@ -115,6 +115,7 @@ view: ecom_products_struct__product_variants {
     type: string
     sql: ${TABLE}.product_variant_category_id ;;
     label: "Apartment Type ID"
+    description: "Roomtype ID"
   }
 
   dimension: product_variant_sku {
@@ -136,5 +137,15 @@ view: ecom_products_struct__product_variants {
     ]
     sql: ${TABLE}.product_variant_updated_at ;;
     hidden: yes
+  }
+
+  parameter: max_rank {
+    type: number
+    label: "Show Top N Results in Table"
+  }
+
+  dimension: rank_limit {
+    type: number
+    sql: {% parameter max_rank %} ;;
   }
 }

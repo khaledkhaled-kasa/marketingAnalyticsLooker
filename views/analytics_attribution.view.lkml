@@ -1,5 +1,6 @@
-include: "date_comparison.view"
+# include: "date_comparison.view"
 view: anal_attribution {
+  view_label: "Attribution"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_attribution`
     ;;
 
@@ -97,11 +98,11 @@ view: anal_attribution {
  #     END ;;
  #  }
 
-extends: [date_comparison]
+# extends: [date_comparison]
 
-  dimension: event_raw{
-    sql:  ${attribution_time::datetime} ;;
-    type: date_raw
-    hidden: yes
-  }
+#   dimension: event_raw{
+#     sql:  ${attribution_time::datetime} ;;
+#     type: date_raw
+#     hidden: yes
+#   }
 }

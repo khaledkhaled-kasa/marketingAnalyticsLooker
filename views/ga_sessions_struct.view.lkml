@@ -551,6 +551,13 @@ view: ga_sessions_struct__product_events {
     # sql:TIMESTAMP(DATETIME(${TABLE}.product_event_timestamp,"America/Los_Angeles")) ;;
   }
 
+  dimension: product_event_product_variant {
+    type: string
+    sql: ${TABLE}.product_variant ;;
+    label: "Roomtype ID"
+    description: "Roomtype ID available for product events: add to card and checkout"
+  }
+
   filter: product_analysis_date {
     type: date
     label: "Date Range"
@@ -724,6 +731,20 @@ view: ga_sessions_struct__checkout_events {
     # sql:TIMESTAMP(DATETIME(${TABLE}.checkout_event_timestamp,"America/Los_Angeles")) ;;
   }
 
+  dimension: checkout_event_product_variant {
+    type: string
+    sql: ${TABLE}.checkout_event_product_variant ;;
+    label: "Roometype ID"
+    description: "Roomtype ID from checkout"
+  }
+
+  dimension: checkout_event_label {
+    type: string
+    sql: ${TABLE}.checkout_event_label ;;
+    label: "Checkout Step"
+    description: "The number represents a step in the checkout process"
+  }
+
   measure: product_checkouts_by_sku {
   type: count_distinct
   sql: ${checkout_event_id} ;;
@@ -731,4 +752,21 @@ view: ga_sessions_struct__checkout_events {
   label: "Property Checkouts by SKU"
   description: "Number of time a specific SKU has been added to checkout"
   }
+
+  measure: product_1st_step_checkouts_by_sku {
+    type: count_distinct
+    sql: if(${checkout_event_label}='1',${checkout_event_id},NULL) ;;
+    value_format_name: decimal_0
+    label: "Property 1st step Checkouts by SKU"
+    description: "Number of time a specific SKU has been added to 1st step of checkout"
+  }
+
+  measure: product_2nd_step_checkouts_by_sku {
+    type: count_distinct
+    sql: if(${checkout_event_label}='2',${checkout_event_id},NULL) ;;
+    value_format_name: decimal_0
+    label: "Property 2nd step Checkouts by SKU"
+    description: "Number of time a specific SKU has been added to 2nd step of checkout"
+  }
+
 }

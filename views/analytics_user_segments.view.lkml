@@ -1,4 +1,5 @@
 view: anal_user_segments {
+  view_label: "User Segments"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_user_segments`
     ;;
 

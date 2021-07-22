@@ -1,4 +1,5 @@
 view: anal_ads_costs {
+  view_label: "Ads Costs"
   sql_table_name: `bigquery-analytics-272822.ME_BI_prod.ANAL_ads_costs`
     ;;
 
@@ -111,6 +112,23 @@ view: anal_ads_costs {
     type: sum
     sql: ${total_clicks} ;;
     value_format_name: decimal_0
+  }
+
+  measure: average_attributed_booking_value {
+    type: number
+    sql: if(${anal_simple_attribution.attributed_total_order_volume}=0,0,
+    ${anal_simple_attribution.attributed_total_order_gross_value}/${anal_simple_attribution.attributed_total_order_volume}) ;;
+    value_format_name: usd_0
+    label: "Average Booking Value"
+    description: "Average Value of attributed Booking"
+  }
+
+  measure: share_of_returning_orders {
+    type: number
+    sql: if(${anal_simple_attribution.attributed_total_order_volume}=0,0,
+    ${anal_simple_attribution.attributed_acquisitions_volume}/${anal_simple_attribution.attributed_total_order_volume});;
+    value_format_name: percent_0
+    label: "Share of Returning Orders"
   }
 
   measure: click_through_rate {
@@ -369,26 +387,46 @@ view: anal_ads_costs {
   # }
 
 
-  dimension: dummy_five {
+  dimension: dummy_ten {
     case: {
       when: {
-        label: "Ad Spend"
+        label: "Attributed Booking Volume"
         sql: 1=1 ;;
       }
       when: {
-        label: "Total Impressions"
-        sql: 1=1 ;;
-      }
-      when: {
-        label: "Total Clicks"
-        sql: 1=1 ;;
-      }
-      when: {
-        label: "Acquired Customers"
+        label: "Cost per Booking"
         sql: 1=1 ;;
       }
       when: {
         label: "Attributed Booking Value"
+        sql: 1=1 ;;
+      }
+      when: {
+        label: "Total ROAS"
+        sql: 1=1 ;;
+      }
+      when: {
+        label: "% CPS"
+        sql: 1=1 ;;
+      }
+      when: {
+        label: "Transaction Conversion Rate"
+        sql: 1=1 ;;
+      }
+      when: {
+        label: "Total Ad Spend"
+        sql: 1=1 ;;
+      }
+      when: {
+        label: "Attributed New Acquisitions"
+        sql: 1=1 ;;
+      }
+      when: {
+        label: "Share of Returning Orders"
+        sql: 1=1 ;;
+      }
+      when: {
+        label: "Average Booking Value"
         sql: 1=1 ;;
       }
     }

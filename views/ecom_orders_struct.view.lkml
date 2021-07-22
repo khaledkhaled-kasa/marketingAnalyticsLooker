@@ -97,6 +97,12 @@ view: ecom_orders_struct {
     hidden: no
   }
 
+  dimension: ga_matching_id {
+    type: string
+    sql: ${TABLE}.ga_matching_id ;;
+    hidden: yes
+  }
+
   dimension: order_items {
     hidden: yes
     sql: ${TABLE}.order_items ;;
@@ -308,7 +314,7 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_orders {
     type: number
-    sql: count(distinct if(${order_handler} = 'direct' or ${order_handler}= 'website', ${order_id}, Null))/${total_order_volume} ;;
+    sql: count(distinct if(${order_handler} = 'direct' or ${order_handler} in ('website','kasawebsite'), ${order_id}, Null))/${total_order_volume} ;;
     value_format_name: percent_1
     label: "Share of Direct Bookings"
     description: "Percentage of Bookgings from direct channel"
@@ -316,7 +322,7 @@ view: ecom_orders_struct {
 
   measure: website_orders_volume {
     type: number
-    sql: count(distinct if(${order_handler}= 'website', ${order_id}, Null)) ;;
+    sql: count(distinct if(${order_handler} in ('website','kasawebsite'), ${order_id}, Null)) ;;
     value_format_name: decimal_0
     label: "Number of Website Bookings"
     description: "Number of Bookings from website"
@@ -324,7 +330,7 @@ view: ecom_orders_struct {
 
   measure: website_orders_value {
     type: number
-    sql: sum(distinct if(${order_handler}= 'website', ${order_gross_value}, Null)) ;;
+    sql: sum(distinct if(${order_handler} in ('website','kasawebsite'), ${order_gross_value}, Null)) ;;
     value_format_name: usd_0
     label: "Website Bookings Value"
     description: "Value of Bookings from website"
@@ -332,7 +338,7 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_booking_value {
     type: number
-    sql: sum( if(${order_handler} = 'direct' or ${order_handler}= 'website', ${order_gross_value}, Null))/${total_sales_gross_value} ;;
+    sql: sum( if(${order_handler} = 'direct' or ${order_handler} in ('website','kasawebsite'), ${order_gross_value}, Null))/${total_sales_gross_value} ;;
     value_format_name: percent_1
     label: "Share of Direct Booking Value"
     description: "Percentage of Booking Value from direct channel "
@@ -340,7 +346,7 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_customer_volume {
     type: number
-    sql: count(distinct if(${order_handler} = 'direct' or ${order_handler} = 'website' , ${customer_id}, NULL))/${total_customer_volume} ;;
+    sql: count(distinct if(${order_handler} = 'direct' or ${order_handler} in ('website','kasawebsite') , ${customer_id}, NULL))/${total_customer_volume} ;;
     value_format_name: percent_1
     label: "Share of Direct Customers"
     description: "Percentage of Customers from direct channel"
@@ -348,7 +354,7 @@ view: ecom_orders_struct {
 
   measure: share_of_direct_acquired_customers {
     type:  number
-    sql: count(distinct if((${order_handler} = 'direct' or ${order_handler}= 'website')  and ${valid_order_ranking} = 1, ${customer_id}, Null)) / ${new_customer_volume}  ;;
+    sql: count(distinct if((${order_handler} = 'direct' or ${order_handler} in ('website','kasawebsite'))  and ${valid_order_ranking} = 1, ${customer_id}, Null)) / ${new_customer_volume}  ;;
     value_format_name: percent_1
     label: "Share of Direct Acquisitions"
     description: "Percentage of Acquired Customers from direct channel"
