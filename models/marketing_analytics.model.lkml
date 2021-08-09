@@ -308,3 +308,15 @@ explore: conversion_paths_analysis {
     relationship: many_to_one
     }
   }
+explore: website_sessions {
+    group_label: "Product & Tech"
+    label: "Website"
+  join: website_users {
+    sql_on: ${website_sessions.anonymous_id} =${website_users.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+  join: website_orders {
+    sql_on: ${website_users.anonymous_id} =${website_orders.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+  }
