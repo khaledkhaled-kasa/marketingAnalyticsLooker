@@ -9,6 +9,7 @@ view: website_orders {
   dimension: affiliation {
     type: string
     sql: ${TABLE}.affiliation ;;
+    hidden: yes
   }
 
   dimension: anonymous_id {
@@ -25,51 +26,61 @@ view: website_orders {
   dimension: context_ip {
     type: string
     sql: ${TABLE}.context_ip ;;
+    hidden: yes
   }
 
   dimension: context_library_name {
     type: string
     sql: ${TABLE}.context_library_name ;;
+    hidden: yes
   }
 
   dimension: context_library_version {
     type: string
     sql: ${TABLE}.context_library_version ;;
+    hidden: yes
   }
 
   dimension: context_locale {
     type: string
     sql: ${TABLE}.context_locale ;;
+    hidden: yes
   }
 
   dimension: context_page_path {
     type: string
     sql: ${TABLE}.context_page_path ;;
+    hidden: yes
   }
 
   dimension: context_page_referrer {
     type: string
     sql: ${TABLE}.context_page_referrer ;;
+    hidden: yes
   }
 
   dimension: context_page_search {
     type: string
     sql: ${TABLE}.context_page_search ;;
+    hidden: yes
   }
 
   dimension: context_page_title {
     type: string
     sql: ${TABLE}.context_page_title ;;
+    hidden: yes
   }
 
   dimension: context_page_url {
     type: string
     sql: ${TABLE}.context_page_url ;;
+    hidden: yes
   }
 
   dimension: context_user_agent {
     type: string
     sql: ${TABLE}.context_user_agent ;;
+    hidden: yes
   }
 
   dimension: coupon {
@@ -90,19 +101,23 @@ view: website_orders {
   dimension: event_text {
     type: string
     sql: ${TABLE}.event_text ;;
+    hidden: yes
   }
 
   dimension: id {
     type: string
     sql: ${TABLE}.id ;;
+    hidden: yes
   }
 
   dimension_group: loaded_at {
     type: time
     sql: ${TABLE}.loaded_at ;;
+    hidden: yes
   }
 
   dimension: me_client_id {
+    label: "Clint Id"
     type: string
     sql: ${TABLE}.me_client_id ;;
   }
@@ -110,9 +125,11 @@ view: website_orders {
   dimension_group: me_hit_timestamp {
     type: time
     sql: ${TABLE}.me_hit_timestamp ;;
+    hidden: yes
   }
 
   dimension: me_session_id {
+    label: "Session Id"
     type: string
     sql: ${TABLE}.me_session_id ;;
   }
@@ -120,26 +137,32 @@ view: website_orders {
   dimension_group: original_timestamp {
     type: time
     sql: ${TABLE}.original_timestamp ;;
+    hidden: yes
   }
 
   dimension_group: received_at {
     type: time
     sql: ${TABLE}.received_at ;;
+    hidden: yes
   }
 
   dimension_group: sent_at {
     type: time
     sql: ${TABLE}.sent_at ;;
+    hidden: yes
   }
 
   dimension_group: timestamp {
     type: time
+    label: "Time Range"
+    timeframes: [year,month,date,time,week]
     sql: ${TABLE}.timestamp ;;
   }
 
   dimension_group: uuid_ts {
     type: time
     sql: ${TABLE}.uuid_ts ;;
+    hidden: yes
   }
 
   dimension: reservation_id {
@@ -150,26 +173,31 @@ view: website_orders {
   dimension: brand {
     type: string
     sql: ${TABLE}.brand ;;
+    hidden: yes
   }
 
   dimension: category {
     type: string
     sql: ${TABLE}.category ;;
+    hidden: yes
   }
 
   dimension_group: check_in_date {
     type: time
+    timeframes: [year,month,date,time,week]
     sql: ${TABLE}.check_in_date ;;
   }
 
   dimension_group: check_out_date {
     type: time
+    timeframes: [year,month,date,time,week]
     sql: ${TABLE}.check_out_date ;;
   }
 
   dimension: image_url {
     type: string
     sql: ${TABLE}.image_url ;;
+    hidden: yes
   }
 
   dimension: location {
@@ -180,6 +208,7 @@ view: website_orders {
   dimension: property_id {
     type: string
     sql: ${TABLE}.property_id ;;
+    hidden: yes
   }
 
   dimension: property_name {
@@ -190,7 +219,9 @@ view: website_orders {
   dimension: room_type_id {
     type: string
     sql: ${TABLE}.room_type_id ;;
+    hidden: yes
   }
+
 
   dimension: room_type_name {
     type: string

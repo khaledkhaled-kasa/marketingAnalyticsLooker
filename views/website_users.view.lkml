@@ -14,6 +14,7 @@ view: website_users {
   dimension: affiliation {
     type: string
     sql: ${TABLE}.affiliation ;;
+    hidden: yes
   }
 
   dimension: anonymous_id {
@@ -25,11 +26,13 @@ view: website_users {
   dimension: cart_id {
     type: string
     sql: ${TABLE}.cart_id ;;
+    hidden: yes
   }
 
   dimension: context_campaign_content {
     type: string
     sql: ${TABLE}.context_campaign_content ;;
+    hidden: yes
   }
 
   dimension: context_campaign_medium {
@@ -40,6 +43,7 @@ view: website_users {
   dimension: context_campaign_name {
     type: string
     sql: ${TABLE}.context_campaign_name ;;
+    hidden: yes
   }
 
   dimension: context_campaign_source {
@@ -50,56 +54,67 @@ view: website_users {
   dimension: context_campaign_term {
     type: string
     sql: ${TABLE}.context_campaign_term ;;
+    hidden: yes
   }
 
   dimension: context_ip {
     type: string
     sql: ${TABLE}.context_ip ;;
+    hidden: yes
   }
 
   dimension: context_library_name {
     type: string
     sql: ${TABLE}.context_library_name ;;
+    hidden: yes
   }
 
   dimension: context_library_version {
     type: string
     sql: ${TABLE}.context_library_version ;;
+    hidden: yes
   }
 
   dimension: context_locale {
     type: string
     sql: ${TABLE}.context_locale ;;
+    hidden: yes
   }
 
   dimension: context_page_path {
     type: string
     sql: ${TABLE}.context_page_path ;;
+    hidden: yes
   }
 
   dimension: context_page_referrer {
     type: string
     sql: ${TABLE}.context_page_referrer ;;
+    hidden: yes
   }
 
   dimension: context_page_search {
     type: string
     sql: ${TABLE}.context_page_search ;;
+    hidden: yes
   }
 
   dimension: context_page_title {
     type: string
     sql: ${TABLE}.context_page_title ;;
+    hidden: yes
   }
 
   dimension: context_page_url {
     type: string
     sql: ${TABLE}.context_page_url ;;
+    hidden: yes
   }
 
   dimension: context_user_agent {
     type: string
     sql: ${TABLE}.context_user_agent ;;
+    hidden: yes
   }
 
   dimension: coupon {
@@ -110,6 +125,7 @@ view: website_users {
   dimension: currency_code {
     type: string
     sql: ${TABLE}.currency_code ;;
+    hidden: yes
   }
 
   dimension: email {
@@ -135,6 +151,7 @@ view: website_users {
   dimension_group: loaded_at {
     type: time
     sql: ${TABLE}.loaded_at ;;
+    hidden: yes
   }
 
   dimension: name {
@@ -145,6 +162,7 @@ view: website_users {
   dimension_group: original_timestamp {
     type: time
     sql: ${TABLE}.original_timestamp ;;
+    hidden: yes
   }
 
   dimension: products {
@@ -155,6 +173,7 @@ view: website_users {
   dimension_group: received_at {
     type: time
     sql: ${TABLE}.received_at ;;
+    hidden: yes
   }
 
   dimension: reservation_id {
@@ -170,21 +189,25 @@ view: website_users {
   dimension_group: sent_at {
     type: time
     sql: ${TABLE}.sent_at ;;
+    hidden: yes
   }
 
   dimension_group: timestamp {
     type: time
+    label: "Time Range"
+    timeframes: [year,month,date,time,week]
     sql: ${TABLE}.timestamp ;;
   }
-
   dimension_group: uuid_ts {
     type: time
     sql: ${TABLE}.uuid_ts ;;
+    hidden: yes
   }
 
   dimension: checkout_id {
     type: string
     sql: ${TABLE}.checkout_id ;;
+    hidden: yes
   }
 
   dimension: currency {
@@ -197,84 +220,30 @@ view: website_users {
     sql: ${TABLE}.order_id ;;
   }
 
-  dimension: products_braze_brand {
-    type: string
-    sql: ${TABLE}.products_braze_brand ;;
-  }
-
-  dimension_group: products_braze_check_in_date {
-    type: time
-    sql: ${TABLE}.products_braze_check_in_date ;;
-  }
-
-  dimension_group: products_braze_check_out_date {
-    type: time
-    sql: ${TABLE}.products_braze_check_out_date ;;
-  }
-
-  dimension: products_braze_image {
-    type: string
-    sql: ${TABLE}.products_braze_image ;;
-  }
-
-  dimension: products_braze_location {
-    type: string
-    sql: ${TABLE}.products_braze_location ;;
-  }
-
-  dimension: products_braze_nights {
-    type: number
-    sql: ${TABLE}.products_braze_nights ;;
-  }
-
-  dimension: products_braze_price {
-    type: number
-    sql: ${TABLE}.products_braze_price ;;
-  }
-
-  dimension: products_braze_property_id {
-    type: string
-    sql: ${TABLE}.products_braze_property_id ;;
-  }
-
-  dimension: products_braze_property_name {
-    type: string
-    sql: ${TABLE}.products_braze_property_name ;;
-  }
-
-  dimension: products_braze_room_type_id {
-    type: string
-    sql: ${TABLE}.products_braze_room_type_id ;;
-  }
-
-  dimension: products_braze_room_type_name {
-    type: string
-    sql: ${TABLE}.products_braze_room_type_name ;;
-  }
-
-  dimension: products_braze_total_value {
-    type: number
-    sql: ${TABLE}.products_braze_total_value ;;
-  }
 
   dimension: brand {
     type: string
     sql: ${TABLE}.brand ;;
+    hidden: yes
   }
 
   dimension_group: check_in_date {
     type: time
+    timeframes: [year,month,date,time,week]
     sql: ${TABLE}.check_in_date ;;
   }
 
   dimension_group: check_out_date {
     type: time
+    timeframes: [year,month,date,time,week]
     sql: ${TABLE}.check_out_date ;;
   }
+
 
   dimension: image {
     type: string
     sql: ${TABLE}.image ;;
+    hidden: yes
   }
 
   dimension: location {
@@ -295,6 +264,7 @@ view: website_users {
   dimension: property_id {
     type: string
     sql: ${TABLE}.property_id ;;
+    hidden: yes
   }
 
   dimension: property_name {
@@ -305,6 +275,7 @@ view: website_users {
   dimension: room_type_id {
     type: string
     sql: ${TABLE}.room_type_id ;;
+    hidden: yes
   }
 
   dimension: room_type_name {
@@ -369,18 +340,6 @@ view: website_users {
       checkout_id,
       currency,
       order_id,
-      products_braze_brand,
-      products_braze_check_in_date_time,
-      products_braze_check_out_date_time,
-      products_braze_image,
-      products_braze_location,
-      products_braze_nights,
-      products_braze_price,
-      products_braze_property_id,
-      products_braze_property_name,
-      products_braze_room_type_id,
-      products_braze_room_type_name,
-      products_braze_total_value,
       brand,
       check_in_date_time,
       check_out_date_time,

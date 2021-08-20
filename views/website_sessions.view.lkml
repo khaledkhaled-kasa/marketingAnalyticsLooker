@@ -25,6 +25,7 @@ view: website_sessions {
   dimension: id {
     type: string
     sql: ${TABLE}.id ;;
+    hidden: yes
   }
 
   dimension: session_id {

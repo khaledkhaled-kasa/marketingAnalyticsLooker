@@ -319,4 +319,27 @@ explore: website_sessions {
     sql_on: ${website_users.anonymous_id} =${website_orders.anonymous_id}   ;;
     relationship: many_to_one
   }
+  join: website_property_viewed {
+    sql_on: ${website_users.anonymous_id} =${website_property_viewed.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+  join: website_location_viewed {
+    sql_on: ${website_users.anonymous_id} =${website_location_viewed.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+  join: website_searches {
+    sql_on: ${website_users.anonymous_id} =${website_searches.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+  join: website_productadded {
+    view_label: " Website Add To Cart"
+    sql_on: ${website_users.anonymous_id} =${website_productadded.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+  join: website_checkedavailability {
+    view_label: "Website Checked Availability"
+    sql_on: ${website_users.anonymous_id} =${website_checkedavailability.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+
   }
