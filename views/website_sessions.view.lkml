@@ -47,7 +47,7 @@ view: website_sessions {
     drill_fields: [detail*]
   }
   measure: numberOfsessionWproperty   {
-    label: "# Sessions w/ Property  Viewed "
+    label: "# Sessions w/ Property Viewed"
     type: count_distinct
     sql: ${session_id} ;;
     filters: [event: "property_viewed,product_viewed"]
@@ -80,6 +80,20 @@ view: website_sessions {
     description: "Ratio of sessions w/ Complete Checkout Event to all session"
     drill_fields: [numberOfsessions,numberOfsessionWcheckout]
   }
+  measure: location_Viewed_rate {
+    type: number
+    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWlocation}/${numberOfsessions});;
+    value_format_name:  percent_1
+    description: "Ratio of sessions w/ location Viewed Event to all session"
+    drill_fields: [numberOfsessions,numberOfsessionWlocation]
+  }
+  measure: property_Viewed_rate {
+    type: number
+    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWproperty}/${numberOfsessions});;
+    value_format_name:  percent_1
+    description: "Ratio of sessions w/ Property Viewed Event to all session"
+    drill_fields: [numberOfsessions,numberOfsessionWproperty]
+  }
   measure: transaction_conversion_rate {
     value_format_name: percent_1
     type: number
@@ -87,6 +101,35 @@ view: website_sessions {
     sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWTransactions}/${numberOfsessions});;
     drill_fields: [numberOfsessions,numberOfsessionWTransactions]
     }
+
+  measure: numberOfsessionWclickBookButton  {
+    label: "# Sessions w/ Click Book Button"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [event: "checkout_finished"]
+    drill_fields: [detail*]
+  }
+  measure:property_views_per_locations_views{
+    value_format_name: percent_1
+    type: number
+    description: "Ratio of sessions w/ Property Viewed Event to location Viewed sessions"
+    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWproperty}/${numberOfsessionWTransactions});;
+    hidden: yes
+  }
+  measure:checkout_per_property_views{
+    value_format_name: percent_1
+    type: number
+    description: "Ratio of sessions w/Checkout Event to Property Viewed sessions"
+    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWcheckout}/${numberOfsessionWproperty});;
+  }
+  measure:Transactions_per_checkout{
+    value_format_name: percent_1
+    type: number
+    description: "Ratio of sessions w/Transaction Event to Checkout Event "
+    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWTransactions}/${numberOfsessionWcheckout});;
+  }
+
+
 
   measure: count {
     type: count

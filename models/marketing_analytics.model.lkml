@@ -341,5 +341,10 @@ explore: website_sessions {
     sql_on: ${website_users.anonymous_id} =${website_checkedavailability.anonymous_id}   ;;
     relationship: many_to_one
   }
+  join: website_checkout_finished_book_button {
+    view_label: "Website Click Book Button"
+    sql_on: ${website_users.anonymous_id} =${website_checkout_finished_book_button.anonymous_id}   ;;
+    relationship: many_to_one
+  }
 
   }
