@@ -15,6 +15,7 @@ view: website_sessions {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
+    hidden: yes
   }
 
   dimension: event {
@@ -134,6 +135,7 @@ view: website_sessions {
   measure: count {
     type: count
     drill_fields: [detail*]
+    hidden: yes
   }
 
   set: detail {

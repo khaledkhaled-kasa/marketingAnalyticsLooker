@@ -7,6 +7,7 @@ view: website_checkout_finished_book_button {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
+    hidden: yes
   }
 
   dimension: checkout_id {
@@ -57,6 +58,7 @@ view: website_checkout_finished_book_button {
     type: string
     sql: ${TABLE}.me_client_id ;;
     label: "Client Id"
+    hidden: yes
   }
 
   dimension: me_session_id {
@@ -95,6 +97,7 @@ view: website_checkout_finished_book_button {
   dimension: room_type_name {
     type: string
     sql: ${TABLE}.room_type_name ;;
+    label: "Room Type"
   }
 
   dimension_group: timestamp {
@@ -110,6 +113,13 @@ measure: count_Book_buttin_clicked {
   drill_fields: [detail*]
 }
 
+
+  measure: num_transactions {
+    label: "#Transactions"
+    type: count_distinct
+    sql: ${checkout_id} ;;
+    drill_fields: [detail*]
+  }
 
   set: detail {
     fields: [

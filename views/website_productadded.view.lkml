@@ -7,6 +7,7 @@ view: website_productadded {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
+    hidden: yes
   }
 
   dimension_group: check_in_date {
@@ -35,6 +36,7 @@ view: website_productadded {
     label: "Clint Id"
     type: string
     sql: ${TABLE}.me_client_id ;;
+    hidden: yes
   }
 
   dimension: me_session_id {
@@ -51,6 +53,7 @@ view: website_productadded {
   dimension: property_id {
     type: string
     sql: ${TABLE}.property_id ;;
+    hidden: yes
   }
 
   dimension: property_name {
@@ -61,11 +64,13 @@ view: website_productadded {
   dimension: room_type_name {
     type: string
     sql: ${TABLE}.room_type_name ;;
+    label: "Room Type"
   }
 
   dimension: total_value {
     type: number
     sql: ${TABLE}.total_value ;;
+    hidden: yes
   }
 
   dimension_group: timestamp {

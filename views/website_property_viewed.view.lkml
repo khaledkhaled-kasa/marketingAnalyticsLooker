@@ -5,6 +5,7 @@ view: website_property_viewed {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
+    hidden: yes
   }
 
   dimension: event {
@@ -21,6 +22,7 @@ view: website_property_viewed {
     label: "Client id"
     type: string
     sql: ${TABLE}.me_client_id ;;
+    hidden: yes
   }
 
   dimension: me_session_id {
@@ -54,7 +56,7 @@ view: website_property_viewed {
 
 
   measure: count_views {
-    label: "# Views"
+    label: "# Property Views"
     type: count_distinct
     sql:me_session_id  ;;
   }

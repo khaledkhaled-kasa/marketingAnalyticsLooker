@@ -15,6 +15,7 @@ view: website_orders {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
+    hidden: yes
   }
 
   dimension: checkout_id {
@@ -120,6 +121,7 @@ view: website_orders {
     label: "Clint Id"
     type: string
     sql: ${TABLE}.me_client_id ;;
+    hidden: yes
   }
 
   dimension_group: me_hit_timestamp {
@@ -226,6 +228,7 @@ view: website_orders {
   dimension: room_type_name {
     type: string
     sql: ${TABLE}.room_type_name ;;
+    label: "Room Type"
   }
 
   dimension: price {
@@ -242,6 +245,7 @@ view: website_orders {
     type: number
     label: "Transaction Value"
     sql: ${TABLE}.total_value ;;
+    hidden: yes
   }
   measure: num_transactions {
     label: "#Transactions"

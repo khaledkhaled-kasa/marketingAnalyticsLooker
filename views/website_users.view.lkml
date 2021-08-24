@@ -281,11 +281,13 @@ view: website_users {
   dimension: room_type_name {
     type: string
     sql: ${TABLE}.room_type_name ;;
+    label: "Room Type"
   }
 
   dimension: total_value {
     type: number
     sql: ${TABLE}.total_value ;;
+    hidden: yes
   }
 
   dimension: device_category {
@@ -295,6 +297,7 @@ view: website_users {
   measure: count {
     type: count
     drill_fields: [detail*]
+    hidden: yes
   }
   measure: countusers {
     label: "Users Volume "

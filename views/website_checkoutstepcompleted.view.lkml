@@ -6,6 +6,7 @@ view: website_checkoutstepcompleted {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
+    hidden: yes
   }
 
   dimension_group: check_in_date {
@@ -50,6 +51,7 @@ view: website_checkoutstepcompleted {
     type: string
     sql: ${TABLE}.me_client_id ;;
     label: "Client Id"
+    hidden: yes
   }
 
   dimension: me_session_id {
@@ -77,16 +79,18 @@ view: website_checkoutstepcompleted {
   dimension: room_type_name {
     type: string
     sql: ${TABLE}.room_type_name ;;
+    label: "Room Type"
   }
 
   dimension: step {
     type: number
     sql: ${TABLE}.step ;;
+    label: "Checkout Step"
   }
 
   dimension_group: timestamp {
     type: time
-    label: "Range Time"
+    label: "Time Range"
     timeframes: [year,date,week,month,time]
     sql: ${TABLE}.timestamp ;;
   }
