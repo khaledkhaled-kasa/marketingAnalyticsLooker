@@ -29,11 +29,13 @@ view: website_property_viewed {
     label: "Session id"
     type: string
     sql: ${TABLE}.me_session_id ;;
+    hidden: no
   }
 
   dimension: property_id {
     type: string
     sql: ${TABLE}.property_id ;;
+    hidden: yes
   }
 
   dimension: property_name {
@@ -54,12 +56,12 @@ view: website_property_viewed {
     sql: ${TABLE}.timestamp ;;
   }
 
-
   measure: count_views {
     label: "# Property Views"
     type: count_distinct
-    sql:me_session_id  ;;
-  }
+    sql: ${me_session_id} ;;
+    }
+
   set: detail {
     fields: [
       anonymous_id,

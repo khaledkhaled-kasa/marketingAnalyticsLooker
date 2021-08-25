@@ -42,6 +42,7 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` 
     type: time
     timeframes: [month,year,week,date,time]
     sql: ${TABLE}.me_hit_timestamp ;;
+    hidden: yes
   }
 
   dimension: me_session_id {

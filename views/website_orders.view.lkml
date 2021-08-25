@@ -248,21 +248,21 @@ view: website_orders {
     hidden: yes
   }
   measure: num_transactions {
-    label: "#Transactions"
+    label: "#Bookings"
     type: count_distinct
     sql: ${checkout_id} ;;
     drill_fields: [detail*]
   }
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+  # measure: count {
+  #   type: count
+  #   drill_fields: [detail*]
+  # }
   measure: total_transaction_event_value {
     type: sum
     value_format_name: usd_0
     sql: ${total_value} ;;
-    label: "Total Transactions Value"
+    label: "Total Booking Value"
   }
 
   set: detail {
