@@ -8,6 +8,11 @@ datagroup: default_refresh_settings {
   sql_trigger: SELECT max(date(order_timestamp)) FROM `bigquery-analytics-272822.ME_BI_prod.ECOM_orders_struct`   ;;
   max_cache_age: "24 hours"
 }
+datagroup: default_refresh_websiteCalenderDates {
+  sql_trigger: SELECT max(date(session_timestamp)) FROM `bigquery-analytics-272822.ME_BI_prod.GA_sessions_struct`   ;;
+  max_cache_age: "24 hours"
+}
+
 
 persist_with: default_refresh_settings
 
@@ -317,12 +322,13 @@ explore: website_calendar_dates {
   group_label: "Product & Tech"
   label: "Website"
   join:  website_sessions {
-    sql_on: ${website_sessions.session_timestamp_date}=${website_calendar_dates.calendar_date_date} ;;
+    type: full_outer
+    sql_on: ${website_calendar_dates.calendar_date_date}=${website_sessions.session_timestamp_date};;
     relationship: one_to_many
   }
 
-   join:website_orders {
-    sql_on: ${website_sessions.id} = ${website_orders.id} ;;
+  join:website_orders {
+    sql_on: ${website_sessions.id}= ${website_orders.id} ;;
 
     relationship: one_to_many
   }

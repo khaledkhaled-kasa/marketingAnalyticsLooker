@@ -1,8 +1,6 @@
-view: website_orders {
-  derived_table: {
-    sql: SELECT * FROM `bigquery-analytics-272822.website_kasa_com_transformed.order_completed`
-      ;;
-  }
+view: website_orders{
+  sql_table_name:`bigquery-analytics-272822.website_kasa_com_transformed.order_completed`;;
+
 
 
 
@@ -21,7 +19,6 @@ view: website_orders {
   dimension: checkout_id {
     type: string
     sql: ${TABLE}.checkout_id ;;
-    primary_key: yes
   }
 
   dimension: context_ip {
@@ -109,6 +106,7 @@ view: website_orders {
     type: string
     sql: ${TABLE}.id ;;
     hidden: yes
+    primary_key: yes
   }
 
   dimension_group: loaded_at {

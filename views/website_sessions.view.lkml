@@ -9,6 +9,7 @@ view: website_sessions {
       FROM `bigquery-analytics-272822.website_kasa_com_transformed.sessions_struct`
       LEFT JOIN UNNEST(event_key) as event_key
        ;;
+
   }
 
 
@@ -98,6 +99,7 @@ view: website_sessions {
     label: "# Sessions"
     type: count_distinct
     sql: ${session_id} ;;
+    value_format:"[>=1000000]0.0,,\"M\";[>=1000]0.0,\"K\";0"
     drill_fields: [detail*]
   }
 
@@ -121,21 +123,21 @@ view: website_sessions {
 
   measure: checkout_rate {
     type: number
-    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWcheckout}/${numberOfsessions});;
+    sql: if(${numberOfsessions} = 0, 0, ${numberOfsessionWcheckout}/${numberOfsessions});;
     value_format_name:  percent_1
     description: "Ratio of sessions w/ Complete Checkout Event to all session"
     drill_fields: [numberOfsessions,numberOfsessionWcheckout]
   }
   measure: location_Viewed_rate {
     type: number
-    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWlocation}/${numberOfsessions});;
+    sql: if(${numberOfsessions} = 0, 0, ${numberOfsessionWlocation}/${numberOfsessions});;
     value_format_name:  percent_1
     description: "Ratio of sessions w/ location Viewed Event to all session"
     drill_fields: [numberOfsessions,numberOfsessionWlocation]
   }
   measure: property_Viewed_rate {
     type: number
-    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWproperty}/${numberOfsessions});;
+    sql: if(${numberOfsessions} = 0, 0, ${numberOfsessionWproperty}/${numberOfsessions});;
     value_format_name:  percent_1
     description: "Ratio of sessions w/ Property Viewed Event to all session"
     drill_fields: [numberOfsessions,numberOfsessionWproperty]
@@ -144,16 +146,16 @@ view: website_sessions {
     value_format_name: percent_1
     type: number
     description: "Percentage of website transactions divided by sessions"
-    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWTransactions}/${numberOfsessions});;
+    sql: if(${numberOfsessions} = 0, 0, ${numberOfsessionWTransactions}/${numberOfsessions});;
     drill_fields: [numberOfsessions,numberOfsessionWTransactions]
     }
 
 
   measure:property_views_per_locations_views{
-    value_format_name: percent_1
+    value_format_name: percent_2
     type: number
     description: "Ratio of sessions w/ Property Viewed Event to location Viewed sessions"
-    sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWproperty}/${numberOfsessionWTransactions});;
+    sql: if(${numberOfsessions} = 0, 0, ${numberOfsessionWproperty}/${numberOfsessionWTransactions});;
     hidden: yes
   }
   measure:checkout_per_property_views{
