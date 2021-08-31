@@ -156,9 +156,17 @@ view: website_orders {
 
   dimension_group: timestamp {
     type: time
-    label: "Time Range"
-    timeframes: [year,month,date,time,week]
-    sql: ${TABLE}.timestamp ;;
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql:${TABLE}.timestamp ;;
+    label: "Booking Timestamp"
   }
 
   dimension_group: uuid_ts {
@@ -250,7 +258,7 @@ view: website_orders {
   measure: num_transactions {
     label: "#Bookings"
     type: count_distinct
-    sql: ${checkout_id} ;;
+    sql:  ${checkout_id} ;;
     drill_fields: [detail*]
   }
 

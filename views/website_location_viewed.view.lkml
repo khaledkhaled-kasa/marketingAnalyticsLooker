@@ -9,6 +9,12 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.location
     sql: ${TABLE}.anonymous_id ;;
     hidden: yes
   }
+  dimension: id {
+    type: string
+    sql: ${TABLE}.id ;;
+    hidden: yes
+    primary_key: yes
+  }
 
   dimension_group: check_in_date {
     type: time
@@ -51,6 +57,7 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.location
     label: "Time Range"
     timeframes: [year,month,date,time,week]
     sql: ${TABLE}.timestamp ;;
+    hidden: yes
   }
 
 
@@ -58,14 +65,9 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.location
     label: "Session Id"
     type: string
     sql: ${TABLE}.me_session_id ;;
+    hidden: yes
   }
-measure: count_Views {
-  label: "# Location Views"
-  type: count_distinct
-  sql: ${me_session_id} ;;
-  drill_fields: [detail*]
-}
-  set: detail {
+ set: detail {
     fields: [
       anonymous_id,
       check_in_date_time,

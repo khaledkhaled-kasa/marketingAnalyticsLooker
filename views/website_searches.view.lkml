@@ -8,7 +8,12 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` 
     sql: ${TABLE}.anonymous_id ;;
     hidden: yes
   }
-
+  dimension: id {
+    type: string
+    sql: ${TABLE}.id ;;
+    hidden: yes
+    primary_key: yes
+  }
   dimension_group: check_in_date {
     type: time
     timeframes: [year,month,date,time,week]
@@ -49,20 +54,20 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` 
     label: "Session Id"
     type: string
     sql: ${TABLE}.me_session_id ;;
+    hidden: yes
   }
-measure: count_searches{
-  label: "# Searches"
-  type: count_distinct
-  sql: ${me_session_id} ;;
-  drill_fields: [detail*]
-}
+
   dimension_group: timestamp {
     type: time
     label: "Time Range"
     timeframes: [year,month,date,time,week]
     sql: ${TABLE}.timestamp ;;
   }
-
+  measure: count {
+    type: count_distinct
+    sql: ${me_session_id };;
+    drill_fields: [detail*]
+  }
 
   set: detail {
     fields: [

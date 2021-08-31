@@ -9,6 +9,12 @@ view: website_productadded {
     sql: ${TABLE}.anonymous_id ;;
     hidden: yes
   }
+  dimension: id {
+    type: string
+    sql: ${TABLE}.id ;;
+    hidden: yes
+    primary_key: yes
+  }
 
   dimension_group: check_in_date {
     type: time
@@ -96,7 +102,8 @@ view: website_productadded {
     sql: ${TABLE}.context_campaign_source ;;
   }
 measure: count {
-  type: count
+  type: count_distinct
+  sql: ${me_session_id };;
   drill_fields: [detail*]
 }
 

@@ -64,4 +64,4 @@ view: calendar_dates {
     type: date_raw
     hidden: yes
   }
-}
+   }

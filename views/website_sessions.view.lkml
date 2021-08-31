@@ -6,7 +6,7 @@ view: website_sessions {
       event_key.id,
       session_id,
       session_timestamp
-      FROM `bigquery-analytics-272822.website_kasa_com_transformed.sessions_struct_view`
+      FROM `bigquery-analytics-272822.website_kasa_com_transformed.sessions_struct`
       LEFT JOIN UNNEST(event_key) as event_key
        ;;
   }
@@ -15,7 +15,7 @@ view: website_sessions {
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: event {
@@ -26,7 +26,7 @@ view: website_sessions {
   dimension: id {
     type: string
     sql: ${TABLE}.id ;;
-    hidden: yes
+    hidden: no
   }
 
   dimension: session_id {
@@ -35,16 +35,35 @@ view: website_sessions {
     primary_key: yes
   }
 
+
   dimension_group: session_timestamp {
     type: time
-    timeframes: [date,month,year,week,hour,minute,day_of_week,second,millisecond]
-    sql: ${TABLE}.session_timestamp ;;
+    timeframes: [
+      raw,
+      time,
+      date,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    sql:${TABLE}.session_timestamp ;;
   }
+
+
+
   measure: numberOfsessionWlocation  {
-    label: "# Sessions w/ location Viewed "
+   label: "# Sessions w/ Location Viewed"
     type: count_distinct
     sql: ${session_id} ;;
     filters: [event: "location_viewed"]
+    drill_fields: [detail*]
+  }
+  measure: numberOfsessionWclickBookButton  {
+    label: "# Sessions w/ Click Book Button"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [event: "checkout_finished"]
     drill_fields: [detail*]
   }
   measure: numberOfsessionWproperty   {
@@ -52,7 +71,7 @@ view: website_sessions {
     type: count_distinct
     sql: ${session_id} ;;
     filters: [event: "property_viewed,product_viewed"]
-    drill_fields: [detail*]
+    drill_fields: [session_id]
   }
   measure: numberOfsessionWcheckout  {
     label: "# Sessions w/ Checkout"
@@ -61,10 +80,17 @@ view: website_sessions {
     filters: [event: "checkout_step_completed,checkout"]
     drill_fields: [detail*]
   }
+  measure: numberOfsessionWSearches  {
+    label: "# Searches"
+    type: count_distinct
+    sql: ${session_id} ;;
+    filters: [event: "search"]
+    drill_fields: [detail*]
+  }
   measure: numberOfsessionWTransactions  {
     label: "# Sessions w/ Transactions"
     type: count_distinct
-    sql: ${session_id} ;;
+    sql: ${id} ;;
     filters: [event: "purchase,order_completed"]
     drill_fields: [detail*]
   }
@@ -74,6 +100,25 @@ view: website_sessions {
     sql: ${session_id} ;;
     drill_fields: [detail*]
   }
+
+
+  measure: numberOflocationViewed  {
+    label: "# Location Viewed"
+    type: count_distinct
+    sql: ${id} ;;
+    filters: [event: "location_viewed"]
+    drill_fields: [detail*]
+  }
+
+  measure: numberOfpropertyViewed   {
+    label: "# Property Viewed"
+    type: count_distinct
+    sql: ${id} ;;
+    filters: [event: "property_viewed,product_viewed"]
+    drill_fields: [detail*]
+  }
+
+
   measure: checkout_rate {
     type: number
     sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWcheckout}/${numberOfsessions});;
@@ -103,13 +148,7 @@ view: website_sessions {
     drill_fields: [numberOfsessions,numberOfsessionWTransactions]
     }
 
-  measure: numberOfsessionWclickBookButton  {
-    label: "# Sessions w/ Click Book Button"
-    type: count_distinct
-    sql: ${session_id} ;;
-    filters: [event: "checkout_finished"]
-    drill_fields: [detail*]
-  }
+
   measure:property_views_per_locations_views{
     value_format_name: percent_1
     type: number
@@ -125,6 +164,7 @@ view: website_sessions {
   }
   measure:Transactions_per_checkout{
     value_format_name: percent_1
+    label: "Transaction Per Checkouts"
     type: number
     description: "Ratio of sessions w/Transaction Event to Checkout Event "
     sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWTransactions}/${numberOfsessionWcheckout});;
@@ -139,6 +179,6 @@ view: website_sessions {
   }
 
   set: detail {
-    fields: [anonymous_id, event, id, session_id, session_timestamp_minute]
+    fields: [anonymous_id, event, id, session_id]
   }
 }

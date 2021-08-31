@@ -308,43 +308,85 @@ explore: conversion_paths_analysis {
     relationship: many_to_one
     }
   }
-explore: website_sessions {
-    group_label: "Product & Tech"
-    label: "Website"
+
+
+
+
+explore: website_calendar_dates {
+  description: "This Exploer contain Data that have been collected form kasa.com through Segment(Front Side data)"
+  group_label: "Product & Tech"
+  label: "Website"
+  join:  website_sessions {
+    sql_on: ${website_sessions.session_timestamp_date}=${website_calendar_dates.calendar_date_date} ;;
+    relationship: one_to_many
+  }
+
+   join:website_orders {
+    sql_on: ${website_sessions.id} = ${website_orders.id} ;;
+
+    relationship: one_to_many
+  }
   join: website_users {
     sql_on: ${website_sessions.anonymous_id} =${website_users.anonymous_id}   ;;
     relationship: many_to_one
   }
-  join: website_orders {
-    sql_on: ${website_users.anonymous_id} =${website_orders.anonymous_id}   ;;
-    relationship: many_to_one
-  }
+
   join: website_property_viewed {
     sql_on: ${website_users.anonymous_id} =${website_property_viewed.anonymous_id}   ;;
     relationship: many_to_one
   }
   join: website_location_viewed {
-    sql_on: ${website_users.anonymous_id} =${website_location_viewed.anonymous_id}   ;;
+    sql_on: ${website_sessions.id} =${website_location_viewed.id}   ;;
     relationship: many_to_one
   }
   join: website_searches {
-    sql_on: ${website_users.anonymous_id} =${website_searches.anonymous_id}   ;;
+    sql_on: ${website_sessions.id} =${website_searches.id}   ;;
     relationship: many_to_one
   }
   join: website_productadded {
     view_label: " Website Add To Cart"
-    sql_on: ${website_users.anonymous_id} =${website_productadded.anonymous_id}   ;;
+    sql_on: ${website_sessions.id} =${website_productadded.id}   ;;
     relationship: many_to_one
   }
   join: website_checkedavailability {
     view_label: "Website Checked Availability"
-    sql_on: ${website_users.anonymous_id} =${website_checkedavailability.anonymous_id}   ;;
+    sql_on: ${website_sessions.id} =${website_checkedavailability.id}   ;;
     relationship: many_to_one
   }
   join: website_checkout_finished_book_button {
     view_label: "Website Click Book Button"
-    sql_on: ${website_users.anonymous_id} =${website_checkout_finished_book_button.anonymous_id}   ;;
+    sql_on: ${website_sessions.id} =${website_checkout_finished_book_button.id}   ;;
     relationship: many_to_one
   }
+  sql_always_where:
+      {% if website_calendar_dates.current_date_range._is_filtered %}
+      {% condition website_calendar_dates.current_date_range %} ${website_calendar_dates.event_raw} {% endcondition %}
+
+      {% if website_calendar_dates.previous_date_range._is_filtered or website_calendar_dates.compare_to._in_query %}
+      {% if website_calendar_dates.comparison_periods._parameter_value == "2" %}
+      or
+      ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
+
+      {% elsif website_calendar_dates.comparison_periods._parameter_value == "3" %}
+      or
+     ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
+      or
+      ${website_calendar_dates.event_raw} between ${period_3_start} and ${period_3_end}
+
+
+      {% elsif website_calendar_dates.comparison_periods._parameter_value == "4" %}
+      or
+     ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
+      or
+      ${website_calendar_dates.event_raw} between ${period_3_start} and ${period_3_end}
+      or
+     ${website_calendar_dates.event_raw} between ${period_4_start} and ${period_4_end}
+
+      {% else %} 1 = 1
+      {% endif %}
+      {% endif %}
+      {% else %} 1 = 1
+      {% endif %};;
+
 
   }

@@ -65,6 +65,7 @@ view: website_checkout_finished_book_button {
     label: "Seesion Id"
     type: string
     sql: ${TABLE}.me_session_id ;;
+    hidden: yes
   }
 
   dimension: nights {
@@ -113,11 +114,9 @@ measure: count_Book_buttin_clicked {
   drill_fields: [detail*]
 }
 
-
-  measure: num_transactions {
-    label: "#Transactions"
+  measure: count {
     type: count_distinct
-    sql: ${checkout_id} ;;
+    sql: ${checkout_id};;
     drill_fields: [detail*]
   }
 

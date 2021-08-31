@@ -7,6 +7,11 @@ view: website_property_viewed {
     sql: ${TABLE}.anonymous_id ;;
     hidden: yes
   }
+  dimension: id {
+    type: string
+    sql: ${TABLE}.id ;;
+    hidden: yes
+  }
 
   dimension: event {
     type: string
@@ -29,7 +34,7 @@ view: website_property_viewed {
     label: "Session id"
     type: string
     sql: ${TABLE}.me_session_id ;;
-    hidden: no
+    hidden: yes
   }
 
   dimension: property_id {
@@ -54,13 +59,11 @@ view: website_property_viewed {
     label: "Time Range"
     timeframes: [year,month,date,time,week]
     sql: ${TABLE}.timestamp ;;
+    hidden: yes
   }
 
-  measure: count_views {
-    label: "# Property Views"
-    type: count_distinct
-    sql: ${me_session_id} ;;
-    }
+
+
 
   set: detail {
     fields: [

@@ -294,11 +294,7 @@ view: website_users {
     type: string
     sql: ${TABLE}.device_category ;;
   }
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-    hidden: yes
-  }
+
   measure: countusers {
     label: "Users Volume "
     type: count_distinct

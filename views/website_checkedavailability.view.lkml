@@ -2,10 +2,7 @@ view: website_checkedavailability {
 sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.availability_checked` ;;
 
 
-  measure: count {
-    type: count
-    drill_fields: [detail*]
-  }
+
 
   dimension: anonymous_id {
     type: string
@@ -62,6 +59,7 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.availabi
     label: "Session Id"
     type: string
     sql: ${TABLE}.me_session_id ;;
+    hidden: yes
   }
 
   dimension: property_id {
@@ -81,6 +79,11 @@ dimension_group: timestamp {
   timeframes: [year,month,date,time,week]
   sql: ${TABLE}.timestamp ;;
 }
+  measure: count {
+    type: count_distinct
+    sql: ${id} ;;
+    drill_fields: [detail*]
+  }
 
   set: detail {
     fields: [
