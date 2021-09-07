@@ -67,6 +67,13 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.location
     sql: ${TABLE}.me_session_id ;;
     hidden: yes
   }
+  measure: countViews {
+  label: "# Location Viwes"
+  type: count_distinct
+  sql: ${id};;
+  drill_fields: [detail*]
+}
+
  set: detail {
     fields: [
       anonymous_id,

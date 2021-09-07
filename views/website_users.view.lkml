@@ -1,6 +1,6 @@
 view: website_users {
   derived_table: {
-    sql: SELECT *,
+    sql: Select *,
       case when context_user_agent LIKE '%Tablet%' or context_user_agent LIKE  '%iPad%' then "Tablets"
       when context_user_agent LIKE '%Mobile%' and (context_user_agent LIKE '%iPhone%' or context_user_agent LIKE '%Android%') then "Mobile"
       Else "Desktop" End
@@ -16,7 +16,10 @@ view: website_users {
     sql: ${TABLE}.affiliation ;;
     hidden: yes
   }
-
+  dimension: checkout_id {
+    type: string
+    sql: ${TABLE}.checkout_id ;;
+  }
   dimension: anonymous_id {
     type: string
     sql: ${TABLE}.anonymous_id ;;
@@ -204,11 +207,7 @@ view: website_users {
     hidden: yes
   }
 
-  dimension: checkout_id {
-    type: string
-    sql: ${TABLE}.checkout_id ;;
-    hidden: yes
-  }
+
 
   dimension: currency {
     type: string
@@ -295,11 +294,18 @@ view: website_users {
     sql: ${TABLE}.device_category ;;
   }
 
-  measure: countusers {
-    label: "Users Volume "
-    type: count_distinct
-    sql: ${anonymous_id} ;;
-  }
+
+  # measure: countusers {
+  #   label: "Users Volume "
+  #   type: count_distinct
+  #   sql: ${anonymous_id} ;;
+  # }
+  # measure: countUniqueUsers {
+  #   label: "Unique Users "
+  #   type: count_distinct
+  #   sql: ${guest} ;;
+  # }
+
   set: detail {
     fields: [
       affiliation,

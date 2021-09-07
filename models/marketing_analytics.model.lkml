@@ -330,7 +330,7 @@ explore: website_calendar_dates {
   join:website_orders {
     sql_on: ${website_sessions.id}= ${website_orders.id} ;;
 
-    relationship: one_to_many
+    relationship: one_to_one
   }
   join: website_users {
     sql_on: ${website_sessions.anonymous_id} =${website_users.anonymous_id}   ;;
@@ -338,31 +338,31 @@ explore: website_calendar_dates {
   }
 
   join: website_property_viewed {
-    sql_on: ${website_users.anonymous_id} =${website_property_viewed.anonymous_id}   ;;
-    relationship: many_to_one
+    sql_on: ${website_orders.property_id}= ${website_property_viewed.property_id}  ;;
+    relationship: one_to_one
   }
   join: website_location_viewed {
-    sql_on: ${website_sessions.id} =${website_location_viewed.id}   ;;
-    relationship: many_to_one
+    sql_on:${website_sessions.id}= ${website_location_viewed.id}  ;;
+    relationship: one_to_one
   }
   join: website_searches {
     sql_on: ${website_sessions.id} =${website_searches.id}   ;;
-    relationship: many_to_one
+    relationship: one_to_one
   }
   join: website_productadded {
     view_label: " Website Add To Cart"
     sql_on: ${website_sessions.id} =${website_productadded.id}   ;;
-    relationship: many_to_one
+    relationship: one_to_one
   }
   join: website_checkedavailability {
     view_label: "Website Checked Availability"
     sql_on: ${website_sessions.id} =${website_checkedavailability.id}   ;;
-    relationship: many_to_one
+    relationship: one_to_one
   }
   join: website_checkout_finished_book_button {
     view_label: "Website Click Book Button"
     sql_on: ${website_sessions.id} =${website_checkout_finished_book_button.id}   ;;
-    relationship: many_to_one
+    relationship: one_to_one
   }
   sql_always_where:
       {% if website_calendar_dates.current_date_range._is_filtered %}

@@ -61,7 +61,12 @@ view: website_property_viewed {
     sql: ${TABLE}.timestamp ;;
     hidden: yes
   }
-
+  measure: countViews {
+  label: "# Property Viwes"
+  type: count_distinct
+  sql: ${id};;
+  drill_fields: [detail*]
+}
 
 
 

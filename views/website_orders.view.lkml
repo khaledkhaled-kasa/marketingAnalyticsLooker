@@ -1,5 +1,14 @@
 view: website_orders{
-  sql_table_name:`bigquery-analytics-272822.website_kasa_com_transformed.order_completed`;;
+
+  derived_table: {
+    sql: Select o.*,re.confirmationcode,re.status, re.guest_type, re.guest, re.extended_booking
+      FROM `bigquery-analytics-272822.website_kasa_com_transformed.order_completed` o
+      left join `bigquery-analytics-272822.dbt.reservations_v3` re
+      on
+       o.reservation_id = re._id
+       ;;
+  }
+
 
 
 
@@ -8,6 +17,11 @@ view: website_orders{
     type: string
     sql: ${TABLE}.affiliation ;;
     hidden: yes
+  }
+
+   dimension: extended_booking {
+    type: yesno
+    sql: ${TABLE}.extended_booking=1 ;;
   }
 
   dimension: anonymous_id {
@@ -270,6 +284,37 @@ view: website_orders{
     sql: ${total_value} ;;
     label: "Total Booking Value"
   }
+  dimension: confirmationcode {
+    type: string
+    sql: ${TABLE}.confirmationcode ;;
+  }
+
+  dimension: status {
+    label: "Reservation Status"
+    type: string
+    sql: ${TABLE}.status ;;
+  }
+
+  dimension: user_type {
+    type: string
+    sql: ${TABLE}.guest_type ;;
+  }
+
+  dimension: guest {
+    type: string
+    sql: ${TABLE}.guest ;;
+    hidden: no
+  }
+  # measure: countusers {
+  #   label: "Users Volume "
+  #   type: count_distinct
+  #   sql: ${anonymous_id} ;;
+  # }
+  measure: countUniqueUsers {
+    label: "Unique Users "
+    type: count_distinct
+    sql: ${guest} ;;
+  }
 
   set: detail {
     fields: [
@@ -313,7 +358,9 @@ view: website_orders{
       room_type_name,
       price,
       nights,
-      total_value
+      total_value,
+      confirmationcode,
+      status,guest
     ]
   }
 }

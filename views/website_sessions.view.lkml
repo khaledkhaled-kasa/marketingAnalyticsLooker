@@ -105,7 +105,7 @@ view: website_sessions {
 
 
   measure: numberOflocationViewed  {
-    label: "# Location Viewed"
+    label: "# Location Page Views"
     type: count_distinct
     sql: ${id} ;;
     filters: [event: "location_viewed"]
@@ -113,7 +113,7 @@ view: website_sessions {
   }
 
   measure: numberOfpropertyViewed   {
-    label: "# Property Viewed"
+    label: "# Property Page Views"
     type: count_distinct
     sql: ${id} ;;
     filters: [event: "property_viewed,product_viewed"]
@@ -178,6 +178,12 @@ view: website_sessions {
     type: count
     drill_fields: [detail*]
     hidden: yes
+  }
+  measure: countusers {
+    label: "Users Volume "
+    type: count_distinct
+    value_format:"[>=1000000]0.0,,\"M\";[>=1000]0.0,\"K\";0"
+    sql: ${anonymous_id} ;;
   }
 
   set: detail {

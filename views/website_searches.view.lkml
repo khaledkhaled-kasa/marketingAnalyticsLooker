@@ -25,6 +25,41 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` 
     timeframes: [year,month,date,time,week]
     sql: ${TABLE}.check_out_date ;;
   }
+  dimension: adults {
+    label: "# Adults"
+    type: number
+    sql: ${TABLE}.adults ;;
+  }
+
+  dimension: children {
+    label: "# Children"
+    type: number
+    sql: ${TABLE}.children ;;
+  }
+  dimension: total_guests {
+    type: number
+    sql: ${TABLE}.total_guests ;;
+  }
+  dimension: infants {
+    label: "# Infants "
+    type: number
+    sql: ${TABLE}.infants ;;
+  }
+
+  dimension: persona {
+    type: string
+    sql: case when ${adults} =2 and ( ${children}=0 and ${infants}=0) then "Couple"
+     when ${adults} =1 and ( ${children}=0 and ${infants}=0) then "Single"
+     when  ${adults} =2  and ( ${children} >= 1 or ${infants} >= 1) then "Family"
+     when ${total_guests} >= 3 then "Group" end ;;
+  }
+
+  dimension: business {
+    label: "Traveling for business"
+    type: yesno
+    sql: ${TABLE}.business ;;
+  }
+
 
   dimension: event {
     type: string
@@ -64,8 +99,9 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` 
     sql: ${TABLE}.timestamp ;;
   }
   measure: count {
+    label: "# Searches"
     type: count_distinct
-    sql: ${me_session_id };;
+    sql: ${id};;
     drill_fields: [detail*]
   }
 
@@ -78,7 +114,11 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` 
       location,
       me_client_id,
       me_hit_timestamp_time,
-      me_session_id
+      me_session_id,
+      adults,
+      children,
+      infants,
+      total_guests
     ]
   }
 }
