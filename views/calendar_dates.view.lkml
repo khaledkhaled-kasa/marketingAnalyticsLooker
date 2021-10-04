@@ -24,7 +24,7 @@ view: calendar_dates {
       FROM
         array_date_range,
         UNNEST(dates) calendar_date
-          ;; }
+          ;;}
 
   dimension: calendar_date {
     type: date
@@ -64,4 +64,4 @@ view: calendar_dates {
     type: date_raw
     hidden: yes
   }
-}
+   }

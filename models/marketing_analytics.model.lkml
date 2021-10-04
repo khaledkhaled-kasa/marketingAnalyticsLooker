@@ -8,6 +8,11 @@ datagroup: default_refresh_settings {
   sql_trigger: SELECT max(date(order_timestamp)) FROM `bigquery-analytics-272822.ME_BI_prod.ECOM_orders_struct`   ;;
   max_cache_age: "24 hours"
 }
+datagroup: default_refresh_websiteCalenderDates {
+  sql_trigger: SELECT max(date(session_timestamp)) FROM `bigquery-analytics-272822.ME_BI_prod.GA_sessions_struct`   ;;
+  max_cache_age: "24 hours"
+}
+
 
 persist_with: default_refresh_settings
 
@@ -307,4 +312,87 @@ explore: conversion_paths_analysis {
     sql_on: ${anal_conversion_paths.transaction_order_id} = ${ecom_orders_struct.ga_matching_id} ;;
     relationship: many_to_one
     }
+  }
+
+
+
+
+explore: website_calendar_dates {
+  description: "This Exploer contain Data that have been collected form kasa.com through Segment(Front Side data)"
+  group_label: "Product & Tech"
+  label: "Website"
+  join:  website_sessions {
+    type: full_outer
+    sql_on: ${website_calendar_dates.calendar_date_date}=${website_sessions.session_timestamp_date};;
+    relationship: one_to_many
+  }
+
+  join:website_orders {
+    sql_on: ${website_sessions.id}= ${website_orders.id} ;;
+
+    relationship: one_to_one
+  }
+  join: website_users {
+    sql_on: ${website_sessions.anonymous_id} =${website_users.anonymous_id}   ;;
+    relationship: many_to_one
+  }
+
+  join: website_property_viewed {
+    sql_on: ${website_orders.property_id}= ${website_property_viewed.property_id}  ;;
+    relationship: one_to_one
+  }
+  join: website_location_viewed {
+    sql_on:${website_sessions.id}= ${website_location_viewed.id}  ;;
+    relationship: one_to_one
+  }
+  join: website_searches {
+    sql_on: ${website_sessions.id} =${website_searches.id}   ;;
+    relationship: one_to_one
+  }
+  join: website_productadded {
+    view_label: " Website Add To Cart"
+    sql_on: ${website_sessions.id} =${website_productadded.id}   ;;
+    relationship: one_to_one
+  }
+  join: website_checkedavailability {
+    view_label: "Website Checked Availability"
+    sql_on: ${website_sessions.id} =${website_checkedavailability.id}   ;;
+    relationship: one_to_one
+  }
+  join: website_checkout_finished_book_button {
+    view_label: "Website Click Book Button"
+    sql_on: ${website_sessions.id} =${website_checkout_finished_book_button.id}   ;;
+    relationship: one_to_one
+  }
+  sql_always_where:
+      {% if website_calendar_dates.current_date_range._is_filtered %}
+      {% condition website_calendar_dates.current_date_range %} ${website_calendar_dates.event_raw} {% endcondition %}
+
+      {% if website_calendar_dates.previous_date_range._is_filtered or website_calendar_dates.compare_to._in_query %}
+      {% if website_calendar_dates.comparison_periods._parameter_value == "2" %}
+      or
+      ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
+
+      {% elsif website_calendar_dates.comparison_periods._parameter_value == "3" %}
+      or
+     ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
+      or
+      ${website_calendar_dates.event_raw} between ${period_3_start} and ${period_3_end}
+
+
+      {% elsif website_calendar_dates.comparison_periods._parameter_value == "4" %}
+      or
+     ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
+      or
+      ${website_calendar_dates.event_raw} between ${period_3_start} and ${period_3_end}
+      or
+     ${website_calendar_dates.event_raw} between ${period_4_start} and ${period_4_end}
+
+      {% else %} 1 = 1
+      {% endif %}
+      {% endif %}
+      {% else %} 1 = 1
+      {% endif %};;
+
+
   }

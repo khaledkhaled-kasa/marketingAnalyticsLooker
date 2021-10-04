@@ -768,5 +768,4 @@ view: ga_sessions_struct__checkout_events {
     label: "Property 2nd step Checkouts by SKU"
     description: "Number of time a specific SKU has been added to 2nd step of checkout"
   }
-
 }

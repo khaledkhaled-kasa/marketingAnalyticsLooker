@@ -267,4 +267,7 @@ label: "Timeline Comparison Fields"
       WHEN {% parameter date_granularity %} = 'Year' THEN CAST(${date_in_period_year} AS STRING)
       END ;;
   }
+
+
+
 }
