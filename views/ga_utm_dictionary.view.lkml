@@ -97,7 +97,7 @@ view: ga_utm_dictionary {
   dimension: paid_unpaid_traffic {
     type: string
     sql: ${TABLE}.paid_unpaid_traffic ;;
-    drill_fields: [mkt_channel,mkt_campaign,mkt_ad_group,mkt_ad]
+    drill_fields: [mkt_channel,mkt_campaign,mkt_ad_group,mkt_ad,custom_utm_grouping]
   }
 
   dimension: utm_key_id {
@@ -157,6 +157,7 @@ view: ga_utm_dictionary {
     when ${ga_medium}='organic' then 'Organic Search'
     when ${ga_source}='facebook.com' and ${ga_medium}='referral' then 'Facebook Organic'
     when ${ga_source}='instagram.com' and ${ga_medium}='referral' then 'Instagram Organic'
+    when ${ga_campaign}='metasearch' then 'Metasearch'
     when LOWER(${ga_source})='facebook' and LOWER(${ga_medium})='paid' then 'Facebook Paid'
     when ${ga_source}='untracked' then 'Untracked'
     else 'Remaining Unpaid Traffic'
@@ -175,6 +176,16 @@ view: ga_utm_dictionary {
   else ${mkt_channel}
   end;;
   drill_fields: [mkt_campaign, mkt_ad_group, mkt_ad]
+  }
+
+  dimension: paid_unpaid_braze_traffic {
+    type: string
+    sql:
+      CASE
+      when ${ga_source}='kasa' and ${ga_medium}='crm' then 'Braze CRM'
+      else ${paid_unpaid_traffic}
+      end
+     ;;
   }
 
 }
