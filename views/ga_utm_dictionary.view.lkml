@@ -152,6 +152,7 @@ view: ga_utm_dictionary {
     when ${ga_source}='google' and ${ga_medium}='cpc' and LOWER(${mkt_campaign}) like '%brand%' then 'Google Ads Branded Search'
     when ${ga_source}='google' and ${ga_medium}='cpc' and LOWER(${mkt_campaign}) like '%remarketing%' then 'Google Ads Display'
     when ${ga_source}='google' and ${ga_medium}='cpc'and LOWER(${mkt_campaign}) not like '%remarketing%' and   LOWER(${mkt_campaign}) not like '%brand%'  then 'Google Ads Non-Branded Search'
+    when ${ga_source}='google' and ${ga_medium}='nonpaid' and  LOWER(${ga_campaign}) = 'gmb' then 'Google My Business'
     when ${ga_source}='kasa' and ${ga_medium}='crm' then 'Braze CRM'
     when ${ga_source}='tripadvisor'  then 'tripadvisor'
     when ${ga_medium}='organic' then 'Organic Search'
