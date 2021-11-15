@@ -16,6 +16,22 @@ datagroup: default_refresh_websiteCalenderDates {
 
 persist_with: default_refresh_settings
 
+# Created by Khaled for Tomek / Ihsan's Revenue Prediction Model
+
+explore: revenue_predictor {
+  hidden: yes
+  join: revenue_predictor_occupancy {
+    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy.city_state} ;;
+    relationship: one_to_one
+  }
+
+  join: revenue_predictor_occupancy_pace {
+    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy_pace.city_state} ;;
+    relationship: one_to_one
+  }
+}
+
+
 explore: calendar_dates  {
   fields: [ALL_FIELDS*, -ga_sessions_struct__product_events.product_analysis_date]
   join: ecom_orders_struct {
