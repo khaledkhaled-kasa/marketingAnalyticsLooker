@@ -190,7 +190,7 @@ view: revenue_predictor_occupancy {
 
   measure: occupancy_measure {
     label: "Last 7 Day Occupancy"
-    type: sum
+    type: sum_distinct
     value_format: "0.0%"
     sql: ${occupancy} ;;
   }
@@ -230,7 +230,7 @@ GROUP BY 1
 
   measure: pacing_occupancy_measure {
     label: "Pacing Occupancy + 1"
-    type: sum
+    type: sum_distinct
     value_format: "0.0%"
     sql: ${pacing_occupancy} ;;
   }
@@ -270,7 +270,7 @@ GROUP BY
 
   measure: pacing_occupancy_measure {
     label: "Pacing Occupancy + 2"
-    type: sum
+    type: sum_distinct
     value_format: "0.0%"
     sql: ${pacing_occupancy} ;;
   }
