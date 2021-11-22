@@ -25,8 +25,13 @@ explore: revenue_predictor {
     relationship: one_to_one
   }
 
-  join: revenue_predictor_occupancy_pace {
-    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy_pace.city_state} ;;
+  join: revenue_predictor_occupancy_pace_1 {
+    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy_pace_1.city_state} ;;
+    relationship: one_to_one
+  }
+
+  join: revenue_predictor_occupancy_pace_2 {
+    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy_pace_2.city_state} ;;
     relationship: one_to_one
   }
 }
