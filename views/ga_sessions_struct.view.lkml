@@ -167,9 +167,10 @@ view: ga_sessions_struct {
   }
 
   measure: checkout_sessions_volume {
-    type: count_distinct
-    hidden: yes
-    sql: if(${ga_sessions_struct__website_events.website_event_category} = "Ecommerce" and ${ga_sessions_struct__website_events.website_event_action} = "checkout", ${session_id}, Null);;
+    type: number
+    hidden: no
+    sql: ${ga_sessions_struct__website_events.checkout_complete_sessions} + ${ga_sessions_struct__website_events.checkout_start_sessions} ;;
+    #sql: if(${ga_sessions_struct__website_events.website_event_category} = "Ecommerce" and ${ga_sessions_struct__website_events.website_event_action} = "checkout", ${session_id}, Null);;
     description: "Ratio of sessions with Checkout Event to all session"
 }
 
@@ -388,17 +389,17 @@ view: ga_sessions_struct__website_events {
   measure: add_to_carts {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='addToCart',${website_event_id},NULL));;
+    sql: count(distinct if( ${website_event_action}='Product Added',${website_event_id},NULL));;
     label: "Click Book Button Events"
-    description: "Number of add to cart events registerd by Google Analytics"
+    description: "Number of add to cart/Product Added events registerd by Google Analytics"
   }
 
   measure: add_to_carts_sessions {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='addToCart',${ga_sessions_struct.session_id},NULL));;
+    sql: count(distinct if( ${website_event_action}='Product Added',${ga_sessions_struct.session_id},NULL));;
     label: "Sessions with Click Book Button"
-    description: "Number of sessions with click book button events registerd by Google Analytics"
+    description: "Number of sessions with click book button/Product Added events registerd by Google Analytics"
   }
 
   measure: cart_abandonment_sessions {
@@ -436,7 +437,8 @@ view: ga_sessions_struct__website_events {
   measure: categoryView_sessions {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='categoryView',${ga_sessions_struct.session_id},NULL));;
+    sql:  count(distinct if(${website_event_action}='Location Viewed',${ga_sessions_struct.session_id},NULL));;
+    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='categoryView',${ga_sessions_struct.session_id},NULL));;
     label: "Sessions with Location Views"
     description: "Number of sessions with location view events registerd by Google Analytics"
   }
@@ -452,7 +454,8 @@ view: ga_sessions_struct__website_events {
   measure: checkout_start {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${website_event_id},NULL));;
+    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${website_event_id},NULL));;
+    sql: count(distinct if(${website_event_category}='EnhancedEcommerce' and ${website_event_action}='Checkout Started'  ,${website_event_id},NULL));;
     label:"Checkout Start Events"
     description: "Number of checkout start events captured by Google Analytics"
   }
@@ -460,7 +463,8 @@ view: ga_sessions_struct__website_events {
   measure: checkout_start_sessions {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${ga_sessions_struct.session_id},NULL));;
+    sql: count(distinct if(${website_event_category}='EnhancedEcommerce' and ${website_event_action}='Checkout Started'or ${website_event_action}='checkout',${ga_sessions_struct.session_id},NULL));;
+    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${ga_sessions_struct.session_id},NULL));;
     label:"Sessions with Checkout Start Events"
     description: "Number of sessions with checkout start events captured by Google Analytics"
   }
@@ -471,6 +475,14 @@ view: ga_sessions_struct__website_events {
     sql: if(${ga_sessions_struct.sessions_volume}=0,NULL, ${checkout_start_sessions}/${ga_sessions_struct.sessions_volume}) ;;
     label: "Checkout Start Ratio"
     description: "Ratio of sessions with Checkout Start to all sessions"
+  }
+  measure: trans_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if(${website_event_action}='Order Completed',${ga_sessions_struct.session_id},NULL));;
+    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${ga_sessions_struct.session_id},NULL));;
+    label:"Sessions with Order Completed"
+    description: "Number of sessions with checkout start events captured by Google Analytics"
   }
 
   measure: help_contact {type: number
@@ -491,7 +503,8 @@ view: ga_sessions_struct__website_events {
   measure: checkout_complete {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${website_event_id},NULL));;
+    sql: count(distinct if( ${website_event_action}='Checkout Finished' ,${website_event_id},NULL));;
+    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${website_event_id},NULL));;
     label:"Checkout Click Book Button Events"
     description: "Number of checkout click book button events captured by Google Analytics"
   }
@@ -499,7 +512,8 @@ view: ga_sessions_struct__website_events {
   measure: checkout_complete_sessions {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${ga_sessions_struct.session_id},NULL));;
+    sql: count(distinct if( ${website_event_action}='Checkout Finished' or ${website_event_action}='checkout',${ga_sessions_struct.session_id},NULL));;
+    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='2',${ga_sessions_struct.session_id},NULL));;
     label:"Sessions with Checkout Click Book Button"
     description: "Number of sessions with checkout click book button events captured by Google Analytics"
   }

@@ -25,6 +25,7 @@ view: website_calendar_dates{
         array_date_range,
         UNNEST(dates) calendar_date
           ;;
+          persist_for: "24 hours"
           }
       dimension: calendar_date {
         type: date
@@ -65,4 +66,3 @@ view: website_calendar_dates{
         hidden: yes
       }
     }
-

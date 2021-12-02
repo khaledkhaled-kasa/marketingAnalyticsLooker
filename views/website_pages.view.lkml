@@ -1,25 +1,14 @@
 view: website_pages {
-  sql_table_name:`bigquery-analytics-272822.dbt_bizops.GA_sessions`  ;;
-  # derived_table: {
-  #   sql: SELECT
-  #     anonymous_id,
-  #     context_campaign_medium,
-  #     context_campaign_source,
-  #     search,
-  #     timestamp,
-  #     me_session_id,
-  #     me_client_id,
-  #     id ,
-  #     ga.device_category,
-  #     ga.session_duration,
-  #     ga.session_bounce
-  #     FROM `bigquery-analytics-272822.website_kasa_com_transformed.pages` p
-  #     left join
-  #     `bigquery-analytics-272822.ME_BI_prod.GA_sessions_struct` ga
-  #         ON
-  #       p.me_client_id = ga.client_id
-  #     ;;
-  # }
+  # sql_table_name:`bigquery-analytics-272822.dbt_bizops.GA_sessions`  ;;
+  derived_table: {
+    sql: SELECT
+  *,case when context_user_agent LIKE '%Tablet%' or context_user_agent LIKE  '%iPad%' then "Tablets"
+      when context_user_agent LIKE '%Mobile%' and (context_user_agent LIKE '%iPhone%' or context_user_agent LIKE '%Android%') then "Mobile"
+      Else "Desktop" End as device_category
+      FROM `bigquery-analytics-272822.website_kasa_com_transformed.pages`
+      ;;
+    persist_for: "1 hours"
+  }
 
   measure: count {
     type: count
@@ -76,10 +65,6 @@ view: website_pages {
     sql: ${TABLE}.session_duration ;;
   }
 
-  dimension: session_bounce {
-    type: number
-    sql: ${TABLE}.session_bounce ;;
-  }
 
   set: detail {
     fields: [

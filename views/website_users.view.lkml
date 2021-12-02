@@ -289,10 +289,10 @@ view: website_users {
     hidden: yes
   }
 
-  dimension: device_category {
-    type: string
-    sql: ${TABLE}.device_category ;;
-  }
+  # dimension: device_category {
+  #   type: string
+  #   sql: ${TABLE}.device_category ;;
+  # }
 
 
   # measure: countusers {
@@ -356,8 +356,7 @@ view: website_users {
       property_name,
       room_type_id,
       room_type_name,
-      total_value,
-      device_category
+      total_value
     ]
   }
 }
