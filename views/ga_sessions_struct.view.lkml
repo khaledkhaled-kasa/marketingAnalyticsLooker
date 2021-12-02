@@ -429,7 +429,7 @@ view: ga_sessions_struct__website_events {
   measure: categoryView {
     type: number
     value_format_name: decimal_0
-    sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='categoryView',${website_event_id},NULL));;
+    sql: count(distinct if((${website_event_category}='Ecommerce' or ${website_event_category}='All') and (${website_event_action}='categoryView' or ${website_event_action}='Location Viewed'),${website_event_id},NULL));;
     label: "Location Views"
     description: "Number of location view events registerd by Google Analytics"
   }
@@ -439,6 +439,7 @@ view: ga_sessions_struct__website_events {
     value_format_name: decimal_0
     sql:  count(distinct if(${website_event_action}='Location Viewed',${ga_sessions_struct.session_id},NULL));;
     #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='categoryView',${ga_sessions_struct.session_id},NULL));;
+    #sql: count(distinct if((${website_event_category}='Ecommerce' or ${website_event_category}='All') and (${website_event_action}='categoryView' or ${website_event_action}='Location Viewed') ,${ga_sessions_struct.session_id},NULL));;
     label: "Sessions with Location Views"
     description: "Number of sessions with location view events registerd by Google Analytics"
   }
@@ -476,14 +477,7 @@ view: ga_sessions_struct__website_events {
     label: "Checkout Start Ratio"
     description: "Ratio of sessions with Checkout Start to all sessions"
   }
-  measure: trans_sessions {
-    type: number
-    value_format_name: decimal_0
-    sql: count(distinct if(${website_event_action}='Order Completed',${ga_sessions_struct.session_id},NULL));;
-    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${ga_sessions_struct.session_id},NULL));;
-    label:"Sessions with Order Completed"
-    description: "Number of sessions with checkout start events captured by Google Analytics"
-  }
+
 
   measure: help_contact {type: number
     value_format_name: decimal_0

@@ -16,6 +16,27 @@ datagroup: default_refresh_websiteCalenderDates {
 
 persist_with: default_refresh_settings
 
+# Created by Khaled for Tomek / Ihsan's Revenue Prediction Model
+
+explore: revenue_predictor {
+  hidden: yes
+  join: revenue_predictor_occupancy {
+    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy.city_state} ;;
+    relationship: one_to_one
+  }
+
+  join: revenue_predictor_occupancy_pace_1 {
+    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy_pace_1.city_state} ;;
+    relationship: one_to_one
+  }
+
+  join: revenue_predictor_occupancy_pace_2 {
+    sql_on: ${revenue_predictor.events_city_state} = ${revenue_predictor_occupancy_pace_2.city_state} ;;
+    relationship: one_to_one
+  }
+}
+
+
 explore: calendar_dates  {
   fields: [ALL_FIELDS*, -ga_sessions_struct__product_events.product_analysis_date]
   join: ecom_orders_struct {
@@ -174,20 +195,20 @@ explore: product_analysis {
   view_name: ecom_products_struct
   fields: [ALL_FIELDS*, -ga_sessions_struct__product_events.product_view_ratio, -ga_sessions_struct__product_events.product_view_sessions, -ecom_orders_struct.secondary_orders_selected_metric, -ecom_orders_struct.orders_pivot_selected_dimension, -ecom_orders_struct.orders_second_selected_dimension, -ga_sessions_struct__product_events.product_checkouts]
   join: ecom_products_struct__product_variants {
-    sql: INNER JOIN UNNEST(${ecom_products_struct.product_variants}) as ecom_products_struct__product_variants  ;;
+    sql: LEFT JOIN UNNEST(${ecom_products_struct.product_variants}) as ecom_products_struct__product_variants  ;;
     relationship: one_to_many
   }
   join: ga_sessions_struct__product_events  {
-    sql: INNER JOIN (ME_BI_prod.GA_sessions_struct as sessions INNER JOIN UNNEST(product_events) as ga_sessions_struct__product_events) ON ${ecom_products_struct.product_id} = ga_sessions_struct__product_events.product_event_sku  ;;
+    sql: LEFT JOIN (ME_BI_prod.GA_sessions_struct as sessions INNER JOIN UNNEST(product_events) as ga_sessions_struct__product_events) ON ${ecom_products_struct.product_id} = ga_sessions_struct__product_events.product_event_sku  ;;
     relationship: one_to_many
   }
   join: ecom_orders_struct {
-    sql: INNER JOIN (ME_BI_prod.ECOM_orders_struct as ecom_orders_struct INNER JOIN UNNEST(order_items) as order_items) ON ${ecom_products_struct__product_variants.product_variant_id} = order_items.product_variant_id ;;
+    sql: LEFT JOIN (ME_BI_prod.ECOM_orders_struct as ecom_orders_struct INNER JOIN UNNEST(order_items) as order_items) ON ${ecom_products_struct__product_variants.product_variant_id} = order_items.product_variant_id ;;
     relationship: one_to_many
   }
   join: ga_sessions_struct__checkout_events  {
     # sql: INNER JOIN (ME_BI_prod.GA_sessions_struct INNER JOIN UNNEST(checkout_events) as ga_sessions_struct__checkout_events) ON ${ecom_products_struct__product_variants.guesty_id} = ga_sessions_struct__checkout_events.checkout_event_sku  ;;
-    sql:  INNER JOIN (ME_BI_prod.GA_sessions_struct INNER JOIN UNNEST(checkout_events) as ga_sessions_struct__checkout_events) ON
+    sql:  LEFT JOIN (ME_BI_prod.GA_sessions_struct LEFT JOIN UNNEST(checkout_events) as ga_sessions_struct__checkout_events) ON
     if(${ecom_orders_struct.order_timestamp_date}<'2021-03-30',${ecom_products_struct__product_variants.guesty_id},${ecom_products_struct__product_variants.product_variant_category_id})
     =
     if(${ecom_orders_struct.order_timestamp_date}<'2021-03-30',${ga_sessions_struct__checkout_events.checkout_event_sku},${ga_sessions_struct__checkout_events.checkout_event_product_variant}) ;;

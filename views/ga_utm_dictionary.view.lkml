@@ -97,7 +97,7 @@ view: ga_utm_dictionary {
   dimension: paid_unpaid_traffic {
     type: string
     sql: ${TABLE}.paid_unpaid_traffic ;;
-    drill_fields: [mkt_channel,mkt_campaign,mkt_ad_group,mkt_ad]
+    drill_fields: [mkt_channel,mkt_campaign,mkt_ad_group,mkt_ad,custom_utm_grouping]
   }
 
   dimension: utm_key_id {
@@ -152,11 +152,14 @@ view: ga_utm_dictionary {
     when ${ga_source}='google' and ${ga_medium}='cpc' and LOWER(${mkt_campaign}) like '%brand%' then 'Google Ads Branded Search'
     when ${ga_source}='google' and ${ga_medium}='cpc' and LOWER(${mkt_campaign}) like '%remarketing%' then 'Google Ads Display'
     when ${ga_source}='google' and ${ga_medium}='cpc'and LOWER(${mkt_campaign}) not like '%remarketing%' and   LOWER(${mkt_campaign}) not like '%brand%'  then 'Google Ads Non-Branded Search'
+    when ${ga_source}='google' and ${ga_medium}='nonpaid' and  LOWER(${ga_campaign}) = 'gmb' then 'Google My Business'
+    when ${ga_source}='kasa' and ${ga_medium}= 'gx' then 'GX referrals'
     when ${ga_source}='kasa' and ${ga_medium}='crm' then 'Braze CRM'
     when ${ga_source}='tripadvisor'  then 'tripadvisor'
     when ${ga_medium}='organic' then 'Organic Search'
     when ${ga_source}='facebook.com' and ${ga_medium}='referral' then 'Facebook Organic'
     when ${ga_source}='instagram.com' and ${ga_medium}='referral' then 'Instagram Organic'
+    when ${ga_campaign}='metasearch' then 'Metasearch'
     when LOWER(${ga_source})='facebook' and LOWER(${ga_medium})='paid' then 'Facebook Paid'
     when ${ga_source}='untracked' then 'Untracked'
     else 'Remaining Unpaid Traffic'
@@ -175,6 +178,16 @@ view: ga_utm_dictionary {
   else ${mkt_channel}
   end;;
   drill_fields: [mkt_campaign, mkt_ad_group, mkt_ad]
+  }
+
+  dimension: paid_unpaid_braze_traffic {
+    type: string
+    sql:
+      CASE
+      when ${ga_source}='kasa' and ${ga_medium}='crm' then 'Braze CRM'
+      else ${paid_unpaid_traffic}
+      end
+     ;;
   }
 
 }
