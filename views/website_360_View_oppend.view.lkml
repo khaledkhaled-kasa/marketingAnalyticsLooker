@@ -1,4 +1,4 @@
-view: website_360_view_oppend
+view: website_360_view_opened
 {
   sql_table_name: `bigquery-analytics-272822.website_kasa_com.360_view_opened` ;;
 
