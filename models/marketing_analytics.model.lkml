@@ -479,6 +479,11 @@ explore: website_sessions  {
     sql_on: ${website_sessions.id} =${website_pages.id}   ;;
     relationship: one_to_one
   }
+  join:website_360_view_oppend  {
+    view_label: "Website 360 View Oppend"
+    sql_on: ${website_sessions.id} =${website_360_view_oppend.evnet_id};;
+    relationship: one_to_one
+  }
 
 
 

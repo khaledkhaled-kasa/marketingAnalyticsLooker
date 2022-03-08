@@ -511,6 +511,14 @@ view: ga_sessions_struct__website_events {
     label:"Sessions with Checkout Click Book Button"
     description: "Number of sessions with checkout click book button events captured by Google Analytics"
   }
+  measure: prod_sessions {
+    type: number
+    value_format_name: decimal_0
+    sql: count(distinct if( ${website_event_action}='Product Viewed',${ga_sessions_struct.session_id},NULL));;
+    #sql: count(distinct if(${website_event_category}='Ecommerce' and ${website_event_action}='checkout' and ${website_event_label}='1',${ga_sessions_struct.session_id},NULL));;
+    label:"Sessions with Property Viewed"
+    description: "Number of sessions with Product Viewed events captured by Google Analytics"
+  }
 
   measure: checkout_complete_ratio {
     type: number
