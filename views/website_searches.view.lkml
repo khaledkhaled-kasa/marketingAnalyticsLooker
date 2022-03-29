@@ -1,5 +1,7 @@
 view: website_searches{
-sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` ;;
+sql_table_name:  `bigquery-analytics-272822.website_kasa_com_transformed.search`
+       ;;
+
 
 
 
@@ -104,6 +106,10 @@ sql_table_name: `bigquery-analytics-272822.website_kasa_com_transformed.search` 
     sql: ${id};;
     drill_fields: [detail*]
   }
+  # dimension: device_category {
+  #   type: string
+  #   sql: ${TABLE}.device_category ;;
+  # }
 
   set: detail {
     fields: [

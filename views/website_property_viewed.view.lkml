@@ -59,7 +59,7 @@ view: website_property_viewed {
     label: "Time Range"
     timeframes: [year,month,date,time,week]
     sql: ${TABLE}.timestamp ;;
-    hidden: yes
+    hidden: no
   }
   measure: countViews {
   label: "# Property Viwes"
@@ -67,6 +67,12 @@ view: website_property_viewed {
   sql: ${id};;
   drill_fields: [detail*]
 }
+  measure: counSession {
+    label: "# Sessions"
+    type: count_distinct
+    sql: ${me_session_id};;
+    drill_fields: [detail*]
+  }
 
 
 

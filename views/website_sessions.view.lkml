@@ -1,14 +1,22 @@
 view: website_sessions {
   derived_table: {
     sql: SELECT
-      anonymous_id,
+       s.anonymous_id,
       event_key.event,
-      event_key.id,
-      session_id,
-      session_timestamp
-      FROM `bigquery-analytics-272822.website_kasa_com_transformed.sessions_struct`
+    event_key.id,
+      s.session_id,
+      s.session_timestamp,
+      p.me_session_id,
+      case when p.context_user_agent LIKE '%Tablet%' or p.context_user_agent LIKE  '%iPad%' then "Tablets"
+      when p.context_user_agent LIKE '%Mobile%' and (context_user_agent LIKE '%iPhone%' or p.context_user_agent LIKE '%Android%') then "Mobile"
+      Else "Desktop" End as  device_category
+
+      FROM `bigquery-analytics-272822.website_kasa_com_transformed.sessions_struct`  s
       LEFT JOIN UNNEST(event_key) as event_key
+      left join  `bigquery-analytics-272822.website_kasa_com_transformed.pages`  p
+      on event_key.id =p.id
        ;;
+    persist_for: "1 hours"
 
   }
 
@@ -54,7 +62,7 @@ view: website_sessions {
 
 
   measure: numberOfsessionWlocation  {
-   label: "# Sessions w/ Location Viewed"
+   label: "Sessions w/ Location Viewed"
     type: count_distinct
     sql: ${session_id} ;;
     filters: [event: "location_viewed"]
@@ -68,10 +76,10 @@ view: website_sessions {
     drill_fields: [detail*]
   }
   measure: numberOfsessionWproperty   {
-    label: "# Sessions w/ Property Viewed"
+    label: "Sessions w/ Property Viewed"
     type: count_distinct
-    sql: ${session_id} ;;
-    filters: [event: "property_viewed,product_viewed"]
+    sql:  ${session_id};;
+    filters: [event: "product_viewed"]
     drill_fields: [session_id]
   }
   measure: numberOfsessionWcheckout  {
@@ -96,16 +104,16 @@ view: website_sessions {
     drill_fields: [detail*]
   }
   measure: numberOfsessions  {
-    label: "# Sessions"
+    label: "Sessions"
     type: count_distinct
-    sql: ${session_id} ;;
+    sql: ${session_id};;
     value_format:"[>=1000000]0.0,,\"M\";[>=1000]0.0,\"K\";0"
     drill_fields: [detail*]
   }
 
 
   measure: numberOflocationViewed  {
-    label: "# Location Page Views"
+    label: "Location Views"
     type: count_distinct
     sql: ${id} ;;
     filters: [event: "location_viewed"]
@@ -113,15 +121,17 @@ view: website_sessions {
   }
 
   measure: numberOfpropertyViewed   {
-    label: "# Property Page Views"
+    label: "Property Views"
+    description: "Number of times users viewed the product page."
     type: count_distinct
     sql: ${id} ;;
-    filters: [event: "property_viewed,product_viewed"]
+    filters: [event: "product_viewed"]
     drill_fields: [detail*]
   }
 
 
   measure: checkout_rate {
+    label: "Session with Checkout"
     type: number
     sql: if(${numberOfsessions} = 0, 0, ${numberOfsessionWcheckout}/${numberOfsessions});;
     value_format_name:  percent_1
@@ -166,11 +176,16 @@ view: website_sessions {
   }
   measure:Transactions_per_checkout{
     value_format_name: percent_1
-    label: "Transaction Per Checkouts"
+    label: "Completion Rate"
     type: number
     description: "Ratio of sessions w/Transaction Event to Checkout Event "
     sql: if(${numberOfsessions} = 0, Null, ${numberOfsessionWTransactions}/${numberOfsessionWcheckout});;
   }
+  dimension: device_category {
+    type: string
+    sql: ${TABLE}.device_category ;;
+  }
+
 
 
 

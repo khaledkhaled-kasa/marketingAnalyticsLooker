@@ -7,6 +7,7 @@ view: website_orders{
       on
        o.reservation_id = re._id
        ;;
+    persist_for: "1 hours"
   }
 
 
@@ -265,7 +266,7 @@ view: website_orders{
     type: number
     label: "Transaction Value"
     sql: ${TABLE}.total_value ;;
-    hidden: yes
+    hidden: no
   }
   measure: num_transactions {
     label: "#Bookings"
@@ -279,8 +280,8 @@ view: website_orders{
   #   drill_fields: [detail*]
   # }
   measure: total_transaction_event_value {
-    type: sum
-    value_format_name: usd_0
+    type: sum_distinct
+    value_format_name: usd
     sql: ${total_value} ;;
     label: "Total Booking Value"
   }
