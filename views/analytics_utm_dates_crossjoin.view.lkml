@@ -28,9 +28,9 @@ view: anal_utm_dates_crossjoin {
       quarter,
       year
     ]
-    convert_tz: yes
+    # convert_tz: yes
     datatype: date
-    sql: timestamp(${TABLE}.date) ;;
+    sql: ${TABLE}.date ;;
   }
 
   dimension: utm_key_id {

@@ -43,7 +43,7 @@ view: anal_ads_costs {
       quarter,
       year
     ]
-    convert_tz: no
+    # convert_tz: yes
     datatype: date
     sql: ${TABLE}.date ;;
   }
