@@ -116,9 +116,9 @@ view: anal_simple_attribution {
       month_name,
       month_num
     ]
-    # convert_tz: yes
+    convert_tz: no
     datatype: date
-    sql: ${TABLE}.attributed_date;;
+    sql: timestamp(${TABLE}.attributed_date);;
   }
 
   measure: attributed_total_order_gross_value {

@@ -33,6 +33,13 @@ view: anal_ads_costs {
     hidden: yes
   }
 
+  dimension: date {
+    type: date
+    primary_key: no
+    hidden: yes
+    sql: timestamp(${TABLE}.date) ;;
+  }
+
   dimension_group: date {
     type: time
     timeframes: [
@@ -43,9 +50,9 @@ view: anal_ads_costs {
       quarter,
       year
     ]
-    # convert_tz: yes
+    convert_tz: no
     datatype: date
-    sql: ${TABLE}.date ;;
+    sql: timestamp(${TABLE}.date);;
   }
 
   dimension: ret_clicks {
@@ -207,6 +214,13 @@ view: anal_ads_costs {
     sql: if(${ga_sessions_struct__website_events.add_to_carts}=0,NULL, ${total_ad_spend}/${ga_sessions_struct__website_events.add_to_carts}) ;;
     value_format_name: usd
     label: "Cost per Add to Cart"
+  }
+
+  measure: cost_per_property_view {
+    type: number
+    sql: if(${ga_sessions_struct__product_events.product_view}=0,NULL, ${total_ad_spend}/${ga_sessions_struct__product_events.product_view}) ;;
+    value_format_name: usd
+    label: "Cost per Property View"
   }
 
   measure: attribution_conversion_rate {

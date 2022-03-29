@@ -237,7 +237,7 @@ explore: new_attribution {
     relationship: one_to_many
   }
   join: ga_sessions_struct {
-    sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${ga_sessions_struct.utm_key_id} and ${anal_utm_dates_crossjoin.date_date} = ${ga_sessions_struct.session_timestamp_date} ;;
+    sql_on: ${anal_utm_dates_crossjoin.utm_key_id} = ${ga_sessions_struct.utm_key_id} and DATE(${anal_utm_dates_crossjoin.date_date}) = ${ga_sessions_struct.session_timestamp_date} ;;
     relationship: one_to_many
   }
   join: ga_sessions_struct__website_events {
