@@ -47,6 +47,12 @@ view: anal_simple_attribution {
     sql: ${TABLE}.attributed_acquisitions ;;
   }
 
+  dimension: attributed_quantity {
+    type: number
+    sql: ${TABLE}.attributed_quantity ;;
+    label: "attributed nights sold"
+  }
+
 #   dimension: is_acquisition {
 #     type: yesno
 #     sql: ${TABLE}.is_acquisition ;;
@@ -140,6 +146,22 @@ view: anal_simple_attribution {
     sql: ${attributed_acquisitions} ;;
     value_format_name: decimal_0
     label: "Attributed New Acquisitions"
+  }
+
+  measure: attributed_total_nights_sold {
+    type: sum
+    sql: ${attributed_quantity} ;;
+    value_format_name: decimal_0
+    label: "Attributed Nights Sold"
+  }
+
+  measure: average_attributed_nights_per_order {
+    type: number
+    sql: if(${attributed_total_nights_sold}=0,0,
+      ${attributed_total_nights_sold}/${attributed_total_order_volume}) ;;
+    value_format_name: decimal_0
+    label: "Average Nights per Order"
+    description: "Average Nights per Order"
   }
 
 }
