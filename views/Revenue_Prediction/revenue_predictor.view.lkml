@@ -161,15 +161,15 @@ view: revenue_predictor_occupancy {
   derived_table: {
     sql:
     SELECT CONCAT(units.address.city,", ",units.address.state)  AS geo_location_city_state,
-            COUNT(DISTINCT CASE WHEN ((DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) )) < (DATE(CAST(reservations_v3.checkoutdate as TIMESTAMP), 'America/Los_Angeles')) and
-            (DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) )) >= (DATE(TIMESTAMP(reservations_v3.checkindate), 'America/Los_Angeles'))) AND (reservations_v3.status_revised LIKE 'checked_in' OR reservations_v3.status_revised = 'confirmed') THEN CONCAT( reservations_v3.confirmationcode  , '-', ( DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) ) )) ELSE NULL END) / NULLIF(COUNT(DISTINCT CASE WHEN ((capacities_v3.internaltitle LIKE "%-XX") OR (capacities_v3.internaltitle LIKE "%XXX") OR (capacities_v3.internaltitle LIKE "%-RES") OR (capacities_v3.internaltitle LIKE "%-S") OR (capacities_v3.internaltitle LIKE "%GXO%")) THEN NULL
-            ELSE CONCAT(capacities_v3.internaltitle, '-', ( DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) ) ))
+            COUNT(DISTINCT CASE WHEN ((DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) )) < (DATE(CAST(reservations_v3.checkoutdate as TIMESTAMP), 'America/Los_Angeles')) and
+            (DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) )) >= (DATE(TIMESTAMP(reservations_v3.checkindate), 'America/Los_Angeles'))) AND (reservations_v3.status_revised LIKE 'checked_in' OR reservations_v3.status_revised = 'confirmed') THEN CONCAT( reservations_v3.confirmationcode  , '-', ( DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) ) )) ELSE NULL END) / NULLIF(COUNT(DISTINCT CASE WHEN ((capacities.propUnitCd LIKE "%-XX") OR (capacities.propUnitCd LIKE "%XXX") OR (capacities.propUnitCd LIKE "%-RES") OR (capacities.propUnitCd LIKE "%-S") OR (capacities.propUnitCd LIKE "%GXO%")) THEN NULL
+            ELSE CONCAT(capacities.propUnitCd, '-', ( DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) ) ))
             END), 0) AS reservations_v3_occupancy
 
-        FROM `bigquery-analytics-272822.dbt.capacities`  AS capacities_v3
-        INNER JOIN `bigquery-analytics-272822.dbt.units`  AS units ON capacities_v3._id = units._id
+        FROM `data-warehouse-333815.Warehouse.fctCapacity`  AS capacities
+        INNER JOIN `bigquery-analytics-272822.dbt.units`  AS units ON capacities.unitIdCapacities = units._id
         LEFT JOIN `bigquery-analytics-272822.dbt.reservations_v3`   AS reservations_v3 ON units._id = reservations_v3.unit
-        WHERE ((( CAST(capacities_v3.night_available_date as TIMESTAMP)  ) >= ((TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL -7 DAY))) AND ( CAST(capacities_v3.night_available_date as TIMESTAMP)  ) < ((TIMESTAMP_ADD(TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL -7 DAY), INTERVAL 7 DAY)))))
+        WHERE ((( CAST(capacities.nightAvailableDt as TIMESTAMP)  ) >= ((TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL -7 DAY))) AND ( CAST(capacities.nightAvailableDt as TIMESTAMP)  ) < ((TIMESTAMP_ADD(TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL -7 DAY), INTERVAL 7 DAY)))))
 
         GROUP BY 1 ;;
   }
@@ -202,14 +202,14 @@ view: revenue_predictor_occupancy_pace_1 {
   view_label: "Pacing Occupancy + 1"
   derived_table: {
     sql: SELECT CONCAT(units.address.city,", ",units.address.state)  AS geo_location_city_state,
-        COUNT(DISTINCT CASE WHEN ((DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) )) < (DATE(CAST(reservations_v3.checkoutdate as TIMESTAMP), 'America/Los_Angeles')) and
-        (DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) )) >= (DATE(TIMESTAMP(reservations_v3.checkindate), 'America/Los_Angeles'))) AND (reservations_v3.status_revised LIKE 'checked_in' OR reservations_v3.status_revised = 'confirmed') THEN CONCAT( reservations_v3.confirmationcode  , '-', ( DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) ) )) ELSE NULL END) / NULLIF(COUNT(DISTINCT CASE WHEN ((capacities_v3.internaltitle LIKE "%-XX") OR (capacities_v3.internaltitle LIKE "%XXX") OR (capacities_v3.internaltitle LIKE "%-RES") OR (capacities_v3.internaltitle LIKE "%-S") OR (capacities_v3.internaltitle LIKE "%GXO%")) THEN NULL
-          ELSE CONCAT(capacities_v3.internaltitle, '-', ( DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) ) ))
+        COUNT(DISTINCT CASE WHEN ((DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) )) < (DATE(CAST(reservations_v3.checkoutdate as TIMESTAMP), 'America/Los_Angeles')) and
+        (DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) )) >= (DATE(TIMESTAMP(reservations_v3.checkindate), 'America/Los_Angeles'))) AND (reservations_v3.status_revised LIKE 'checked_in' OR reservations_v3.status_revised = 'confirmed') THEN CONCAT( reservations_v3.confirmationcode  , '-', ( DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) ) )) ELSE NULL END) / NULLIF(COUNT(DISTINCT CASE WHEN ((capacities.propUnitCd LIKE "%-XX") OR (capacities.propUnitCd LIKE "%XXX") OR (capacities.propUnitCd LIKE "%-RES") OR (capacities.propUnitCd LIKE "%-S") OR (capacities.propUnitCd LIKE "%GXO%")) THEN NULL
+          ELSE CONCAT(capacities.propUnitCd, '-', ( DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) ) ))
           END), 0) AS reservations_v3_occupancy
-FROM `bigquery-analytics-272822.dbt.capacities`  AS capacities_v3
-INNER JOIN `bigquery-analytics-272822.dbt.units`  AS units ON capacities_v3._id = units._id
+FROM `data-warehouse-333815.Warehouse.fctCapacity`  AS capacities
+INNER JOIN `bigquery-analytics-272822.dbt.units`  AS units ON capacities.unitIdCapacities = units._id
 LEFT JOIN `bigquery-analytics-272822.dbt.reservations_v3`   AS reservations_v3 ON units._id = reservations_v3.unit
-WHERE (((((( CAST(capacities_v3.night_available_date as TIMESTAMP)  ))) >= ((TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY))) AND ((( CAST(capacities_v3.night_available_date as TIMESTAMP)  ))) < ((TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL 7 DAY))))))
+WHERE (((((( CAST(capacities.nightAvailableDt as TIMESTAMP)  ))) >= ((TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY))) AND ((( CAST(capacities.nightAvailableDt as TIMESTAMP)  ))) < ((TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL 7 DAY))))))
 GROUP BY 1
 ;;
   }
@@ -241,14 +241,14 @@ view: revenue_predictor_occupancy_pace_2 {
   view_label: "Pacing Occupancy + 2"
   derived_table: {
     sql: SELECT CONCAT(units.address.city,", ",units.address.state)  AS geo_location_city_state,
-        COUNT(DISTINCT CASE WHEN ((DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) )) < (DATE(CAST(reservations_v3.checkoutdate as TIMESTAMP), 'America/Los_Angeles')) and
-        (DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) )) >= (DATE(TIMESTAMP(reservations_v3.checkindate), 'America/Los_Angeles'))) AND (reservations_v3.status_revised LIKE 'checked_in' OR reservations_v3.status_revised = 'confirmed') THEN CONCAT( reservations_v3.confirmationcode  , '-', ( DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) ) )) ELSE NULL END) / NULLIF(COUNT(DISTINCT CASE WHEN ((capacities_v3.internaltitle LIKE "%-XX") OR (capacities_v3.internaltitle LIKE "%XXX") OR (capacities_v3.internaltitle LIKE "%-RES") OR (capacities_v3.internaltitle LIKE "%-S") OR (capacities_v3.internaltitle LIKE "%GXO%")) THEN NULL
-          ELSE CONCAT(capacities_v3.internaltitle, '-', ( DATE(CAST(capacities_v3.night_available_date as TIMESTAMP) ) ))
+        COUNT(DISTINCT CASE WHEN ((DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) )) < (DATE(CAST(reservations_v3.checkoutdate as TIMESTAMP), 'America/Los_Angeles')) and
+        (DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) )) >= (DATE(TIMESTAMP(reservations_v3.checkindate), 'America/Los_Angeles'))) AND (reservations_v3.status_revised LIKE 'checked_in' OR reservations_v3.status_revised = 'confirmed') THEN CONCAT( reservations_v3.confirmationcode  , '-', ( DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) ) )) ELSE NULL END) / NULLIF(COUNT(DISTINCT CASE WHEN ((capacities.propUnitCd LIKE "%-XX") OR (capacities.propUnitCd LIKE "%XXX") OR (capacities.propUnitCd LIKE "%-RES") OR (capacities.propUnitCd LIKE "%-S") OR (capacities.propUnitCd LIKE "%GXO%")) THEN NULL
+          ELSE CONCAT(capacities.propUnitCd, '-', ( DATE(CAST(capacities.nightAvailableDt as TIMESTAMP) ) ))
           END), 0) AS reservations_v3_occupancy
-FROM `bigquery-analytics-272822.dbt.capacities`  AS capacities_v3
-INNER JOIN `bigquery-analytics-272822.dbt.units`  AS units ON capacities_v3._id = units._id
+FROM `data-warehouse-333815.Warehouse.fctCapacity`  AS capacities
+INNER JOIN `bigquery-analytics-272822.dbt.units`  AS units ON capacities.unitIdCapacities = units._id
 LEFT JOIN `bigquery-analytics-272822.dbt.reservations_v3`   AS reservations_v3 ON units._id = reservations_v3.unit
-WHERE (((((( CAST(capacities_v3.night_available_date as TIMESTAMP)  ))) >= ((TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL 7 DAY))) AND ((( CAST(capacities_v3.night_available_date as TIMESTAMP)  ))) < ((TIMESTAMP_ADD(TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL 7 DAY), INTERVAL 7 DAY))))))
+WHERE (((((( CAST(capacities.nightAvailableDt as TIMESTAMP)  ))) >= ((TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL 7 DAY))) AND ((( CAST(capacities.nightAvailableDt as TIMESTAMP)  ))) < ((TIMESTAMP_ADD(TIMESTAMP_ADD(TIMESTAMP_TRUNC(TIMESTAMP(FORMAT_TIMESTAMP('%F %H:%M:%E*S', CURRENT_TIMESTAMP(), 'America/Los_Angeles')), DAY), INTERVAL 7 DAY), INTERVAL 7 DAY))))))
 GROUP BY
     1
 ;;
