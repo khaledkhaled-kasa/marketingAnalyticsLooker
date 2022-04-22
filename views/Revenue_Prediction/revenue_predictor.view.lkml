@@ -96,7 +96,7 @@ view: revenue_predictor {
             if(${website_event_location_label} = "minneapolis-mn","Minneapolis, MN",
             if(${website_event_location_label} = "nashville-tn","Nashville, TN",
             if(${website_event_location_label} = "new-haven-ct","New Haven, CT",
-            if(${website_event_location_label} = "new-york-ny","New York City, NY",
+            if(${website_event_location_label} = "new-york-city-ny","New York City, NY",
             if(${website_event_location_label} = "orange-ca","Orange, CA",
             if(${website_event_location_label} = "philadelphia-area-pa","Others",
             if(${website_event_location_label} = "pittsburgh-pa","Pittsburgh, PA",
