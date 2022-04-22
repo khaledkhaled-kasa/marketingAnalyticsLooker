@@ -73,6 +73,7 @@ view: revenue_predictor {
     description: "This field has been created to associate cities to website event locations"
     type: string
     sql:    if(${website_event_location_label} = "austin-tx","Austin, TX",
+            if(${website_event_location_label} = "ocean-city-md","Ocean City, MD",
             if(${website_event_location_label} = "denver-co","Denver, CO",
             if(${website_event_location_label} = "alexandria-va","Alexandria, VA",
             if(${website_event_location_label} = "arlington-tx","Arlington, TX",
@@ -114,7 +115,7 @@ view: revenue_predictor {
             if(${website_event_location_label} = "washington-area-dc","Others",
             if(${website_event_location_label} = "wellington-fl","Wellington, FL",
             if(${website_event_location_label} = "winston-salem-nc","Winston-Salem, NC",
-            if(${website_event_location_label} = "san-francisco-bay-area-ca" OR ${website_event_location_label} = "san-francisco-ca","San Francisco, CA","Others"))))))))))))))))))))))))))))))))))))))))))) ;;
+            if(${website_event_location_label} = "san-francisco-bay-area-ca" OR ${website_event_location_label} = "san-francisco-ca","San Francisco, CA","Others")))))))))))))))))))))))))))))))))))))))))))) ;;
   }
 
   dimension: categoryView_sessions {
