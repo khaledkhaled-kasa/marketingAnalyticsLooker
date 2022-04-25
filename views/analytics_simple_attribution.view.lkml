@@ -53,6 +53,11 @@ view: anal_simple_attribution {
     label: "attributed nights sold"
   }
 
+  dimension: attributed_cancellations {
+    type: number
+    sql: ${TABLE}.attributed_cancellations ;;
+  }
+
 #   dimension: is_acquisition {
 #     type: yesno
 #     sql: ${TABLE}.is_acquisition ;;
@@ -153,6 +158,13 @@ view: anal_simple_attribution {
     sql: ${attributed_quantity} ;;
     value_format_name: decimal_0
     label: "Attributed Nights Sold"
+  }
+
+  measure: attributed_cancellations_volume {
+    type: sum
+    sql: ${attributed_cancellations} ;;
+    value_format_name: decimal_0
+    label: "Attributed Cancellations"
   }
 
   measure: average_attributed_nights_per_order {
