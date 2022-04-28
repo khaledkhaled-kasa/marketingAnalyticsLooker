@@ -5,7 +5,7 @@ view: website_360_view_opened
     dimension: anonymous_id {
       type: string
       sql: ${TABLE}.anonymous_id ;;
-      hidden: yes
+      hidden: no
     }
 
     dimension: context_page_title {
@@ -47,7 +47,6 @@ view: website_360_view_opened
     dimension_group: timestamp {
       type: time
       sql: ${TABLE}.timestamp ;;
-      hidden: yes
     }
 
     dimension: user_id {
