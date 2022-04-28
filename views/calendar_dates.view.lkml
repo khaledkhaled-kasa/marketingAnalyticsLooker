@@ -53,6 +53,8 @@ view: calendar_dates {
       month_name,
       month_num
     ]
+    convert_tz: yes
+    datatype: date
     sql: timestamp(${TABLE}.calendar_date);;
   }
 

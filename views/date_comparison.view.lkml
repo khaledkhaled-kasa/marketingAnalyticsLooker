@@ -217,7 +217,7 @@ label: "Timeline Comparison Fields"
     description: "Use this as your date dimension when comparing periods. Aligns the all previous periods onto the current period"
     label: "Current Period"
     type: time
-    sql: TIMESTAMP_ADD({% date_start current_date_range %},INTERVAL (${day_in_period}-1) DAY) ;;
+    sql: TIMESTAMP_ADD({% date_start current_date_range %},INTERVAL (${day_in_period}) DAY) ;;
     view_label: "Timeline Comparison Fields"
     timeframes: [date, week, month, quarter, year]
   }
