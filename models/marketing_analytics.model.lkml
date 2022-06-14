@@ -56,7 +56,7 @@ explore: calendar_dates  {
     relationship: many_to_one
   }
   join: ga_sessions_struct {
-    sql_on:  ${calendar_dates.calendar_date_date} = ${ga_sessions_struct.session_timestamp_date} ;;
+    sql_on:  date(${calendar_dates.calendar_date_date}) = ${ga_sessions_struct.session_timestamp_date} ;;
     relationship: one_to_many
   }
   join: ga_sessions_struct__page_views {
