@@ -109,6 +109,12 @@ view: anal_external_hotels_attribution {
     sql: ${TABLE}.guest_email ;;
   }
 
+  dimension: product_name {
+    type: string
+    label: "Building Name"
+    sql: ${TABLE}.product_name ;;
+  }
+
   measure: count {
     type: count
     drill_fields: []
