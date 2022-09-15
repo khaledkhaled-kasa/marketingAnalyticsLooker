@@ -33,6 +33,12 @@ sql_table_name:  `bigquery-analytics-272822.website_kasa_com_transformed.search`
     sql: ${TABLE}.adults ;;
   }
 
+  dimension: number_nights {
+    label: "# of Nights"
+    type: number
+    sql: date_diff(${check_out_date_date}, ${check_in_date_date},day) ;;
+  }
+
   dimension: children {
     label: "# Children"
     type: number
