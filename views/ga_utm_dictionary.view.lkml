@@ -162,6 +162,7 @@ view: ga_utm_dictionary {
     when ${ga_source}='facebook.com' and ${ga_medium}='referral' then 'Facebook Organic'
     when ${ga_source}='instagram.com' and ${ga_medium}='referral' then 'Instagram Organic'
     when ${ga_campaign}='metasearch' then 'Metasearch'
+    when ${ga_medium}='meta' then 'Metasearch'
     when LOWER(${ga_source})='facebook' and LOWER(${ga_medium})='paid' then 'Facebook Paid'
     when ${ga_source}='untracked' then 'Untracked'
     else 'Remaining Unpaid Traffic'
