@@ -8,7 +8,7 @@ label: "Timeline Comparison Fields"
     label: "1. Date Range"
     description: "Select the date range you are interested in using this filter, can be used by itself. Make sure any filter on Event Date covers this period, or is removed."
     type: date
-    convert_tz: yes
+    convert_tz: no
   }
   filter: previous_date_range {
     view_label: "Timeline Comparison Fields"
