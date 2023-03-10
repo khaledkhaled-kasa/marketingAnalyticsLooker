@@ -40,7 +40,7 @@ explore: revenue_predictor {
 explore: calendar_dates  {
   fields: [ALL_FIELDS*, -ga_sessions_struct__product_events.product_analysis_date]
   join: ecom_orders_struct {
-    sql_on: ${calendar_dates.calendar_date_date} = ${ecom_orders_struct.order_timestamp_date} ;;
+    sql_on: date(${calendar_dates.calendar_date_date}) = ${ecom_orders_struct.order_timestamp_date} ;;
     relationship: one_to_many
   }
   join: ecom_orders_struct__order_items {
@@ -74,6 +74,12 @@ explore: calendar_dates  {
   join: ga_sessions_struct__product_events {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
     relationship: one_to_many
+  }
+  join: ecom_products_struct_web {
+    view_label: "Website Building"
+    from: ecom_products_struct
+    sql_on: REGEXP_EXTRACT( ${ga_sessions_struct.session_lp_url}, '[?&]p=([^&]+)')  = ${ecom_products_struct_web.product_id} ;;
+    relationship: many_to_one
   }
   join: ga_utm_dictionary {
     sql_on: ${ga_sessions_struct.utm_key_id} = ${ga_utm_dictionary.utm_key_id} ;;
