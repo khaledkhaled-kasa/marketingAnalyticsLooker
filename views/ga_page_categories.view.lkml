@@ -42,6 +42,6 @@ view: ga_page_categories {
 
   dimension: is_on_kasa_com_website  {
     type: yesno
-    sql: ${hostname} in ('kasa.com','www.kasa.com','bookings.kasa.com','www.bookings.kasa.com') ;;
+    sql: ${hostname} in ('kasa.com','www.kasa.com','bookings.kasa.com','www.bookings.kasa.com','https://kasa.com','https://help.kasa.com','https://bookings.kasa.com') ;;
   }
 }
