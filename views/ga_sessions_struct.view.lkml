@@ -89,7 +89,39 @@ view: ga_sessions_struct {
       year
     ]
     sql:${TABLE}.session_timestamp ;;
+    # convert_tz: yes
+    # allow_fill: yes
     # sql:TIMESTAMP(DATETIME(${TABLE}.session_timestamp,"America/Los_Angeles")) ;;
+  }
+
+  dimension: pivot_axis {
+    hidden: no
+    label_from_parameter: pivot_parm
+    label: "Date Group"
+    type: string
+    # label:
+    sql:
+    {% if pivot_parm._parameter_value == "'session_timestamp_date'" %}
+      ${session_timestamp_date}
+    {% elsif pivot_parm._parameter_value == "'session_timestamp_week'" %}
+      ${session_timestamp_week}
+    {% else %}
+       ${session_timestamp_date}
+    {% endif %};;
+  }
+
+  parameter: pivot_parm {
+    label: "Group by"
+    hidden: no
+    type: string
+    allowed_value: {
+      label: "Daily"
+      value: "session_timestamp_date"
+    }
+    allowed_value: {
+      label: "Weekly"
+      value: "session_timestamp_week"
+    }
   }
 
   dimension: shopping_stages {
