@@ -195,6 +195,10 @@ explore: users_analysis  {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
     relationship: one_to_many
   }
+  join: reservations {
+    sql_on: ${ecom_orders_struct.confirmation_code} = ${reservations.confirmation_code}  ;;
+    relationship: one_to_many
+  }
 }
 
 explore: product_analysis {
