@@ -713,6 +713,7 @@ view: ga_sessions_struct__transaction_events_2 {
         ) t
         join `data-warehouse-333815`.reservations.fctReservations r
         ON t.transaction_event_id = case when length(t.transaction_event_id) = 24 then r.reservationId else r.confirmationCd end
+        WHERE r.statusRevised IN ('checked_in','confirmed')
       ;;
     }
   label: "Transaction Website Events"
