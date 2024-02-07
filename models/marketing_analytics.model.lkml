@@ -199,6 +199,15 @@ explore: users_analysis  {
     sql_on: ${ecom_orders_struct.confirmation_code} = ${reservations.confirmation_code}  ;;
     relationship: one_to_many
   }
+  join: ga_sessions_struct__transaction_events_2 {
+    sql_on: ${reservations._id} = ${ga_sessions_struct__transaction_events_2.reservation_id} ;;
+    relationship: one_to_one
+  }
+  join: ga_utm_dictionary {
+    view_label: "UTM Dictionary - Transactions Only"
+    sql_on: ${ga_sessions_struct__transaction_events_2.utm_key_id} = ${ga_utm_dictionary.utm_key_id} ;;
+    relationship: many_to_one
+  }
 }
 
 explore: product_analysis {

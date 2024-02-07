@@ -692,6 +692,63 @@ view: ga_sessions_struct__transaction_events {
   }
 }
 
+view: ga_sessions_struct__transaction_events_2 {
+  derived_table: {
+      sql:
+        select
+        t.session_id
+        ,t.utm_key_id
+        ,t.transaction_event_id
+        ,t.transaction_event_value
+        ,r.reservationId
+        ,r.confirmationCd
+        from (
+          select
+          session_id
+          ,utm_key_id
+          ,t.transaction_event_id
+          ,t.transaction_event_value
+          from `bigquery-analytics-272822`.ME_BI_prod.GA_sessions_struct
+          ,unnest(transaction_events) as t
+        ) t
+        join `data-warehouse-333815`.reservations.fctReservations r
+        ON t.transaction_event_id = case when length(t.transaction_event_id) = 24 then r.reservationId else r.confirmationCd end
+      ;;
+    }
+  label: "Transaction Website Events"
+
+  dimension: transaction_event_id {
+    type: string
+    primary_key: yes
+    sql: ${TABLE}.transaction_event_id ;;
+    hidden: yes
+  }
+
+  dimension: reservation_id {
+    type: string
+    sql: ${TABLE}.reservationId ;;
+    hidden: yes
+  }
+
+  dimension: confirmation_code {
+    type: string
+    sql: ${TABLE}.confirmationCd ;;
+    hidden: yes
+  }
+
+  dimension: utm_key_id {
+    type: string
+    sql: ${TABLE}.utm_key_id ;;
+    hidden: yes
+  }
+
+  dimension: transaction_event_value {
+    type: number
+    sql: ${TABLE}.transaction_event_value ;;
+    hidden: yes
+  }
+}
+
 view: ga_sessions_struct__page_views {
   label: "Page Views"
   dimension: page_view_id {
