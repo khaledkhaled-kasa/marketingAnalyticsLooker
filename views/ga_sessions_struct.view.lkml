@@ -85,7 +85,9 @@ view: ga_sessions_struct {
       date,
       week,
       month,
+      month_name,
       quarter,
+      quarter_of_year,
       year
     ]
     sql:${TABLE}.session_timestamp ;;

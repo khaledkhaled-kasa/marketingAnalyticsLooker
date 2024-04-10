@@ -219,7 +219,7 @@ label: "Timeline Comparison Fields"
     type: time
     sql: TIMESTAMP_ADD({% date_start current_date_range %},INTERVAL (${day_in_period}) DAY) ;;
     view_label: "Timeline Comparison Fields"
-    timeframes: [date, week, month, quarter, year]
+    timeframes: [date, week, month, quarter, year, month_name]
   }
 
   dimension: day_in_period {
@@ -268,6 +268,17 @@ label: "Timeline Comparison Fields"
       END ;;
   }
 
+  dimension: dynamic_date_group {
+    label_from_parameter: date_granularity
+    sql:
+    CASE
+      WHEN {% parameter date_granularity %} = 'Day' THEN CAST(${date_in_period_date} AS STRING)
+      WHEN {% parameter date_granularity %} = 'Week' THEN CAST(${date_in_period_week} AS STRING)
+      WHEN {% parameter date_granularity %} = 'Month' THEN CAST(${date_in_period_month_name} AS STRING)
+      WHEN {% parameter date_granularity %} = 'Quarter' THEN CAST(${date_in_period_quarter} AS STRING)
+      WHEN {% parameter date_granularity %} = 'Year' THEN CAST(${date_in_period_year} AS STRING)
+      END ;;
+  }
 
 
 }
