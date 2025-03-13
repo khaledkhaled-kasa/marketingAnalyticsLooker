@@ -108,7 +108,7 @@ view: ga_sessions_struct {
     {% elsif pivot_parm._parameter_value == "'session_timestamp_week'" %}
       ${session_timestamp_week}
     {% else %}
-       ${session_timestamp_date}
+      ${session_timestamp_date}
     {% endif %};;
   }
 

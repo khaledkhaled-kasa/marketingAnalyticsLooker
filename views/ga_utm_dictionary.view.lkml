@@ -175,7 +175,7 @@ view: ga_utm_dictionary {
     label: "Custom Channel Grouping"
   }
 
- dimension: custom_paid_media_grouping {
+dimension: custom_paid_media_grouping {
   type: string
   sql:
   Case
@@ -194,7 +194,7 @@ view: ga_utm_dictionary {
       when ${ga_source}='kasa' and ${ga_medium}='crm' then 'Braze CRM'
       else ${paid_unpaid_traffic}
       end
-     ;;
+    ;;
   }
 
 }

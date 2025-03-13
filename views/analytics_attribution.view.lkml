@@ -78,25 +78,25 @@ view: anal_attribution {
     hidden: yes
   }
 
- # parameter: ad_emmission_date_granularity  {
- #  allowed_value: { value: "Day" }
- #  allowed_value: { value: "Week" }
- #    allowed_value: { value: "Month" }
- #   allowed_value: { value: "Quarter" }
- #    allowed_value: { value: "Year" }
- #  }
+# parameter: ad_emmission_date_granularity  {
+#  allowed_value: { value: "Day" }
+#  allowed_value: { value: "Week" }
+#    allowed_value: { value: "Month" }
+#   allowed_value: { value: "Quarter" }
+#    allowed_value: { value: "Year" }
+#  }
 
- #  dimension: ad_emmission_dynamic_date {
- #    label_from_parameter: ad_emmission_date_granularity
- #   sql:
- #   CASE
- #     WHEN {% parameter ad_emmission_date_granularity %} = 'Day' THEN CAST(${attribution_date} AS STRING)
- #      WHEN {% parameter ad_emmission_date_granularity %} = 'Week' THEN CAST(${attribution_week} AS STRING)
- #     WHEN {% parameter ad_emmission_date_granularity %} = 'Month' THEN CAST(${attribution_month} AS STRING)
- #     WHEN {% parameter ad_emmission_date_granularity %} = 'Quarter' THEN CAST(${attribution_quarter} AS STRING)
- #      WHEN {% parameter ad_emmission_date_granularity %} = 'Year' THEN CAST(${attribution_year} AS STRING)
- #     END ;;
- #  }
+#  dimension: ad_emmission_dynamic_date {
+#    label_from_parameter: ad_emmission_date_granularity
+#   sql:
+#   CASE
+#     WHEN {% parameter ad_emmission_date_granularity %} = 'Day' THEN CAST(${attribution_date} AS STRING)
+#      WHEN {% parameter ad_emmission_date_granularity %} = 'Week' THEN CAST(${attribution_week} AS STRING)
+#     WHEN {% parameter ad_emmission_date_granularity %} = 'Month' THEN CAST(${attribution_month} AS STRING)
+#     WHEN {% parameter ad_emmission_date_granularity %} = 'Quarter' THEN CAST(${attribution_quarter} AS STRING)
+#      WHEN {% parameter ad_emmission_date_granularity %} = 'Year' THEN CAST(${attribution_year} AS STRING)
+#     END ;;
+#  }
 
 # extends: [date_comparison]
 

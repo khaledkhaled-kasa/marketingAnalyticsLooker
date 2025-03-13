@@ -58,7 +58,7 @@ view: website_calendar_dates{
       }
 
 
-       extends: [date_comparison]
+      extends: [date_comparison]
 
       dimension: event_raw{
         sql:  ${calendar_date_time::datetime} ;;

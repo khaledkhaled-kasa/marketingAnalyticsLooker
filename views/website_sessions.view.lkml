@@ -1,7 +1,7 @@
 view: website_sessions {
   derived_table: {
     sql: SELECT
-       s.anonymous_id,
+      s.anonymous_id,
       event_key.event,
     event_key.id,
       s.session_id,
@@ -15,7 +15,7 @@ view: website_sessions {
       LEFT JOIN UNNEST(event_key) as event_key
       left join  `bigquery-analytics-272822.website_kasa_com_transformed.pages`  p
       on event_key.id =p.id
-       ;;
+      ;;
     persist_for: "1 hours"
 
   }
@@ -62,7 +62,7 @@ view: website_sessions {
 
 
   measure: numberOfsessionWlocation  {
-   label: "Sessions w/ Location Viewed"
+  label: "Sessions w/ Location Viewed"
     type: count_distinct
     sql: ${session_id} ;;
     filters: [event: "location_viewed"]
