@@ -59,6 +59,15 @@ explore: calendar_dates  {
     sql_on:  date(${calendar_dates.calendar_date_date}) = ${ga_sessions_struct.session_timestamp_date} ;;
     relationship: one_to_many
   }
+  join: me_web_events {
+    view_label: "Website Events"
+    sql_on:  cast(${ga_sessions_struct.session_id} as int64) = ${me_web_events.session_id} ;;
+    relationship: one_to_many
+  }
+  join: units {
+    sql_on:  ${me_web_events.prop_code} = ${units.propcode_original} ;;
+    relationship: one_to_many
+  }
   join: ga_sessions_struct__page_views {
     sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
     relationship: one_to_many
