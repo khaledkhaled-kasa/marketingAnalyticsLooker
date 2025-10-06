@@ -35,7 +35,7 @@ view: me_web_events {
   }
   dimension: session_id {
     hidden: yes
-    type: number
+    type: string
     sql: ${TABLE}.session_id ;;
   }
   dimension: stream_id {

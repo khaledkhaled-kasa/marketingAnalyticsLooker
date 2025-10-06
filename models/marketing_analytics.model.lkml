@@ -61,7 +61,7 @@ explore: calendar_dates  {
   }
   join: me_web_events {
     view_label: "Website Events"
-    sql_on:  cast(${ga_sessions_struct.session_id} as int64) = ${me_web_events.session_id} ;;
+    sql_on:  ${ga_sessions_struct.session_id} = ${me_web_events.session_id} ;;
     relationship: one_to_many
   }
   join: units {
