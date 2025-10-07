@@ -20,7 +20,7 @@ view: me_web_events {
     sql: ${TABLE}.event_id ;;
   }
   dimension: event_name {
-    hidden: yes
+    hidden: no
     type: string
     sql: ${TABLE}.event_name ;;
   }
@@ -35,8 +35,13 @@ view: me_web_events {
   }
   dimension: session_id {
     hidden: yes
-    type: string
+    type: number
     sql: ${TABLE}.session_id ;;
+  }
+  dimension: session_id_str {
+    hidden: yes
+    type: string
+    sql: ${TABLE}.session_id_str ;;
   }
   dimension: stream_id {
     hidden: yes
@@ -53,7 +58,7 @@ view: me_web_events {
     type: string
     sql: ${TABLE}.propCode ;;
   }
-  dimension: resevation_id {
+  dimension: reservation_id {
     hidden: yes
     type: string
     sql: ${TABLE}.reservationId ;;
@@ -74,10 +79,14 @@ view: me_web_events {
   #   type: count_distinct
   #   sql: case when ${TABLE}.purchase then session_id end ;;
   #   }
+  # measure: count {
+  #   hidden: yes
+  #   type: count
+  #   drill_fields: [event_name]
+  # }
   measure: count {
-    hidden: yes
-    type: count
-    drill_fields: [event_name]
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
   }
 }
 

@@ -61,7 +61,7 @@ explore: calendar_dates  {
   }
   join: me_web_events {
     view_label: "Website Events"
-    sql_on:  ${ga_sessions_struct.session_id} = ${me_web_events.session_id} ;;
+    sql_on:  ${ga_sessions_struct.session_id} = ${me_web_events.session_id_str} ;;
     relationship: one_to_many
   }
   join: units {
@@ -132,6 +132,108 @@ explore: calendar_dates  {
   {% else %} 1 = 1
   {% endif %};;
 }
+
+explore: website_data {
+  # label: "Website Metrics (Test)"
+  label: ""
+  from: calendar_dates
+  description: ""
+  fields: [ALL_FIELDS*, -ga_sessions_struct__product_events.product_analysis_date]
+  join: ecom_orders_struct {
+    sql_on: date(${website_data.calendar_date_date}) = ${ecom_orders_struct.order_timestamp_date} ;;
+    relationship: one_to_many
+  }
+  join: ecom_orders_struct__order_items {
+    sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
+    relationship: one_to_many
+  }
+  join: ecom_products_struct {
+    sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_products_struct__product_variants.product_variant_id} = pv.product_variant_id  ;;
+    relationship: many_to_one
+  }
+  join: ecom_products_struct__product_variants {
+    sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
+    relationship: many_to_one
+  }
+  join: me_web_sessions {
+    view_label: "Website Sessions"
+    sql_on:  date(${website_data.calendar_date_date}) = ${me_web_sessions.session_datetime_date} ;;
+    relationship: one_to_many
+  }
+  join: me_web_events {
+    view_label: "Website Events"
+    sql_on:  ${me_web_sessions.session_id} = ${me_web_events.session_id} ;;
+    relationship: one_to_many
+  }
+  join: units {
+    sql_on:  ${me_web_events.prop_code} = ${units.propcode_original} ;;
+    relationship: one_to_many
+  }
+  # join: ga_sessions_struct__page_views {
+  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
+  #   relationship: one_to_many
+  # }
+  # join: ga_sessions_struct__website_events {
+  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.website_events}) as ga_sessions_struct__website_events  ;;
+  #   relationship: one_to_many
+  # }
+  # join: ga_sessions_struct__transaction_events {
+  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
+  #   relationship: one_to_many
+  # }
+  # join: ga_sessions_struct__product_events {
+  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
+  #   relationship: one_to_many
+  # }
+  # join: ecom_products_struct_web {
+  #   view_label: "Website Building"
+  #   from: ecom_products_struct
+  #   sql_on: REGEXP_EXTRACT( ${ga_sessions_struct.session_lp_url}, '[?&]p=([^&]+)')  = ${ecom_products_struct_web.product_id} ;;
+  #   relationship: many_to_one
+  # }
+  # join: ga_utm_dictionary {
+  #   sql_on: ${ga_sessions_struct.utm_key_id} = ${ga_utm_dictionary.utm_key_id} ;;
+  #   relationship: many_to_one
+  # }
+  # join: ga_page_categories {
+  #   sql_on: ${ga_sessions_struct__page_views.page_view_url} = ${ga_page_categories.url} ;;
+  #   relationship: many_to_one
+  # }
+  # join: anal_website_funnel {
+  #   sql_on: ${ga_sessions_struct.session_id} = ${anal_website_funnel.session_id} ;;
+  #   relationship: one_to_many
+  # }
+  sql_always_where:
+  {% if website_data.current_date_range._is_filtered %}
+  {% condition website_data.current_date_range %} ${event_raw} {% endcondition %}
+
+    {% if website_data.previous_date_range._is_filtered or website_data.compare_to._in_query %}
+    {% if website_data.comparison_periods._parameter_value == "2" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
+
+    {% elsif website_data.comparison_periods._parameter_value == "3" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
+    or
+    ${event_raw} between ${period_3_start} and ${period_3_end}
+
+
+    {% elsif website_data.comparison_periods._parameter_value == "4" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
+    or
+    ${event_raw} between ${period_3_start} and ${period_3_end}
+    or
+    ${event_raw} between ${period_4_start} and ${period_4_end}
+
+    {% else %} 1 = 1
+    {% endif %}
+    {% endif %}
+    {% else %} 1 = 1
+    {% endif %};;
+}
+
 
 explore: users_analysis  {
   view_name: main_identity
@@ -363,98 +465,6 @@ explore: conversion_paths_analysis {
     }
   }
 
-
-
-
-# explore: website_calendar_dates {
-#   description: "This Exploer contain Data that have been collected form kasa.com through Segment(Front Side data)"
-#   group_label: "Product & Tech"
-#   label: "Website"
-#   join:  website_sessions {
-#     sql_on: ${website_calendar_dates.calendar_date_date}=${website_sessions.session_timestamp_date};;
-#     relationship: one_to_many
-#   }
-
-#   join:website_orders {
-#     sql_on: ${website_sessions.id}= ${website_orders.id} ;;
-#     type: left_outer
-#     relationship: one_to_one
-#   }
-#   join: website_users {
-#     sql_on: ${website_sessions.anonymous_id} =${website_users.anonymous_id}   ;;
-#     relationship: many_to_one
-#     type: left_outer
-#   }
-
-
-#   join: website_property_viewed {
-#     sql_on: ${website_sessions.id}= ${website_property_viewed.id}  ;;
-#     relationship: one_to_one
-#     type: left_outer
-#   }
-#   join: website_location_viewed {
-#     sql_on:${website_sessions.id}= ${website_location_viewed.id}  ;;
-#     relationship: one_to_one
-#     type: left_outer
-#   }
-#   join: website_searches {
-#     sql_on: ${website_sessions.id} =${website_searches.id}   ;;
-#     relationship: one_to_one
-#     type: left_outer
-#   }
-#   join: website_productadded {
-#     view_label: " Website Add To Cart"
-#     sql_on: ${website_sessions.id} =${website_productadded.id}   ;;
-#     relationship: one_to_one
-#     type: left_outer
-#   }
-#   join: website_checkedavailability {
-#     view_label: "Website Checked Availability"
-#     sql_on: ${website_sessions.id} =${website_checkedavailability.id}   ;;
-#     relationship: one_to_one
-#   }
-#   join: website_checkout_finished_book_button {
-#     view_label: "Website Click Book Button"
-#     sql_on: ${website_sessions.id} =${website_checkout_finished_book_button.id}   ;;
-#     relationship: one_to_one
-#   }
-#   join: website_pages {
-#     view_label: "Website Pages"
-#     sql_on: ${website_sessions.id} =${website_pages.id}   ;;
-#     relationship: one_to_one
-#   }
-#   sql_always_where:
-#       {% if website_calendar_dates.current_date_range._is_filtered %}
-#       {% condition website_calendar_dates.current_date_range %} ${website_calendar_dates.event_raw} {% endcondition %}
-
-#       {% if website_calendar_dates.previous_date_range._is_filtered or website_calendar_dates.compare_to._in_query %}
-#       {% if website_calendar_dates.comparison_periods._parameter_value == "2" %}
-#       or
-#       ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
-
-#       {% elsif website_calendar_dates.comparison_periods._parameter_value == "3" %}
-#       or
-#     ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
-#       or
-#       ${website_calendar_dates.event_raw} between ${period_3_start} and ${period_3_end}
-
-
-#       {% elsif website_calendar_dates.comparison_periods._parameter_value == "4" %}
-#       or
-#     ${website_calendar_dates.event_raw} between ${period_2_start} and ${period_2_end}
-#       or
-#       ${website_calendar_dates.event_raw} between ${period_3_start} and ${period_3_end}
-#       or
-#     ${website_calendar_dates.event_raw} between ${period_4_start} and ${period_4_end}
-
-#       {% else %} 1 = 1
-#       {% endif %}
-#       {% endif %}
-#       {% else %} 1 = 1
-#       {% endif %};;
-
-
-#   }
 explore: website_sessions  {
   description: "This Exploer contain Data that have been collected form kasa.com through Segment(Front Side data)"
   group_label: "Product & Tech"
