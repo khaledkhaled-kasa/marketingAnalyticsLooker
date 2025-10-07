@@ -138,7 +138,7 @@ explore: website_data {
   label: ""
   from: calendar_dates
   description: ""
-  fields: [ALL_FIELDS*, -ga_sessions_struct__product_events.product_analysis_date]
+  fields: [ALL_FIELDS*]
   join: ecom_orders_struct {
     sql_on: date(${website_data.calendar_date_date}) = ${ecom_orders_struct.order_timestamp_date} ;;
     relationship: one_to_many
