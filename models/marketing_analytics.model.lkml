@@ -165,6 +165,11 @@ explore: website_data {
     sql_on:  ${me_web_sessions.session_id} = ${me_web_events.session_id} ;;
     relationship: one_to_many
   }
+  join: me_web_session_event_flags {
+    view_label: "Website Events Flags"
+    sql_on:  ${me_web_sessions.session_id} = ${me_web_session_event_flags.session_id} ;;
+    relationship: one_to_one
+  }
   join: units {
     sql_on:  ${me_web_events.prop_code} = ${units.propcode_original} ;;
     relationship: one_to_many

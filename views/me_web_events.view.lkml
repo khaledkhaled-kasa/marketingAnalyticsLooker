@@ -63,30 +63,53 @@ view: me_web_events {
     type: string
     sql: ${TABLE}.reservationId ;;
   }
-  # measure: location_viewed {
-  #   type: count_distinct
-  #   sql: case when ${TABLE}.location_viewed then session_id end ;;
-  # }
-  # measure: property_viewed {
-  #   type: count_distinct
-  #   sql: case when ${TABLE}.property_viewed then session_id end ;;
-  #   }
-  # measure: checkout_start {
-  #   type: count_distinct
-  #   sql: case when ${TABLE}.checkout_start then session_id end ;;
-  #   }
-  # measure: purchase {
-  #   type: count_distinct
-  #   sql: case when ${TABLE}.purchase then session_id end ;;
-  #   }
+  dimension: location_viewed {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.location_viewed ;;
+  }
+  dimension: property_viewed {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.property_viewed ;;
+  }
+  dimension: checkout_start {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.checkout_start ;;
+  }
+  dimension: purchase {
+    hidden: yes
+    type: yesno
+    sql: ${TABLE}.purchase ;;
+  }
   # measure: count {
   #   hidden: yes
   #   type: count
   #   drill_fields: [event_name]
   # }
-  measure: count {
+  measure: event_count {
     type: count_distinct
     sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+  }
+  measure: location_viewed_count {
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+    filters: [location_viewed: "yes"]
+  }
+  measure: property_viewed_count {
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+    filters: [property_viewed: "yes"]
+  }
+  measure: purchase_count {
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+    filters: [purchase: "yes"]
   }
 }
 
@@ -124,5 +147,31 @@ view: me_web_events__event_params {
     sql: ${TABLE}.value.string_value ;;
     group_label: "Value"
     group_item_label: "String Value"
+  }
+}
+
+view: me_web_session_event_flags {
+  sql_table_name: `data-warehouse-333815`.marketing.dimSessionEventFlags ;;
+
+  dimension: session_id {
+    hidden: yes
+    type: number
+    sql: ${TABLE}.session_id ;;
+  }
+  dimension: location_viewed {
+    type: yesno
+    sql: ${TABLE}.location_viewed ;;
+  }
+  dimension: property_viewed {
+    type: yesno
+    sql: ${TABLE}.property_viewed ;;
+  }
+  dimension: checkout_start {
+    type: yesno
+    sql: ${TABLE}.checkout_start ;;
+  }
+  dimension: purchase {
+    type: yesno
+    sql: ${TABLE}.purchase ;;
   }
 }

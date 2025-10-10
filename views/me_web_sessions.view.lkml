@@ -103,7 +103,13 @@ view: me_web_sessions {
     type: string
     sql: ${TABLE}.utm_term ;;
   }
-  measure: count {
-    type: count
+  # measure: count {
+  #   type: count
+  # }
+  measure: session_count {
+    label: "# of Unique Sessions"
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
   }
 }
