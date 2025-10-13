@@ -1,5 +1,5 @@
 view: me_web_sessions {
-  sql_table_name: `bigquery-analytics-272822.ME_BI_prod.me_web_sessions` ;;
+  sql_table_name: `data-warehouse-333815`.marketing.kasaWebsiteSessions ;;
 
   dimension: browser {
     type: string
@@ -103,6 +103,25 @@ view: me_web_sessions {
     type: string
     sql: ${TABLE}.utm_term ;;
   }
+  dimension: utm_parent_category {
+    group_label: "UTM Dictionary"
+    label: "UTM Parent Category"
+    type: string
+    sql: ${TABLE}.parent ;;
+  }
+  dimension: utm_child_category {
+    group_label: "UTM Dictionary"
+    label: "UTM Child Category"
+    type: string
+    sql: ${TABLE}.child ;;
+  }
+  dimension: utm_grandchild_category {
+    group_label: "UTM Dictionary"
+    label: "UTM Grandchild Category"
+    type: string
+    sql: ${TABLE}.grandchild ;;
+  }
+
   # measure: count {
   #   type: count
   # }
