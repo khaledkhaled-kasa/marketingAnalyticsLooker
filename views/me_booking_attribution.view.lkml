@@ -70,8 +70,8 @@ view: me_booking_attribution {
     sql: ${TABLE}.guest_id ;;
   }
   dimension: lookback_window {
-    type: number
-    sql: ${TABLE}.lookback_window ;;
+    type: string
+    sql: cast(${TABLE}.lookback_window as string) ;;
   }
   dimension: me_id {
     hidden: yes

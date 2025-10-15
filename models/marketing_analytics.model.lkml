@@ -189,69 +189,6 @@ explore: website_data {
     sql_on: ${kasa_website_guest_mapping.guest_id} = ${guests._id} ;;
     relationship: many_to_one
   }
-  # join: ga_sessions_struct__page_views {
-  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
-  #   relationship: one_to_many
-  # }
-  # join: ga_sessions_struct__website_events {
-  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.website_events}) as ga_sessions_struct__website_events  ;;
-  #   relationship: one_to_many
-  # }
-  # join: ga_sessions_struct__transaction_events {
-  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.transaction_events}) as ga_sessions_struct__transaction_events  ;;
-  #   relationship: one_to_many
-  # }
-  # join: ga_sessions_struct__product_events {
-  #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.product_events}) as ga_sessions_struct__product_events  ;;
-  #   relationship: one_to_many
-  # }
-  # join: ecom_products_struct_web {
-  #   view_label: "Website Building"
-  #   from: ecom_products_struct
-  #   sql_on: REGEXP_EXTRACT( ${ga_sessions_struct.session_lp_url}, '[?&]p=([^&]+)')  = ${ecom_products_struct_web.product_id} ;;
-  #   relationship: many_to_one
-  # }
-  # join: ga_utm_dictionary {
-  #   sql_on: ${ga_sessions_struct.utm_key_id} = ${ga_utm_dictionary.utm_key_id} ;;
-  #   relationship: many_to_one
-  # }
-  # join: ga_page_categories {
-  #   sql_on: ${ga_sessions_struct__page_views.page_view_url} = ${ga_page_categories.url} ;;
-  #   relationship: many_to_one
-  # }
-  # join: anal_website_funnel {
-  #   sql_on: ${ga_sessions_struct.session_id} = ${anal_website_funnel.session_id} ;;
-  #   relationship: one_to_many
-  # }
-  sql_always_where:
-  {% if website_data.current_date_range._is_filtered %}
-  {% condition website_data.current_date_range %} ${event_raw} {% endcondition %}
-
-    {% if website_data.previous_date_range._is_filtered or website_data.compare_to._in_query %}
-    {% if website_data.comparison_periods._parameter_value == "2" %}
-    or
-    ${event_raw} between ${period_2_start} and ${period_2_end}
-
-    {% elsif website_data.comparison_periods._parameter_value == "3" %}
-    or
-    ${event_raw} between ${period_2_start} and ${period_2_end}
-    or
-    ${event_raw} between ${period_3_start} and ${period_3_end}
-
-
-    {% elsif website_data.comparison_periods._parameter_value == "4" %}
-    or
-    ${event_raw} between ${period_2_start} and ${period_2_end}
-    or
-    ${event_raw} between ${period_3_start} and ${period_3_end}
-    or
-    ${event_raw} between ${period_4_start} and ${period_4_end}
-
-    {% else %} 1 = 1
-    {% endif %}
-    {% endif %}
-    {% else %} 1 = 1
-    {% endif %};;
 }
 
 
