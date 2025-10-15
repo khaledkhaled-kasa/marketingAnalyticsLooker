@@ -174,6 +174,21 @@ explore: website_data {
     sql_on:  ${me_web_events.prop_code} = ${units.propcode_original} ;;
     relationship: one_to_many
   }
+  # join: me_booking_attribution {
+  #   view_label: "Booking Attribution"
+  #   sql_on:  ${me_web_sessions.me_id} = ${me_booking_attribution.me_id} ;;
+  #   relationship: many_to_one
+  # }
+  join: kasa_website_guest_mapping {
+    view_label: "Guest Profile"
+    sql_on: ${me_web_sessions.me_id} = ${kasa_website_guest_mapping.me_id} ;;
+    relationship: many_to_one
+  }
+  join: guests {
+    view_label: "Guest Profile"
+    sql_on: ${kasa_website_guest_mapping.guest_id} = ${guests._id} ;;
+    relationship: many_to_one
+  }
   # join: ga_sessions_struct__page_views {
   #   sql: LEFT JOIN UNNEST(${ga_sessions_struct.page_views}) as ga_sessions_struct__page_views  ;;
   #   relationship: one_to_many
