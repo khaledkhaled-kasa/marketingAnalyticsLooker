@@ -12,12 +12,10 @@ view: me_booking_attribution {
     sql: ${TABLE}.attributed_weight ;;
   }
   dimension: attribution_model {
-    hidden: yes
     type: string
     sql: ${TABLE}.attribution_model ;;
   }
   dimension: booking_channel {
-    hidden: yes
     type: string
     sql: ${TABLE}.booking_channel ;;
   }
@@ -26,6 +24,7 @@ view: me_booking_attribution {
     sql: ${TABLE}.booking_conversion_path ;;
   }
   dimension_group: booking_datetime {
+    hidden: yes
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
     datatype: datetime
@@ -66,6 +65,7 @@ view: me_booking_attribution {
     sql: ${TABLE}.confirmation_code ;;
   }
   dimension: guest_id {
+    hidden: yes
     type: string
     sql: ${TABLE}.guest_id ;;
   }
@@ -117,7 +117,8 @@ view: kasa_website_guest_mapping {
     sql: ${TABLE}.me_id ;;
   }
   dimension: guest_id {
-    hidden: yes
+    label: "GID"
+    hidden: no
     type: string
     sql: ${TABLE}.guest_id ;;
   }

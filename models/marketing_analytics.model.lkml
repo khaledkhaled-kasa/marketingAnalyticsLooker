@@ -175,9 +175,8 @@ explore: website_data {
     relationship: one_to_many
   }
   # join: me_booking_attribution {
-  #   view_label: "Booking Attribution"
-  #   sql_on:  ${me_web_sessions.me_id} = ${me_booking_attribution.me_id} ;;
-  #   relationship: many_to_one
+  #   sql: LEFT JOIN (SELECT * FROM `${me_booking_attribution.SQL_TABLE_NAME}` LEFT JOIN UNNEST(booking_conversion_path) as booking_conversion_path) ON ${me_web_sessions.session_id} = booking_conversion_path.session_id ;;
+  #   relationship: one_to_many
   # }
   join: kasa_website_guest_mapping {
     view_label: "Guest Profile"
