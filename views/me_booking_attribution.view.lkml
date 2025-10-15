@@ -126,4 +126,29 @@ view: kasa_website_guest_mapping {
     type: yesno
     sql: ${TABLE}.repeatGuestFlag ;;
   }
+  dimension: repeat_guest_type {
+    hidden: no
+    label: "Repeat Guest Type (Kasa Website)"
+    description: "Define how many times a guest has stayed.
+      If Reservation Count = 1, classify as **First Time Guest**.
+      If Reservation Count = 2, classify as **Repeat Guest**.
+      If Reservation Count is between 3 and 5, classify as **Frequent Guest**.
+      If Reservation Count > 5, classify as **Loyal Guest**.
+      Keep in mind the guest has to have stayed at a Kasa, checked-in.
+    "
+    type: string
+    sql: ${TABLE}.repeatGuestType ;;
+  }
+  dimension: property_stay_type {
+    hidden: no
+    label: "Property Stay Type (Kasa Website)"
+    description: "Determine how many distinct properties a guest has stayed at.
+      If Property Count = 1, classify as **Single Property Guest**.
+      If Property Count = 2, classify as **Multi-Property Guest**.
+      If Property Count > 2, classify as **Cross-Portfolio Guest**.
+    "
+    type: string
+    sql: ${TABLE}.propertyStayType ;;
+  }
+
 }
