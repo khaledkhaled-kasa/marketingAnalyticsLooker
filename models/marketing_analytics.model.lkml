@@ -174,10 +174,11 @@ explore: website_data {
     sql_on:  ${me_web_events.prop_code} = ${units.propcode_original} ;;
     relationship: one_to_many
   }
-  # join: me_booking_attribution {
-  #   sql: LEFT JOIN (SELECT * FROM `${me_booking_attribution.SQL_TABLE_NAME}` LEFT JOIN UNNEST(booking_conversion_path) as booking_conversion_path) ON ${me_web_sessions.session_id} = booking_conversion_path.session_id ;;
-  #   relationship: one_to_many
-  # }
+  join: me_booking_attribution {
+    view_label: "Booking Attribution"
+    sql: LEFT JOIN (SELECT main.*, bcp.* FROM ${me_booking_attribution.SQL_TABLE_NAME} as main CROSS JOIN UNNEST(main.booking_conversion_path) as bcp) as me_booking_attribution ON ${me_web_sessions.session_id} = me_booking_attribution.session_id ;;
+    relationship: one_to_many
+  }
   join: kasa_website_guest_mapping {
     view_label: "Guest Profile"
     sql_on: ${me_web_sessions.me_id} = ${kasa_website_guest_mapping.me_id} ;;
