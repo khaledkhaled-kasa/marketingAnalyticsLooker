@@ -133,28 +133,87 @@ explore: calendar_dates  {
   {% endif %};;
 }
 
+# explore: website_data {
+#   # label: "Website Metrics"
+#   label: ""
+#   from: calendar_dates
+#   description: ""
+#   fields: [ALL_FIELDS*]
+#   join: ecom_orders_struct {
+#     sql_on: date(${website_data.calendar_date_date}) = ${ecom_orders_struct.order_timestamp_date} ;;
+#     relationship: one_to_many
+#   }
+#   join: ecom_orders_struct__order_items {
+#     sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
+#     relationship: one_to_many
+#   }
+#   join: ecom_products_struct {
+#     sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_products_struct__product_variants.product_variant_id} = pv.product_variant_id  ;;
+#     relationship: many_to_one
+#   }
+#   join: ecom_products_struct__product_variants {
+#     sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
+#     relationship: many_to_one
+#   }
+#   join: me_web_sessions {
+#     view_label: "Website Sessions"
+#     sql_on:  date(${website_data.calendar_date_date}) = ${me_web_sessions.session_datetime_date} ;;
+#     relationship: one_to_many
+#   }
+#   join: me_web_events {
+#     view_label: "Website Events"
+#     sql_on:  ${me_web_sessions.session_id} = ${me_web_events.session_id} ;;
+#     relationship: one_to_many
+#   }
+#   join: me_web_session_event_flags {
+#     view_label: "Website Events Flags"
+#     sql_on:  ${me_web_sessions.session_id} = ${me_web_session_event_flags.session_id} ;;
+#     relationship: one_to_one
+#   }
+#   join: units {
+#     sql_on:  ${me_web_events.prop_code} = ${units.propcode_original} ;;
+#     relationship: one_to_many
+#   }
+#   join: me_booking_attribution {
+#     view_label: "Booking Attribution"
+#     sql: LEFT JOIN (SELECT main.*, bcp.* FROM ${me_booking_attribution.SQL_TABLE_NAME} as main CROSS JOIN UNNEST(main.booking_conversion_path) as bcp) as me_booking_attribution ON ${me_web_sessions.session_id} = me_booking_attribution.session_id ;;
+#     relationship: one_to_many
+#   }
+#   join: kasa_website_guest_mapping {
+#     view_label: "Guest Profile"
+#     sql_on: ${me_web_sessions.me_id} = ${kasa_website_guest_mapping.me_id} ;;
+#     relationship: many_to_one
+#   }
+#   join: guests {
+#     view_label: "Guest Profile"
+#     sql_on: ${kasa_website_guest_mapping.guest_id} = ${guests._id} ;;
+#     relationship: many_to_one
+#   }
+# }
+
 explore: website_data {
-  # label: "Website Metrics (Test)"
   label: ""
+  # label: "Website Metrics v.2"
+  # label: ""
   from: calendar_dates
   description: ""
   fields: [ALL_FIELDS*]
-  join: ecom_orders_struct {
-    sql_on: date(${website_data.calendar_date_date}) = ${ecom_orders_struct.order_timestamp_date} ;;
-    relationship: one_to_many
-  }
-  join: ecom_orders_struct__order_items {
-    sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
-    relationship: one_to_many
-  }
-  join: ecom_products_struct {
-    sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_products_struct__product_variants.product_variant_id} = pv.product_variant_id  ;;
-    relationship: many_to_one
-  }
-  join: ecom_products_struct__product_variants {
-    sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
-    relationship: many_to_one
-  }
+  # join: ecom_orders_struct {
+  #   sql_on: date(${website_data.calendar_date_date}) = ${ecom_orders_struct.order_timestamp_date} ;;
+  #   relationship: one_to_many
+  # }
+  # join: ecom_orders_struct__order_items {
+  #   sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
+  #   relationship: one_to_many
+  # }
+  # join: ecom_products_struct {
+  #   sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_products_struct__product_variants.product_variant_id} = pv.product_variant_id  ;;
+  #   relationship: many_to_one
+  # }
+  # join: ecom_products_struct__product_variants {
+  #   sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
+  #   relationship: many_to_one
+  # }
   join: me_web_sessions {
     view_label: "Website Sessions"
     sql_on:  date(${website_data.calendar_date_date}) = ${me_web_sessions.session_datetime_date} ;;
@@ -170,24 +229,36 @@ explore: website_data {
     sql_on:  ${me_web_sessions.session_id} = ${me_web_session_event_flags.session_id} ;;
     relationship: one_to_one
   }
-  join: units {
-    sql_on:  ${me_web_events.prop_code} = ${units.propcode_original} ;;
-    relationship: one_to_many
-  }
   join: me_booking_attribution {
     view_label: "Booking Attribution"
     sql: LEFT JOIN (SELECT main.*, bcp.* FROM ${me_booking_attribution.SQL_TABLE_NAME} as main CROSS JOIN UNNEST(main.booking_conversion_path) as bcp) as me_booking_attribution ON ${me_web_sessions.session_id} = me_booking_attribution.session_id ;;
     relationship: one_to_many
   }
-  join: kasa_website_guest_mapping {
-    view_label: "Guest Profile"
-    sql_on: ${me_web_sessions.me_id} = ${kasa_website_guest_mapping.me_id} ;;
-    relationship: many_to_one
+  join: reservations {
+    relationship: one_to_many
+    type: full_outer
+    sql_on: ${me_booking_attribution.confirmation_code} = ${reservations.confirmation_code} ;;
   }
   join: guests {
     view_label: "Guest Profile"
-    sql_on: ${kasa_website_guest_mapping.guest_id} = ${guests._id} ;;
+    sql_on: ${reservations.guest_id} = ${guests._id} ;;
     relationship: many_to_one
+  }
+  join: kasa_website_guest_mapping {
+    view_label: "Guest Profile"
+    # sql_on: ${me_web_sessions.me_id} = ${kasa_website_guest_mapping.me_id} ;;
+    sql_on: ${guests._id} = ${kasa_website_guest_mapping.guest_id} ;;
+    relationship: many_to_one
+  }
+  join: units {
+    sql_on:
+      case when ${me_web_events.prop_code} is not null then ${me_web_events.prop_code} else ${reservations.unit_id} end
+      = case when ${me_web_events.prop_code} is not null then ${units.propcode_original} else ${units._id} end ;;
+    relationship: one_to_many
+  }
+  join: financials {
+    sql_on: ${reservations._id} = ${financials.reservation_id} ;;
+    relationship: one_to_many
   }
 }
 

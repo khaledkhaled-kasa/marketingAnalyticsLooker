@@ -61,6 +61,7 @@ view: me_booking_attribution {
     sql: ${TABLE}.booking_utm_term ;;
   }
   dimension: confirmation_code {
+    hidden: yes
     type: string
     sql: ${TABLE}.confirmation_code ;;
   }
@@ -139,6 +140,10 @@ view: kasa_website_guest_mapping {
     "
     type: string
     sql: ${TABLE}.repeatGuestType ;;
+  }
+  dimension: guest_mapped_flag {
+    type: yesno
+    sql: case when ${guest_id} is not null then true end ;;
   }
   dimension: property_stay_type {
     hidden: no
