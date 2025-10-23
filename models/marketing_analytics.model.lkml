@@ -192,8 +192,8 @@ explore: calendar_dates  {
 # }
 
 explore: website_data {
-  label: ""
-  # label: "Website Metrics v.2"
+  # label: ""
+  label: "Marketing Analytics"
   # label: ""
   from: calendar_dates
   description: ""
@@ -234,6 +234,14 @@ explore: website_data {
     sql: LEFT JOIN (SELECT main.*, bcp.* FROM ${me_booking_attribution.SQL_TABLE_NAME} as main CROSS JOIN UNNEST(main.booking_conversion_path) as bcp) as me_booking_attribution ON ${me_web_sessions.session_id} = me_booking_attribution.session_id ;;
     relationship: one_to_many
   }
+  join: me_ad_stats {
+    view_label: "Ad Spend"
+    type: full_outer
+    sql_on: ${me_web_sessions.utm_key} = ${me_ad_stats.utm_key}
+      and ${me_web_sessions.session_datetime_date} = ${me_ad_stats.date_date}
+    ;;
+    relationship: many_to_many
+  }
   join: reservations {
     relationship: one_to_many
     type: full_outer
@@ -252,8 +260,14 @@ explore: website_data {
   }
   join: units {
     sql_on:
-      case when ${me_web_events.prop_code} is not null then ${me_web_events.prop_code} else ${reservations.unit_id} end
-      = case when ${me_web_events.prop_code} is not null then ${units.propcode_original} else ${units._id} end ;;
+      case
+        when ${me_web_events.prop_code} is not null then ${me_web_events.prop_code}
+        when ${me_ad_stats.prop_code} is not null then ${me_ad_stats.prop_code}
+        else ${reservations.unit_id} end
+      = case
+        when ${me_web_events.prop_code} is not null then ${units.propcode_original}
+        when ${me_ad_stats.prop_code} is not null then ${units.propcode_original}
+        else ${units._id} end ;;
     relationship: one_to_many
   }
   join: financials {

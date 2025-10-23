@@ -50,6 +50,7 @@ view: me_web_sessions {
     sql: ${TABLE}.operating_system ;;
   }
   dimension_group: session_datetime {
+    label: "Session"
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
     datatype: datetime
