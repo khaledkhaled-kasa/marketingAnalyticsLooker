@@ -33,7 +33,7 @@ view: financials {
   }
 
   dimension_group: night {
-    hidden:  yes
+    hidden:  no
     group_label: "Financial Night"
     description: "An occupied night at a Kasa"
     label: "Financial"
