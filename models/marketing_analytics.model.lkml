@@ -237,7 +237,10 @@ explore: website_data {
   join: me_ad_stats {
     view_label: "Ad Spend"
     type: full_outer
-    sql_on: ${me_web_sessions.utm_key} = ${me_ad_stats.utm_key}
+    sql_on: case
+        when ${me_web_sessions.utm_parent_category} in ('retargeting','metasearch') then ${me_web_sessions.session_id}
+        else ${me_web_sessions.utm_key}
+      end = ${me_ad_stats.utm_key}
       and ${me_web_sessions.session_datetime_date} = ${me_ad_stats.date_date}
     ;;
     relationship: many_to_many
