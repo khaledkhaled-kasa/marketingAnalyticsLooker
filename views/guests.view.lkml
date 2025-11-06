@@ -907,6 +907,13 @@ view: guests {
     sql: ${TABLE}.first12Month_flag ;;
   }
 
+  dimension: first_channel_booked_then_kasa {
+    label: "First Channel Booked then Kasa"
+    description: "Booked First Channel from OTA then Kasa, this shows the source of the first channel (Kasa, Airbnb, Booking.com, or Expedia)"
+    type: string
+    sql: ${TABLE}.firstChannelBookedThenKasa ;;
+  }
+
   measure: first_12_month_revenue_amount {
     type: sum_distinct
     hidden: yes
@@ -1016,4 +1023,12 @@ view: guests {
     sql: ${TABLE}.revenueAmount ;;
     value_format_name: usd
   }
+
+  measure: median_days_first_and_second{
+    label: "Median days beteen 1st and 2nd bookings"
+    type: median
+    sql: ${TABLE}.dateDiffFirstSecondBooking ;;
+    value_format_name: decimal_1
+  }
+
 }
