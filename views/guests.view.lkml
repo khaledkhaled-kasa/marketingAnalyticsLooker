@@ -1031,4 +1031,14 @@ view: guests {
     value_format_name: decimal_1
   }
 
+  measure: ltv {
+    label: "LTV"
+    type: number
+    sql: ${revenue_amount_total}/nullif(${num_reservations_count},0) ;;
+    # sql: ${financials.amount}/nullif(${reservations.num_reservations},0) ;;
+    value_format_name: usd
+  }
+
+
+
 }

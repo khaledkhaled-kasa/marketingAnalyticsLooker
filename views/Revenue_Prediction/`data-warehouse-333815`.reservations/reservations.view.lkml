@@ -108,13 +108,21 @@ view: reservations {
   }
 
   dimension: sourcedata_channel_refined {
-    label: "Source (Channel)*"
-    hidden: yes
-    group_label:"Custom Groupings"
+    label: "Source (Simple)"
+    group_label:"Reservation Summary"
     description: "This source channel has been adjusted to group to channels of interested and grouping smaller channels to others"
     type: string
     sql: ${TABLE}.channelRefined ;;
   }
+
+  dimension: channel_medium {
+    label: "Source (Medium)"
+    group_label:"Reservation Summary"
+    description: "This source channel has been adjusted to group to channels of interested and grouping smaller channels to others"
+    type: string
+    sql: ${TABLE}.channelMedium ;;
+  }
+
 
   dimension: unit_stay_count {
     description: "This will pull the unit stay count sorted by earliest checkin date"
@@ -136,6 +144,15 @@ view: reservations {
     type: number
     sql: ${TABLE}.buildingStayCount;;
     hidden: yes
+  }
+
+  dimension: discount {
+    label: "Coupon Code"
+    view_label:"Financials"
+    group_label: "Rate Plan"
+    hidden: no
+    type:  string
+    sql: ${TABLE}.couponCode ;;
   }
 
   dimension: extended_booking {

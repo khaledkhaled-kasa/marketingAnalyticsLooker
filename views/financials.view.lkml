@@ -63,8 +63,8 @@ view: financials {
   measure: amount {
     label: "Amount"
     description: "This amount will automatically filter for only confirmed / checked-in bookings and filtered financial types (excluding taxes & channel fees). Also, this includes extended bookings as a SEPARATE booking."
-    # type: sum_distinct
-    type: sum
+    type: sum_distinct
+    # type: sum
     value_format: "$#,##0.00"
     # sql_distinct_key: ${record_id} ;;
     sql: ${TABLE}.revenueAmount ;;
@@ -79,6 +79,17 @@ view: financials {
     value_format: "$#,##0.00"
     # sql_distinct_key: ${record_id} ;;value_format: "$#,##0.00"
     sql: ${TABLE}.amount ;;
+  }
+
+  measure: discount_amount_web_site {
+    label: "Discount Amount from Kasa.com"
+    type: sum
+    sql: ${TABLE}.amount ;;
+    filters: [
+      type: "Discounts",
+      me_web_events.coupon_code: "-NULL"
+    ]
+    value_format_name: usd
   }
 
   measure: reservation_amount {

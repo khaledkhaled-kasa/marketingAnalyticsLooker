@@ -83,6 +83,10 @@ view: me_web_events {
     type: yesno
     sql: ${TABLE}.purchase ;;
   }
+  dimension: coupon_code {
+    type: string
+    sql: ${TABLE}.couponCode ;;
+  }
   # measure: count {
   #   hidden: yes
   #   type: count

@@ -198,22 +198,6 @@ explore: website_data {
   from: calendar_dates
   description: ""
   fields: [ALL_FIELDS*]
-  # join: ecom_orders_struct {
-  #   sql_on: date(${website_data.calendar_date_date}) = ${ecom_orders_struct.order_timestamp_date} ;;
-  #   relationship: one_to_many
-  # }
-  # join: ecom_orders_struct__order_items {
-  #   sql: LEFT JOIN UNNEST(${ecom_orders_struct.order_items}) as ecom_orders_struct__order_items  ;;
-  #   relationship: one_to_many
-  # }
-  # join: ecom_products_struct {
-  #   sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ecom_products_struct LEFT JOIN UNNEST(product_variants) as pv) ON ${ecom_products_struct__product_variants.product_variant_id} = pv.product_variant_id  ;;
-  #   relationship: many_to_one
-  # }
-  # join: ecom_products_struct__product_variants {
-  #   sql: LEFT JOIN (ME_BI_prod.ECOM_products_struct as ps LEFT JOIN UNNEST(product_variants) as ecom_products_struct__product_variants) ON ${ecom_orders_struct__order_items.product_variant_id} = ${ecom_products_struct__product_variants.product_variant_id}  ;;
-  #   relationship: many_to_one
-  # }
   join: me_web_sessions {
     view_label: "Website Sessions"
     sql_on:  date(${website_data.calendar_date_date}) = ${me_web_sessions.session_datetime_date} ;;
@@ -248,6 +232,7 @@ explore: website_data {
   join: reservations {
     relationship: one_to_many
     type: full_outer
+    # type: left_outer
     sql_on: ${me_booking_attribution.confirmation_code} = ${reservations.confirmation_code} ;;
   }
   join: guests {

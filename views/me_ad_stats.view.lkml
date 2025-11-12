@@ -121,6 +121,10 @@ view: me_ad_stats {
     type: string
     sql: ${TABLE}.utm_term ;;
   }
+  dimension: ad_spend_flag{
+    type: yesno
+    sql: case when ${ad_spend} > 0 then true else false end ;;
+  }
   measure: count {
     hidden: yes
     type: count
@@ -129,6 +133,46 @@ view: me_ad_stats {
   measure: ad_spend_amount {
     type: sum_distinct
     sql: ${ad_spend} ;;
+    value_format_name: usd
+  }
+  measure: cac {
+    label: "CAC"
+    description: "Cost per Acquiring Customer: Ad Spend + promo spend"
+    sql: ${ad_spend_amount}-${financials.discount_amount_web_site};;
+    value_format_name: usd
+  }
+  measure: ltv_to_cac {
+    label: "LTV:CAC"
+    description: "Ratio of LTV to CAC"
+    type: number
+    sql: ${guests.ltv}/nullif(${cac},0) ;;
+    value_format_name: percent_1
+  }
+  measure: cpc {
+    label: "CPC"
+    description: "Cost per Click: Ad Spend/# of Clicks/Sessions"
+    type: number
+    sql: ${ad_spend_amount}/nullif(${me_web_sessions.session_count},0)  ;;
+    value_format_name: usd
+  }
+  measure: roas {
+    label: "ROAS"
+    description: "Return on Ad Spend: Total Revenue/Ad Spend"
+    type: number
+    sql: ${financials.amount}/nullif(${ad_spend_amount},0) ;;
+  }
+  measure: cps {
+    label: "CPS"
+    description: "Cost per Click: Ad Spend/# of Clicks/Sessions"
+    type: number
+    sql: ${ad_spend_amount}/nullif(${me_web_sessions.session_count},0)  ;;
+    value_format_name: usd
+  }
+  measure: cost_per_booking {
+    label: "Cost per Booking"
+    description: "Cost per booking: Ad spend divided by total bookings (reservations)"
+    type: number
+    sql: ${ad_spend_amount}/nullif(${reservations.num_reservations},0) ;;
     value_format_name: usd
   }
 }
