@@ -11,27 +11,32 @@ view: me_ad_stats {
     type: string
     sql: ${TABLE}.ad_channel ;;
   }
-  dimension: ad_clicks {
+  # dimension: ad_clicks {
+  #   hidden: yes
+  #   type: number
+  #   sql: ${TABLE}.ad_clicks ;;
+  # }
+  dimension: record_id {
     hidden: yes
-    type: number
-    sql: ${TABLE}.ad_clicks ;;
-  }
-  dimension: ad_date_key {
     primary_key: yes
+    type: string
+    sql: ${TABLE}.recordId ;;
+  }
+  dimension: session_id {
     hidden: yes
     type: string
-    sql: ${TABLE}.ad_date_key ;;
+    sql: ${TABLE}.session_id ;;
   }
   dimension: ad_id {
     hidden: yes
     type: string
     sql: ${TABLE}.ad_id ;;
   }
-  dimension: ad_impressions {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.ad_impressions ;;
-  }
+  # dimension: ad_impressions {
+  #   hidden: yes
+  #   type: number
+  #   sql: ${TABLE}.ad_impressions ;;
+  # }
   dimension: ad_name {
     hidden: yes
     type: string
@@ -56,21 +61,21 @@ view: me_ad_stats {
     datatype: date
     sql: ${TABLE}.date ;;
   }
-  dimension: is_with_correct_tracking {
-    hidden: yes
-    type: yesno
-    sql: ${TABLE}.is_with_correct_tracking ;;
-  }
-  dimension: platform_reported_orders {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.platform_reported_orders ;;
-  }
-  dimension: platform_reported_revenue {
-    hidden: yes
-    type: number
-    sql: ${TABLE}.platform_reported_revenue ;;
-  }
+  # dimension: is_with_correct_tracking {
+  #   hidden: yes
+  #   type: yesno
+  #   sql: ${TABLE}.is_with_correct_tracking ;;
+  # }
+  # dimension: platform_reported_orders {
+  #   hidden: yes
+  #   type: number
+  #   sql: ${TABLE}.platform_reported_orders ;;
+  # }
+  # dimension: platform_reported_revenue {
+  #   hidden: yes
+  #   type: number
+  #   sql: ${TABLE}.platform_reported_revenue ;;
+  # }
   dimension: prop_code {
     hidden: yes
     type: string
