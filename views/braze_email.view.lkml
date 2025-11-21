@@ -99,7 +99,7 @@ view: braze_email {
     view_label: "Emails"
     sql: ${TABLE}.linkURL ;;
   }
-  dimension: confirmationCode {
+  dimension: confirmation_code {
     type: string
     view_label: "Emails"
     sql:CASE WHEN   ${TABLE}.linkURL  like '%/b/%' THEN

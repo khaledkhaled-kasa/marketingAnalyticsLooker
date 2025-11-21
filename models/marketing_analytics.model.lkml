@@ -263,6 +263,12 @@ explore: website_data {
     sql_on: ${guests._id} = ${braze_email.guest_id} ;;
     relationship: one_to_many
   }
+  join: braze_email_reservation {
+    from: braze_email
+    view_label: "Emails (for Reservations)"
+    sql_on: ${reservations.confirmation_code} = ${braze_email_reservation.confirmation_code} ;;
+    relationship: one_to_many
+  }
   join: braze_sms {
     view_label: "SMS"
     sql_on: ${reservations.confirmation_code} = ${braze_sms.confirmation_code} ;;
