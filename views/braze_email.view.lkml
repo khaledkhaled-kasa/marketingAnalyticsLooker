@@ -4,20 +4,17 @@ view: braze_email {
   dimension: braze_event_id {
     type: string
     sql: ${TABLE}.brazeEventId ;;
-    view_label: "Emails"
     primary_key: yes
   }
 
   dimension: guest_id {
     type: string
     hidden: yes
-    view_label: "Emails"
     sql: ${TABLE}.brazeUserId ;;
   }
 
   dimension_group: braze_event_timestamp {
     type: time
-    view_label: "Emails"
     timeframes: [date, week, month, day_of_week, year, quarter]
     sql: ${TABLE}.brazeEventTimestamp ;;
   }
@@ -54,54 +51,45 @@ view: braze_email {
 
   dimension: event_name {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.eventName ;;
   }
 
   dimension: campaign_name {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.campaignName ;;
   }
 
   dimension: days_to_click {
     type: number
-    view_label: "Emails"
     sql: ${TABLE}.daysToClick ;;
   }
 
   dimension: canvas_name {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.canvasName ;;
   }
 
   dimension: canvas_variation_name {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.canvasVariationName ;;
   }
 
   dimension: canvas_step_name {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.canvasStepName ;;
   }
 
   dimension: user_email {
-    view_label: "Emails"
     type: string
     sql: ${TABLE}.userEmail ;;
   }
 
   dimension: link_url {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.linkURL ;;
   }
   dimension: confirmation_code {
     type: string
-    view_label: "Emails"
     sql:CASE WHEN   ${TABLE}.linkURL  like '%/b/%' THEN
         split(regexp_extract( ${TABLE}.linkURL , '/b/([^/;]+)'),'?')[OFFSET(0)]
       WHEN  ${TABLE}.linkURL like '%typeform%'  THEN
@@ -120,20 +108,17 @@ view: braze_email {
 
   dimension: abort_log {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.abortLog ;;
   }
 
   dimension: abort_type {
     type: string
-    view_label: "Emails"
     sql: ${TABLE}.abortType ;;
   }
 
   measure: count {
     label: "# of events"
     type: count_distinct
-    view_label: "Emails"
     sql: ${braze_event_id} ;;
     drill_fields: [detail*]
   }
@@ -142,7 +127,6 @@ view: braze_email {
     label: "# of Entries"
     type: count_distinct
     sql: ${braze_event_id} ;;
-    view_label: "Emails"
     description: "Count distinct event with status canvas_entered"
     filters: [event_name: "canvas_entered"]
     drill_fields: [detail*]
@@ -152,7 +136,6 @@ view: braze_email {
     label: "# of Canvas Conversions"
     description: "Count distinct event with status canvas_converted"
     type: count_distinct
-    view_label: "Emails"
     sql: ${braze_event_id} ;;
     filters: [event_name: "canvas_converted"]
     drill_fields: [detail*]
@@ -163,7 +146,6 @@ view: braze_email {
     description: "Count distinct event with status campaign_converted"
     type: count_distinct
     sql: ${braze_event_id} ;;
-    view_label: "Emails"
     filters: [event_name: "campaign_converted"]
     drill_fields: [detail*]
   }
@@ -172,7 +154,6 @@ view: braze_email {
   {
     label: "Conversions Rate"
     type: number
-    view_label: "Emails"
     description: "# of Conversions/# of Entries"
     sql: ${total_conversions}/${total_entries} ;;
     value_format: "00.0%"
@@ -181,7 +162,6 @@ view: braze_email {
   measure: total_email_soft_bounced
   {
     label: "# of Email Soft Bounced"
-    view_label: "Emails"
     description: "Count distinct event with status email_soft_bounced"
     type: count_distinct
     sql: ${braze_event_id} ;;
@@ -191,7 +171,6 @@ view: braze_email {
   measure: total_email_bounced
   {
     label: "# of Email Bounced"
-    view_label: "Emails"
     description: "Count distinct event with status email_bounced"
     type: count_distinct
     sql: ${braze_event_id} ;;
@@ -201,7 +180,6 @@ view: braze_email {
   measure: total_email_sent
   {
     label: "# of Email Sent"
-    view_label: "Emails"
     description: "Count distinct event with status email_sent"
     type: count_distinct
     sql: ${braze_event_id} ;;
@@ -211,7 +189,6 @@ view: braze_email {
   measure: total_email_delivered
   {
     label: "# of Email Delivered"
-    view_label: "Emails"
     description: "Count distinct event with status email_delivered"
     type: count_distinct
     sql: ${braze_event_id} ;;
@@ -221,7 +198,6 @@ view: braze_email {
   measure: total_email_opened
   {
     label: "# of Email Opened"
-    view_label: "Emails"
     description: "Count distinct event with status email_opened"
     type: count_distinct
     sql: ${braze_event_id} ;;
@@ -231,7 +207,6 @@ view: braze_email {
   measure: total_email_link_clicked
   {
     label: "# of Email Link Clicked"
-    view_label: "Emails"
     description: "Count distinct event with status email_link_clicked"
     type: count_distinct
     sql: ${braze_event_id} ;;
@@ -292,7 +267,6 @@ view: braze_email {
   measure: num_of_Unique_Clicks
   {
     label: "# of Unique Clicks"
-    view_label: "Emails"
     description: " number of unique external IDs that clicked at least once within a given email"
     type: count_distinct
     sql: ${guest_id} ;;
