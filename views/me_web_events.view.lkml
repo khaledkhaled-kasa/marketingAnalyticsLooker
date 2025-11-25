@@ -104,6 +104,7 @@ view: me_web_events {
     filters: [location_viewed: "yes"]
   }
   measure: property_viewed_count {
+    hidden: yes
     type: count_distinct
     sql_distinct_key: ${session_id} ;;
     sql: ${session_id} ;;

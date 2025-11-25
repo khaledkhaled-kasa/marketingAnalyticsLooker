@@ -87,6 +87,11 @@ view: me_booking_attribution {
   # measure: count {
   #   type: count
   # }
+  measure: purchase {
+    label: "# of purchase"
+    type: count_distinct
+    sql: ${confirmation_code} ;;
+  }
 }
 
 view: me_booking_attribution__booking_conversion_path {
