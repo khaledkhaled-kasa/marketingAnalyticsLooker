@@ -103,6 +103,13 @@ view: me_web_events {
     sql: ${session_id} ;;
     filters: [location_viewed: "yes"]
   }
+  measure: location_viewed_by_distinct_user_count {
+    type: count_distinct
+    hidden: yes
+    sql_distinct_key: ${user_pseudo_id} ;;
+    sql: ${user_pseudo_id} ;;
+    filters: [location_viewed: "yes"]
+  }
   measure: property_viewed_count {
     hidden: yes
     type: count_distinct
