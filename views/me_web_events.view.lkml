@@ -2,11 +2,11 @@ view: me_web_events {
   sql_table_name: `data-warehouse-333815`.marketing.kasaWebsiteEvents ;;
 
   dimension_group: event_datetime {
-    hidden: yes
+    hidden: no
     type: time
     timeframes: [raw, time, date, week, month, quarter, year]
     datatype: datetime
-    sql: ${TABLE}.event_datetime ;;
+    sql: datetime(${TABLE}.event_datetime) ;;
   }
   # dimension: record_id {
   #   hidden: yes

@@ -274,6 +274,12 @@ explore: website_data {
     sql_on: ${reservations.confirmation_code} = ${braze_sms.confirmation_code} ;;
     relationship: one_to_many
   }
+  join: rate_plan_segmentation {
+    view_label: "Financials"
+    type: left_outer
+    relationship: one_to_many
+    sql_on: ${reservations.confirmation_code} = ${rate_plan_segmentation.confirmation_cd};;
+  }
 }
 
 

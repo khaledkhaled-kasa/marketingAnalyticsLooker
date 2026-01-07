@@ -52,7 +52,7 @@ view: me_web_sessions {
   dimension_group: session_datetime {
     label: "Session"
     type: time
-    timeframes: [raw, time, date, week, month, quarter, year]
+    timeframes: [raw, time, date, week, month, quarter, year, month_name]
     datatype: datetime
     sql: ${TABLE}.session_datetime ;;
   }
@@ -121,6 +121,12 @@ view: me_web_sessions {
     label: "UTM Grandchild Category"
     type: string
     sql: ${TABLE}.grandchild ;;
+  }
+  dimension: utm_dictionary {
+    group_label: "UTM Dictionary"
+    label: "UTM Dictionary"
+    type: string
+    sql: ${TABLE}.utmDictionary ;;
   }
 
   # measure: count {
