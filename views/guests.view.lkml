@@ -97,7 +97,7 @@ view: guests {
   dimension_group: booking_date_first_booking {
     label: "Booking"
     group_label: "First Reservation"
-    hidden: yes
+    hidden: no
     type: time
     description: "Booking date for first reservation"
     timeframes: [
