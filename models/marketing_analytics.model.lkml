@@ -236,12 +236,12 @@ explore: website_data {
     sql_on: ${reservations.guest_id} = ${guests._id} ;;
     relationship: many_to_one
   }
-  join: kasa_website_guest_mapping {
-    view_label: "Guest Profile"
-    # sql_on: ${me_web_sessions.me_id} = ${kasa_website_guest_mapping.me_id} ;;
-    sql_on: ${guests._id} = ${kasa_website_guest_mapping.guest_id} ;;
-    relationship: many_to_one
-  }
+  # join: kasa_website_guest_mapping {
+  #   view_label: "Guest Profile"
+  #   # sql_on: ${me_web_sessions.me_id} = ${kasa_website_guest_mapping.me_id} ;;
+  #   sql_on: ${guests._id} = ${kasa_website_guest_mapping.guest_id} ;;
+  #   relationship: many_to_one
+  # }
   join: units {
     sql_on:
       case

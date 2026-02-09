@@ -1012,6 +1012,16 @@ view: reservations {
     drill_fields: [reservation_details*]
   }
 
+  measure: num_reservations_no_extension {
+    view_label: "Metrics"
+    label: "# of Reservations (No Extensions)"
+    description: "Number of unique reservations (confirmed / checked in bookings). Reservation extension has been excluded."
+    type: count_distinct
+    sql: ${confirmation_code} ;;
+    filters: [status: "confirmed, checked_in", gxoUnitfg: "no", extended_booking: "no"]
+    drill_fields: [reservation_details*]
+  }
+
   measure: num_reservations_canceled {
     view_label: "Metrics"
     label: "# of Reservations (Canceled)"

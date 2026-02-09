@@ -95,7 +95,7 @@ view: guests {
   }
 
   dimension_group: booking_date_first_booking {
-    label: "Booking"
+    label: "Booking (First)"
     group_label: "First Reservation"
     hidden: no
     type: time
@@ -115,9 +115,9 @@ view: guests {
   }
 
   dimension_group: booking_date_last_booking {
-    label: "Booking"
+    label: "Booking (Latest)"
     group_label: "Latest Reservation"
-    hidden: yes
+    hidden: no
     type: time
     description: "Booking date for latest reservation"
     timeframes: [date]
@@ -337,10 +337,11 @@ view: guests {
 
   dimension: _id {
     type: string
+    label: "GID"
     description: "Unique guest identifier"
     sql: ${TABLE}.guestId ;;
     primary_key: yes
-    hidden: yes
+    hidden: no
   }
 
   dimension: idcheckstatus {
@@ -912,6 +913,43 @@ view: guests {
     description: "Booked First Channel from OTA then Kasa, this shows the source of the first channel (Kasa, Airbnb, Booking.com, or Expedia)"
     type: string
     sql: ${TABLE}.firstChannelBookedThenKasa ;;
+  }
+
+  dimension: repeat_guest_flag {
+    label: "Repeat Guest Flag"
+    type: yesno
+    sql: ${TABLE}.repeatGuestFlag ;;
+  }
+
+  dimension: repeat_guest_type {
+    hidden: no
+    label: "Repeat Guest Type"
+    description: "Define how many times a guest has stayed.
+    If Reservation Count = 1, classify as **First Time Guest**.
+    If Reservation Count = 2, classify as **Repeat Guest**.
+    If Reservation Count is between 3 and 5, classify as **Frequent Guest**.
+    If Reservation Count > 5, classify as **Loyal Guest**.
+    Keep in mind the guest has to have stayed at a Kasa, checked-in.
+    "
+    type: string
+    sql: ${TABLE}.repeatGuestType ;;
+  }
+
+  # dimension: guest_mapped_flag {
+  #   type: yesno
+  #   sql: case when ${guest_id} is not null then true end ;;
+  # }
+
+  dimension: property_stay_type {
+    hidden: no
+    label: "Property Stay Type"
+    description: "Determine how many distinct properties a guest has stayed at.
+    If Property Count = 1, classify as **Single Property Guest**.
+    If Property Count = 2, classify as **Multi-Property Guest**.
+    If Property Count > 2, classify as **Cross-Portfolio Guest**.
+    "
+    type: string
+    sql: ${TABLE}.propertyStayType ;;
   }
 
   measure: first_12_month_revenue_amount {

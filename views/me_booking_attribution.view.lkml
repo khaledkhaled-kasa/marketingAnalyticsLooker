@@ -114,52 +114,52 @@ view: me_booking_attribution__booking_conversion_path {
   }
 }
 
-view: kasa_website_guest_mapping {
-  sql_table_name: `data-warehouse-333815`.marketing.kasaWebsiteGuestMapping ;;
+# view: kasa_website_guest_mapping {
+#   sql_table_name: `data-warehouse-333815`.marketing.kasaWebsiteGuestMapping ;;
 
-  dimension: me_id {
-    hidden: yes
-    type: string
-    sql: ${TABLE}.me_id ;;
-  }
-  dimension: guest_id {
-    label: "GID"
-    hidden: no
-    type: string
-    sql: ${TABLE}.guest_id ;;
-  }
-  dimension: repeat_guest_flag {
-    label: "Repeat Guest Flag (Kasa Website)"
-    type: yesno
-    sql: ${TABLE}.repeatGuestFlag ;;
-  }
-  dimension: repeat_guest_type {
-    hidden: no
-    label: "Repeat Guest Type (Kasa Website)"
-    description: "Define how many times a guest has stayed.
-      If Reservation Count = 1, classify as **First Time Guest**.
-      If Reservation Count = 2, classify as **Repeat Guest**.
-      If Reservation Count is between 3 and 5, classify as **Frequent Guest**.
-      If Reservation Count > 5, classify as **Loyal Guest**.
-      Keep in mind the guest has to have stayed at a Kasa, checked-in.
-    "
-    type: string
-    sql: ${TABLE}.repeatGuestType ;;
-  }
-  dimension: guest_mapped_flag {
-    type: yesno
-    sql: case when ${guest_id} is not null then true end ;;
-  }
-  dimension: property_stay_type {
-    hidden: no
-    label: "Property Stay Type (Kasa Website)"
-    description: "Determine how many distinct properties a guest has stayed at.
-      If Property Count = 1, classify as **Single Property Guest**.
-      If Property Count = 2, classify as **Multi-Property Guest**.
-      If Property Count > 2, classify as **Cross-Portfolio Guest**.
-    "
-    type: string
-    sql: ${TABLE}.propertyStayType ;;
-  }
+#   dimension: me_id {
+#     hidden: yes
+#     type: string
+#     sql: ${TABLE}.me_id ;;
+#   }
+#   dimension: guest_id {
+#     label: "GID"
+#     hidden: no
+#     type: string
+#     sql: ${TABLE}.guest_id ;;
+#   }
+#   dimension: repeat_guest_flag {
+#     label: "Repeat Guest Flag (Kasa Website)"
+#     type: yesno
+#     sql: ${TABLE}.repeatGuestFlag ;;
+#   }
+#   dimension: repeat_guest_type {
+#     hidden: no
+#     label: "Repeat Guest Type (Kasa Website)"
+#     description: "Define how many times a guest has stayed.
+#       If Reservation Count = 1, classify as **First Time Guest**.
+#       If Reservation Count = 2, classify as **Repeat Guest**.
+#       If Reservation Count is between 3 and 5, classify as **Frequent Guest**.
+#       If Reservation Count > 5, classify as **Loyal Guest**.
+#       Keep in mind the guest has to have stayed at a Kasa, checked-in.
+#     "
+#     type: string
+#     sql: ${TABLE}.repeatGuestType ;;
+#   }
+#   dimension: guest_mapped_flag {
+#     type: yesno
+#     sql: case when ${guest_id} is not null then true end ;;
+#   }
+#   dimension: property_stay_type {
+#     hidden: no
+#     label: "Property Stay Type (Kasa Website)"
+#     description: "Determine how many distinct properties a guest has stayed at.
+#       If Property Count = 1, classify as **Single Property Guest**.
+#       If Property Count = 2, classify as **Multi-Property Guest**.
+#       If Property Count > 2, classify as **Cross-Portfolio Guest**.
+#     "
+#     type: string
+#     sql: ${TABLE}.propertyStayType ;;
+#   }
 
-}
+# }
