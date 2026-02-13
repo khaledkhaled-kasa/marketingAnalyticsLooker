@@ -180,6 +180,42 @@ view: guests {
     sql: ${TABLE}.guestsCountLastBooking ;;
   }
 
+  dimension: channel_second_booking {
+    hidden: no
+    label: "Channel (Second)"
+    group_label: "Second Reservation"
+    type: string
+    description: "Booking channel for first reservation"
+    sql: ${TABLE}.channelSecondBooking ;;
+  }
+
+  dimension: kontrol_source_second_booking {
+    hidden: yes
+    label: "Kontrol Source"
+    group_label: "Second Reservation"
+    type: string
+    description: "Kontrol Source for second reservation"
+    sql: ${TABLE}.kontrolSourceSecondBooking ;;
+  }
+
+  dimension: prop_code_second_booking {
+    label: "Property Code"
+    hidden: yes
+    group_label: "Second Reservation"
+    type: string
+    description: "Property code for second reservation"
+    sql: ${TABLE}.propCodeSecondBooking ;;
+  }
+
+  dimension: guests_count_second_booking {
+    label: "Group Size"
+    hidden: yes
+    group_label: "Second Reservation"
+    type: number
+    description: "Number of guests for second reservation"
+    sql: ${TABLE}.guestsCountSecondBooking ;;
+  }
+
   dimension: channel_last_booking {
     label: "Channel (Latest)"
     hidden: no
@@ -1075,6 +1111,12 @@ view: guests {
     sql: ${revenue_amount_total}/nullif(${num_reservations_count},0) ;;
     # sql: ${financials.amount}/nullif(${reservations.num_reservations},0) ;;
     value_format_name: usd
+  }
+
+  measure: guest_id_count {
+    label: "# of GID (unique)"
+    type: count_distinct
+    sql: ${_id} ;;
   }
 
 
