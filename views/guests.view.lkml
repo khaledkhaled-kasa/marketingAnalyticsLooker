@@ -107,7 +107,8 @@ view: guests {
       week,
       month,
       quarter,
-      year
+      year,
+      month_num
     ]
     convert_tz: no
     datatype: date
@@ -202,7 +203,8 @@ view: guests {
       week,
       month,
       quarter,
-      year
+      year,
+      month_num
     ]
     convert_tz: no
     datatype: date
@@ -1175,6 +1177,50 @@ view: guests {
     sql: ${_id} ;;
   }
 
+  dimension: first_second_booking_same_month {
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    label: "First & Second Booking (Month)"
+    description: "First & Second Bookings happens within the same month"
+    sql: case when ${booking_date_first_booking_year} = ${booking_date_second_booking_year} and  ${booking_date_first_booking_month} = ${booking_date_second_booking_month} then True else False end ;;
+  }
+
+  dimension: first_second_booking_same_quarter {
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    label: "First & Second Booking (Quarter)"
+    description: "First & Second Bookings happens within the same quarter"
+    sql: case when ${booking_date_first_booking_quarter} = ${booking_date_second_booking_quarter} then True else False end ;;
+  }
+
+  dimension: first_second_booking_same_half {
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    label: "First & Second Booking (Half Of Year)"
+    description: "First & Second Bookings happens within the same half of the year"
+    sql: case
+      when ${booking_date_first_booking_year} = ${booking_date_second_booking_year} and  ${booking_date_first_booking_month_num} between 1 and 6 and  ${booking_date_second_booking_month_num} between 1 and 6 then True
+      when ${booking_date_first_booking_year} = ${booking_date_second_booking_year} and  ${booking_date_first_booking_month_num} between 7 and 12 and  ${booking_date_second_booking_month_num} between 7 and 12 then True
+    else False end ;;
+  }
+
+  dimension: first_second_booking_same_year {
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    label: "First & Second Booking (Year)"
+    description: "First & Second Bookings happens within the same year"
+    sql: case
+      when ${booking_date_first_booking_year} = ${booking_date_second_booking_year} then True else False end;;
+  }
+
+  dimension: first_second_booking_same_within_year {
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    description: "First & Second Bookings happens within a year of each other"
+    label: "First & Second Booking (With-in Year)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 12 then True else False end  ;;
+  }
 
 
 }
