@@ -189,6 +189,26 @@ view: guests {
     sql: ${TABLE}.channelSecondBooking ;;
   }
 
+  dimension_group: booking_date_second_booking {
+    label: "Booking (Second)"
+    group_label: "Second Reservation"
+    hidden: no
+    type: time
+    description: "Booking date for first reservation"
+    timeframes: [
+      raw,
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year
+    ]
+    convert_tz: no
+    datatype: date
+    sql: ${TABLE}.bookingDateSecondBooking ;;
+  }
+
   dimension: kontrol_source_second_booking {
     hidden: yes
     label: "Kontrol Source"
@@ -697,6 +717,42 @@ view: guests {
     type: number
     description: "Number of reservations (confirmed or checked in, excludes extensions as separate booking)"
     sql: ${TABLE}.numReservations ;;
+  }
+
+  dimension: num_reservations_kasa {
+    group_label: "Total Guest Stats"
+    hidden: no
+    label: "Number of Lifetime Reservations (Kasa)"
+    type: number
+    description: "Number of reservations (confirmed or checked in, excludes extensions as separate booking)"
+    sql: ${TABLE}.numReservationsKasa ;;
+  }
+
+  dimension: num_reservations_other {
+    group_label: "Total Guest Stats"
+    hidden: no
+    label: "Number of Lifetime Reservations (Other)"
+    type: number
+    description: "Number of reservations (confirmed or checked in, excludes extensions as separate booking)"
+    sql: ${TABLE}.numReservationsOther ;;
+  }
+
+  dimension: guest_channel_bucket {
+    group_label: "Total Guest Stats"
+    hidden: no
+    label: "Guest Channel Bucket"
+    type: number
+    description: "Which channel does the guest book: Always Kasa, Always OTA or Mixed"
+    sql: ${TABLE}.guestChannelBucket ;;
+  }
+
+  dimension: majority_booking_channel{
+    group_label: "Total Guest Stats"
+    hidden: no
+    label: "Guest Channel Bucket"
+    type: number
+    description: "The channel which the guest books through the most (Kasa, OTA or Tied)"
+    sql: ${TABLE}.majorityBookingChannel ;;
   }
 
   dimension: num_reservations_including_extensions {
