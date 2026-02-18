@@ -743,7 +743,7 @@ view: guests {
     group_label: "Total Guest Stats"
     hidden: no
     label: "Guest Channel Bucket"
-    type: number
+    type: string
     description: "Which channel does the guest book: Always Kasa, Always OTA or Mixed"
     sql: ${TABLE}.guestChannelBucket ;;
   }
@@ -751,8 +751,8 @@ view: guests {
   dimension: majority_booking_channel{
     group_label: "Total Guest Stats"
     hidden: no
-    label: "Guest Channel Bucket"
-    type: number
+    label: "Majority Booking Channel"
+    type: string
     description: "The channel which the guest books through the most (Kasa, OTA or Tied)"
     sql: ${TABLE}.majorityBookingChannel ;;
   }
