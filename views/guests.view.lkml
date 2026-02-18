@@ -11,7 +11,7 @@ view: guests {
   }
 
   dimension: ancillary_amount {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     label: "Total Ancillary Amount"
     type: number
     hidden: yes
@@ -43,7 +43,7 @@ view: guests {
   # }
 
   dimension: avg_lead_time {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     label: "Average Lead Time"
     hidden: yes
     type: number
@@ -52,7 +52,7 @@ view: guests {
   }
 
   dimension: avg_length_of_stay {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "Average LOS"
     type: number
@@ -68,7 +68,7 @@ view: guests {
   }
 
   dimension: booking_amount {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "Total Booking Amount"
     type: number
@@ -569,7 +569,7 @@ view: guests {
   }
 
   dimension: num1_star_reviews {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of 1 Star Reviews"
     type: number
@@ -578,7 +578,7 @@ view: guests {
   }
 
   dimension: num2_star_reviews {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of 2 Star Reviews"
     type: number
@@ -588,7 +588,7 @@ view: guests {
 
   dimension: num3_star_reviews {
     hidden: yes
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     label: "# of 3 Star Reviews"
     type: number
     description: "Number of 3 star review given"
@@ -596,7 +596,7 @@ view: guests {
   }
 
   dimension: num4_star_reviews {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of 4 Star Reviews"
     type: number
@@ -605,7 +605,7 @@ view: guests {
   }
 
   dimension: num5_star_reviews {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of 5 Star Reviews"
     type: number
@@ -614,7 +614,7 @@ view: guests {
   }
 
   dimension: num_cancellations {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Cancellations"
     type: number
@@ -623,7 +623,7 @@ view: guests {
   }
 
   dimension: num_checkins {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Checkins"
     type: number
@@ -632,7 +632,7 @@ view: guests {
   }
 
   dimension: num_eci_approved {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of ECIs Approved"
     type: number
@@ -641,7 +641,7 @@ view: guests {
   }
 
   dimension: num_eci_requests {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of ECIs Requested"
     type: number
@@ -650,7 +650,7 @@ view: guests {
   }
 
   dimension: num_extensions {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Extensions"
     type: number
@@ -659,7 +659,7 @@ view: guests {
   }
 
   dimension: num_lco_approved {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of LCOs Approved"
     type: number
@@ -668,7 +668,7 @@ view: guests {
   }
 
   dimension: num_lco_requests {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of LCOs Requested"
     type: number
@@ -677,7 +677,7 @@ view: guests {
   }
 
   dimension: num_of_properties_stayed {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Properties Visited"
     type: number
@@ -686,7 +686,7 @@ view: guests {
   }
 
   dimension: num_of_properties_stayed_actual_non_extensions {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Properties Visited actual, non-extension"
     type: number
@@ -695,7 +695,7 @@ view: guests {
   }
 
   dimension: num_reservation_nights {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Reservation Nights"
     type: number
@@ -704,7 +704,7 @@ view: guests {
   }
 
   dimension: num_reservation_nights_cancelled {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Reservation Nights Cancelled"
     type: number
@@ -713,7 +713,7 @@ view: guests {
   }
 
   dimension: num_reservations {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: no
     label: "Number of Lifetime Reservations"
     type: number
@@ -722,7 +722,7 @@ view: guests {
   }
 
   dimension: num_reservations_kasa {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: no
     label: "Number of Lifetime Reservations (Kasa)"
     type: number
@@ -730,8 +730,8 @@ view: guests {
     sql: ${TABLE}.numReservationsKasa ;;
   }
 
-  dimension: num_reservations_other {
-    group_label: "Total Guest Stats"
+  dimension: num_reservations_ota {
+    group_label: "Lifetime Stats"
     hidden: no
     label: "Number of Lifetime Reservations (Other)"
     type: number
@@ -740,7 +740,7 @@ view: guests {
   }
 
   dimension: guest_channel_bucket {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: no
     label: "Guest Channel Bucket"
     type: string
@@ -749,7 +749,7 @@ view: guests {
   }
 
   dimension: majority_booking_channel{
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: no
     label: "Majority Booking Channel"
     type: string
@@ -758,7 +758,7 @@ view: guests {
   }
 
   dimension: num_reservations_including_extensions {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Reservations (with Ext. counted separate)"
     type: number
@@ -767,7 +767,7 @@ view: guests {
   }
 
   dimension: num_reservations_lco {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Reservations with LCO"
     type: number
@@ -776,7 +776,7 @@ view: guests {
   }
 
   dimension: num_reservations_parking {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Reservations with Parking"
     type: number
@@ -785,7 +785,7 @@ view: guests {
   }
 
   dimension: num_reservations_pet {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Reservations with Pet"
     type: number
@@ -794,7 +794,7 @@ view: guests {
   }
 
   dimension: num_unreviewed_stays {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: yes
     label: "# of Unreviewed Reservations"
     type: number
@@ -1128,7 +1128,7 @@ view: guests {
   }
 
   measure: num_reservations_count {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: no
     label: "# of Reservations (without Ext. counted separate)"
     type: sum_distinct
@@ -1136,8 +1136,26 @@ view: guests {
     sql: ${num_reservations} ;;
   }
 
+  measure: num_reservations_kasa_count {
+    group_label: "Lifetime Stats"
+    hidden: no
+    label: "# of Reservations (Kasa)"
+    type: sum_distinct
+    description: "Number of reservations booked through Kasa.com (confirmed or checked in, excludes extensions as separate booking)"
+    sql: ${num_reservations_kasa} ;;
+  }
+
+  measure: num_reservations_ota_count {
+    group_label: "Lifetime Stats"
+    hidden: no
+    label: "# of Reservations (OTA)"
+    type: sum_distinct
+    description: "Number of reservations booked through an OTA (confirmed or checked in, excludes extensions as separate booking)"
+    sql: ${num_reservations_ota} ;;
+  }
+
   measure: booking_amount_total {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: no
     label: "Booking Amount"
     type: sum_distinct
@@ -1147,7 +1165,7 @@ view: guests {
   }
 
   measure: revenue_amount_total {
-    group_label: "Total Guest Stats"
+    group_label: "Lifetime Stats"
     hidden: no
     label: "Revenue Amount"
     type: sum_distinct
