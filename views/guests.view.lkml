@@ -121,7 +121,16 @@ view: guests {
     hidden: no
     type: time
     description: "Booking date for latest reservation"
-    timeframes: [date]
+    timeframes: [
+      raw,
+      date,
+      day_of_week,
+      week,
+      month,
+      quarter,
+      year,
+      month_num
+    ]
     convert_tz: no
     datatype: date
     sql: ${TABLE}.bookingDateLastBooking ;;
@@ -1240,5 +1249,48 @@ view: guests {
       when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 12 then True else False end  ;;
   }
 
+  dimension: first_last_booking_same_month {
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    label: "First & Last Booking (Month)"
+    description: "First & Last Bookings happens within the same month"
+    sql: case when ${booking_date_first_booking_year} = ${booking_date_last_booking_year} and  ${booking_date_first_booking_month} = ${booking_date_last_booking_month} then True else False end ;;
+  }
 
+  dimension: first_last_booking_same_quarter {
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    label: "First & Last Booking (Quarter)"
+    description: "First & Last Bookings happens within the same quarter"
+    sql: case when ${booking_date_first_booking_quarter} = ${booking_date_last_booking_quarter} then True else False end ;;
+  }
+
+  dimension: first_last_booking_same_half {
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    label: "First & Last Booking (Half Of Year)"
+    description: "First & Last Bookings happens within the same half of the year"
+    sql: case
+      when ${booking_date_first_booking_year} = ${booking_date_last_booking_year} and  ${booking_date_first_booking_month_num} between 1 and 6 and  ${booking_date_last_booking_month_num} between 1 and 6 then True
+      when ${booking_date_first_booking_year} = ${booking_date_last_booking_year} and  ${booking_date_first_booking_month_num} between 7 and 12 and  ${booking_date_last_booking_month_num} between 7 and 12 then True
+    else False end ;;
+  }
+
+  dimension: first_last_booking_same_year {
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    label: "First & Last Booking (Year)"
+    description: "First & Last Bookings happens within the same year"
+    sql: case
+      when ${booking_date_first_booking_year} = ${booking_date_last_booking_year} then True else False end;;
+  }
+
+  dimension: first_last_booking_same_within_year {
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    description: "First & Last Bookings happens within a year of each other"
+    label: "First & Last Booking (With-in Year)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 12 then True else False end  ;;
+  }
 }
