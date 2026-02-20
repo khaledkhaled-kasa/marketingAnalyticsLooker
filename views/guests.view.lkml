@@ -115,6 +115,21 @@ view: guests {
     sql: ${TABLE}.bookingDateFirstBooking ;;
   }
 
+  dimension: booking_date_first_booking_half_year {
+    label: "Booking (First) Half Year"
+    group_label: "First Reservation"
+    type: string
+    sql:
+    CONCAT(
+      EXTRACT(YEAR FROM ${booking_date_first_booking_raw}),
+      '-H',
+      CASE
+        WHEN EXTRACT(MONTH FROM ${booking_date_first_booking_raw}) <= 6 THEN 1
+        ELSE 2
+      END
+    ) ;;
+  }
+
   dimension_group: booking_date_last_booking {
     label: "Booking (Latest)"
     group_label: "Latest Reservation"
@@ -135,6 +150,22 @@ view: guests {
     datatype: date
     sql: ${TABLE}.bookingDateLastBooking ;;
   }
+
+  dimension: booking_date_last_booking_half_year {
+    label: "Booking (Latest) Half Year"
+    group_label: "Latest Reservation"
+    type: string
+    sql:
+    CONCAT(
+      EXTRACT(YEAR FROM ${booking_date_last_booking_raw}),
+      '-H',
+      CASE
+        WHEN EXTRACT(MONTH FROM ${booking_date_last_booking_raw}) <= 6 THEN 1
+        ELSE 2
+      END
+    ) ;;
+  }
+
 
   dimension: channel_first_booking {
     hidden: no
@@ -218,6 +249,21 @@ view: guests {
     convert_tz: no
     datatype: date
     sql: ${TABLE}.bookingDateSecondBooking ;;
+  }
+
+  dimension: booking_date_second_booking_half_year {
+    label: "Booking (Second) Half Year"
+    group_label: "Second Reservation"
+    type: string
+    sql:
+    CONCAT(
+      EXTRACT(YEAR FROM ${booking_date_second_booking_raw}),
+      '-H',
+      CASE
+        WHEN EXTRACT(MONTH FROM ${booking_date_second_booking_raw}) <= 6 THEN 1
+        ELSE 2
+      END
+    ) ;;
   }
 
   dimension: kontrol_source_second_booking {
