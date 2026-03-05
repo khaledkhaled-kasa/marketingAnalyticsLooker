@@ -794,6 +794,22 @@ view: guests {
     sql: ${TABLE}.numReservationsOther ;;
   }
 
+  dimension: days_checkout_to_rebooking {
+    group_label: "First & Second Booking Dimensions"
+    label: "Days Between First Checkout and Second Booking"
+    type: number
+    sql: DATE_DIFF(${booking_date_second_booking_date}, ${checkout_date_local_first_booking_date}, DAY) ;;
+  }
+
+  dimension: days_checkout_to_rebooking_bucket {
+    group_label: "First & Second Booking Dimensions"
+    label: "Days Between First Checkout and Second Booking (Tiers)"
+    type: tier
+    tiers: [0, 7, 14, 30, 60, 90, 180, 365]
+    style: integer
+    sql: ${days_checkout_to_rebooking} ;;
+  }
+
   dimension: guest_channel_bucket {
     group_label: "Lifetime Stats"
     hidden: no
