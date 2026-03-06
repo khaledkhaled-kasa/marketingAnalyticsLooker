@@ -1094,11 +1094,26 @@ view: guests {
     label: "Property Stay Type"
     description: "Determine how many distinct properties a guest has stayed at.
     If Property Count = 1, classify as **Single Property Guest**.
-    If Property Count = 2, classify as **Multi-Property Guest**.
-    If Property Count > 2, classify as **Cross-Portfolio Guest**.
+    If Property Count > 1, classify as **Multi-Property Guest**.
     "
     type: string
     sql: ${TABLE}.propertyStayType ;;
+  }
+
+  dimension: property_sub_category_type{
+    hidden: no
+    label: "Property Sub-Category Type"
+    description: "Determine which property sub-category combination a guest has stayed with at Kasa.
+      Hotel Only
+      Apart-Hotel Only
+      Apartment Only
+      Hotel and Apart-Hotel
+      Hotel and Apartment
+      Apart-Hotel and Apartment
+      All Three
+    "
+    type: string
+    sql: ${TABLE}.propertySubCategoryType ;;
   }
 
   measure: first_12_month_revenue_amount {
@@ -1295,6 +1310,42 @@ view: guests {
       when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 12 then True else False end  ;;
   }
 
+  dimension: first_second_booking_rolling_03{
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    description: "First & Second Bookings happens within a rolling 3 months"
+    label: "First & Second Booking (Rolling 03 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 3 then True else False end  ;;
+  }
+
+  dimension: first_second_booking_rolling_06{
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    description: "First & Second Bookings happens within a rolling 6 months"
+    label: "First & Second Booking (Rolling 06 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 6 then True else False end  ;;
+  }
+
+  dimension: first_second_booking_rolling_18{
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    description: "First & Second Bookings happens within a rolling 18 months"
+    label: "First & Second Booking (Rolling 18 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 18 then True else False end  ;;
+  }
+
+  dimension: first_second_booking_rolling_24{
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    description: "First & Second Bookings happens within a rolling 18 months"
+    label: "First & Second Booking (Rolling 24 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 24 then True else False end  ;;
+  }
+
   dimension: first_last_booking_same_month {
     group_label: "First & Last Booking Dimensions"
     type: yesno
@@ -1334,9 +1385,46 @@ view: guests {
   dimension: first_last_booking_same_within_year {
     group_label: "First & Last Booking Dimensions"
     type: yesno
-    description: "First & Last Bookings happens within a year of each other"
-    label: "First & Last Booking (With-in Year)"
+    description: "First & Last Bookings happens within a rolling 12 months"
+    label: "First & Last Booking (Rolling 12 Months)"
     sql: case
       when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 12 then True else False end  ;;
   }
+
+  dimension: first_last_booking_rolling_03{
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    description: "First & Last Bookings happens within a rolling 3 months"
+    label: "First & Last Booking (Rolling 03 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 3 then True else False end  ;;
+  }
+
+  dimension: first_last_booking_rolling_06{
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    description: "First & Last Bookings happens within a rolling 6 months"
+    label: "First & Last Booking (Rolling 06 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 6 then True else False end  ;;
+  }
+
+  dimension: first_last_booking_rolling_18{
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    description: "First & Last Bookings happens within a rolling 18 months"
+    label: "First & Last Booking (Rolling 18 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 18 then True else False end  ;;
+  }
+
+  dimension: first_last_booking_rolling_24{
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    description: "First & Last Bookings happens within a rolling 18 months"
+    label: "First & Last Booking (Rolling 24 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 24 then True else False end  ;;
+  }
+
 }
