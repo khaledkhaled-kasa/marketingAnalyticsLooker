@@ -1366,6 +1366,15 @@ view: guests {
       when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 6 then True else False end  ;;
   }
 
+  dimension: first_second_booking_rolling_12{
+    group_label: "First & Second Booking Dimensions"
+    type: yesno
+    description: "First & Second Bookings happens within a rolling 12 months"
+    label: "First & Second Booking (Rolling 12 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 12 then True else False end  ;;
+  }
+
   dimension: first_second_booking_rolling_18{
     group_label: "First & Second Booking Dimensions"
     type: yesno
@@ -1378,7 +1387,7 @@ view: guests {
   dimension: first_second_booking_rolling_24{
     group_label: "First & Second Booking Dimensions"
     type: yesno
-    description: "First & Second Bookings happens within a rolling 18 months"
+    description: "First & Second Bookings happens within a rolling 24 months"
     label: "First & Second Booking (Rolling 24 Months)"
     sql: case
       when date_diff(${booking_date_first_booking_date}, ${booking_date_second_booking_date}, month) <= 24 then True else False end  ;;
@@ -1468,7 +1477,7 @@ view: guests {
   dimension: first_last_booking_rolling_24{
     group_label: "First & Last Booking Dimensions"
     type: yesno
-    description: "First & Last Bookings happens within a rolling 18 months"
+    description: "First & Last Bookings happens within a rolling 24 months"
     label: "First & Last Booking (Rolling 24 Months)"
     sql: case
       when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 24 then True else False end  ;;
