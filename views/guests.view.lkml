@@ -801,6 +801,28 @@ view: guests {
     sql: DATE_DIFF(${booking_date_second_booking_date}, ${checkout_date_local_first_booking_date}, DAY) ;;
   }
 
+  dimension: booking_timing {
+    label: "Second Booking Timing"
+    hidden: no
+    type: string
+    group_label: "First & Second Booking Dimensions"
+    description: "When the second booking happened relative to the first stay"
+    sql:
+      CASE
+        WHEN ${booking_date_second_booking_date} < ${checkin_date_local_first_booking_date}
+          THEN 'Before First Stay'
+
+      WHEN ${booking_date_second_booking_date} >= ${checkin_date_local_first_booking_date}
+      AND ${booking_date_second_booking_date} <= ${checkout_date_local_first_booking_date}
+      THEN 'During Stay'
+
+      WHEN ${booking_date_second_booking_date} > ${checkout_date_local_first_booking_date}
+      THEN 'After Stay'
+
+      ELSE NULL
+      END ;;
+  }
+
   dimension: days_checkout_to_rebooking_bucket {
     group_label: "First & Second Booking Dimensions"
     label: "Days Between First Checkout and Second Booking (Tiers)"
@@ -1423,6 +1445,15 @@ view: guests {
     label: "First & Last Booking (Rolling 06 Months)"
     sql: case
       when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <= 6 then True else False end  ;;
+  }
+
+  dimension: first_last_booking_rolling_12{
+    group_label: "First & Last Booking Dimensions"
+    type: yesno
+    description: "First & Last Bookings happens within a rolling 12 months"
+    label: "First & Last Booking (Rolling 12 Months)"
+    sql: case
+      when date_diff(${booking_date_first_booking_date}, ${booking_date_last_booking_date}, month) <=12 then True else False end  ;;
   }
 
   dimension: first_last_booking_rolling_18{
