@@ -482,6 +482,14 @@ view: guests {
     sql: ${TABLE}.kbcCompletedDateFirstBooking ;;
   }
 
+  dimension: has_previous_reservaation_last_booking {
+    label: "Last Booking has a previous reservation"
+    group_label: "Latest Reservation"
+    description: "If yes, the last reservation does not represent the first booking."
+    type: yesno
+    sql:  ${TABLE}.hasPreviousReservationLastBooking ;;
+  }
+
   dimension_group: kbc_completed_date_last_booking {
     label: "PAC/KBC Completed"
     group_label: "Latest Reservation"
