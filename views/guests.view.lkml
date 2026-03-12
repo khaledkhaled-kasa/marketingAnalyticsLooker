@@ -1,6 +1,5 @@
 view: guests {
 
-  #sql_table_name:`data-warehouse-333815`.reservations.dimGuests;;
   sql_table_name: `data-warehouse-333815.reservations.dimGuestProfile`
     ;;
 
