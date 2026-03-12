@@ -186,8 +186,8 @@ view: guests {
   }
 
   dimension: prop_code_first_booking {
-    label: "Property Code"
-    hidden: yes
+    label: "Property Code (First)"
+    hidden: no
     group_label: "First Reservation"
     type: string
     description: "Property code for first reservation"
@@ -204,12 +204,20 @@ view: guests {
   }
 
   dimension: prop_code_last_booking {
-    label: "Property Code"
-    hidden: yes
+    label: "Property Code (Latest)"
+    hidden: no
     group_label: "Latest Reservation"
     type: string
     description: "Property code for latest reservation"
     sql: ${TABLE}.propCodeLastBooking ;;
+  }
+
+  dimension: prop_code_most_frequent {
+    label: "Property Code (Most Frequent)"
+    hidden: no
+    type: string
+    description: "Property code where the guest stayed at the most"
+    sql: ${TABLE}.mostFrequentPropCode ;;
   }
 
   dimension: guests_count_last_booking {
