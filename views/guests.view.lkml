@@ -213,6 +213,7 @@ view: guests {
 
   dimension: prop_code_most_frequent {
     label: "Property Code (Most Frequent)"
+    suggest_persist_for: "0 seconds"
     hidden: no
     type: string
     description: "Property code where the guest stayed at the most"
