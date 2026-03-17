@@ -94,7 +94,7 @@ view: airbnb_reviews {
     hidden: yes
     timeframes: [raw, time, date, week, month, year, quarter]
     label: "Reservation Check-In"
-    sql: timestamp(${reservations_clean.checkindate_time}) ;;
+    sql: timestamp(${reservations.checkindate_time}) ;;
     convert_tz: no
   }
 
@@ -103,7 +103,7 @@ view: airbnb_reviews {
     type: time
     hidden: yes
     timeframes: [raw, time, date, week, month, year, quarter]
-    sql: timestamp(${reservations_clean.checkoutdate_time}) ;;
+    sql: timestamp(${reservations.checkoutdate_time}) ;;
     convert_tz: no
   }
 
@@ -1377,42 +1377,42 @@ view: airbnb_reviews {
 
   ##### 90 Day Metrics
 
-  measure: count_clean_first90 {
-    #view_label: "Metrics"
-    group_label: "HK Onboarding Metrics (First 90 Days)"
-    type: count_distinct
-    label: "# of Reviews (Clean) First 90 Days of Onboarding"
-    sql: ${reservation_code} ;;
-    filters: [cleanliness_rating: "1,2,3,4,5", hk_partners.first_3_months: "Yes"]
-    drill_fields: [reservation_code, reservation_checkin_date, reservation_checkout_date, cleanliness_rating, cleanliness_comments]
+  # measure: count_clean_first90 {
+  #   #view_label: "Metrics"
+  #   group_label: "HK Onboarding Metrics (First 90 Days)"
+  #   type: count_distinct
+  #   label: "# of Reviews (Clean) First 90 Days of Onboarding"
+  #   sql: ${reservation_code} ;;
+  #   filters: [cleanliness_rating: "1,2,3,4,5", hk_partners.first_3_months: "Yes"]
+  #   drill_fields: [reservation_code, reservation_checkin_date, reservation_checkout_date, cleanliness_rating, cleanliness_comments]
 
-  }
+  # }
 
-  measure: clean_count_5_star_first90 {
-    #view_label: "Metrics"
-    group_label: "HK Onboarding Metrics (First 90 Days)"
-    label: "# of 5 Star Clean - First 90 Days"
-    hidden: yes
-    type: count_distinct
-    value_format: "0"
-    sql: ${TABLE}.confirmationCd;;
-    filters: [cleanliness_rating: "5", hk_partners.first_3_months: "Yes"]
-    drill_fields: [reservation_code, reservation_checkin_date, reservation_checkout_date, cleanliness_rating, cleanliness_comments]
+  # measure: clean_count_5_star_first90 {
+  #   #view_label: "Metrics"
+  #   group_label: "HK Onboarding Metrics (First 90 Days)"
+  #   label: "# of 5 Star Clean - First 90 Days"
+  #   hidden: yes
+  #   type: count_distinct
+  #   value_format: "0"
+  #   sql: ${TABLE}.confirmationCd;;
+  #   filters: [cleanliness_rating: "5", hk_partners.first_3_months: "Yes"]
+  #   drill_fields: [reservation_code, reservation_checkin_date, reservation_checkout_date, cleanliness_rating, cleanliness_comments]
 
-  }
+  # }
 
-  measure: clean_count_less_than_4_star_first90 {
-    #view_label: "Metrics"
-    group_label: "HK Onboarding Metrics (First 90 Days)"
-    label: "# of Less Than 4 Star Clean - First 90 Days"
-    hidden: yes
-    type: count_distinct
-    value_format: "0"
-    sql: ${reservation_code};;
-    filters: [cleanliness_rating: "<=3", hk_partners.first_3_months: "Yes"]
-    drill_fields: [reservation_code, reservation_checkin_date, reservation_checkout_date, cleanliness_rating, cleanliness_comments]
+  # measure: clean_count_less_than_4_star_first90 {
+  #   #view_label: "Metrics"
+  #   group_label: "HK Onboarding Metrics (First 90 Days)"
+  #   label: "# of Less Than 4 Star Clean - First 90 Days"
+  #   hidden: yes
+  #   type: count_distinct
+  #   value_format: "0"
+  #   sql: ${reservation_code};;
+  #   filters: [cleanliness_rating: "<=3", hk_partners.first_3_months: "Yes"]
+  #   drill_fields: [reservation_code, reservation_checkin_date, reservation_checkout_date, cleanliness_rating, cleanliness_comments]
 
-  }
+  # }
 
   measure: percent_5_star_clean_first90 {
     #view_label: "Metrics"
