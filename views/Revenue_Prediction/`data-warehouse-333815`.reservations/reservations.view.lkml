@@ -1012,6 +1012,15 @@ view: reservations {
     drill_fields: [reservation_details*]
   }
 
+  measure: reservation_night {
+    label: "# of Reservation Nights"
+    description: "Reservation night stay. This metric will only consider confirmed / checked in bookings. Also, this includes extended bookings as a SEPARATE booking."
+    type:  sum
+    sql: DATE_DIFF(${checkoutdate_date}, ${checkindate_date}, DAY) ;;
+    filters: [status: "confirmed, checked_in", gxoUnitfg: "no"]
+    drill_fields: [reservation_details*]
+  }
+
   measure: num_reservations_no_extension {
     view_label: "Metrics"
     label: "# of Reservations (No Extensions)"

@@ -71,6 +71,25 @@ view: financials {
     drill_fields: [reservations.confirmationcode, reservations.sourcedata_channel, reservations.rate_plan_name, reservations.bookingdate_date, reservations.checkindate_date, reservations.checkoutdate_date, reservations.status, reservations.reservation_night, reservations.medium_term_rental_flag, amount]
   }
 
+  measure: amount_adr_calculation {
+    label: "Revenue (ADR)"
+    hidden: yes
+    description: "This is a revised version of the amount that will exclude resortFee, parkingFee, poolHeatingFee, damageWaiverFee, TripInsurancePayout to accurately depict ADR/revPAR values"
+    # type: sum_distinct
+    type: sum
+    value_format: "$#,##0.00"
+    sql: ${TABLE}.revenueAmountAdr ;;
+  }
+
+  measure: adr {
+    label: "ADR"
+    description: "Average daily rate: amount (excluding resort/parking fees) / reservation_night. This only applies to confirmed / checked-in bookings and filtered financial types (excluding resortFee, parkingFee, poolHeatingFee, damageWaiverFee, TripInsurancePayout, taxes & channel fees). Also, this includes extended bookings as a SEPARATE booking."
+    type: number
+    value_format: "$#,##0.00"
+    sql: ${amount_adr_calculation} / NULLIF(${reservations.reservation_night}, 0) ;;
+  }
+
+
   measure: amount_unfiltered {
     label: "Amount (Unfiltered)"
     description: "This amount is unfiltered (all reservation status, including cancellations & financial types). Also, this includes extended bookings as a SEPARATE booking."
