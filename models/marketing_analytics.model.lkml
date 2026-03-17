@@ -231,6 +231,7 @@ explore: website_data {
     # type: left_outer
     sql_on: ${me_booking_attribution.confirmation_code} = ${reservations.confirmation_code} ;;
   }
+
   join: guests {
     view_label: "Guest Profile"
     sql_on: ${reservations.guest_id} = ${guests._id} ;;
