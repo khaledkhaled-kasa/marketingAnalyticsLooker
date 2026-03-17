@@ -233,6 +233,7 @@ explore: website_data {
   }
 
   join: airbnb_reviews {
+    view_label: ""
     relationship:  one_to_one
     sql_on: ${reservations.confirmation_code} = ${airbnb_reviews.reservation_code} ;;
   }

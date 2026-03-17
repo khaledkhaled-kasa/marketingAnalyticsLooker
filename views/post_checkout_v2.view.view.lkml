@@ -4,6 +4,7 @@ view: post_checkout_v2{
 
   dimension: aggregated_comments {
     label: "Aggregated Communication Comments"
+    hidden: yes
     view_label: "Aggregated Reviews"
     description: "This will aggregate all communication related comments from different review channels (airbnb, Postcheckout, Postcheckout V2) into one block which was utilized for the Over-Communication Analysis."
     type: string
@@ -13,6 +14,7 @@ view: post_checkout_v2{
 # Over Communication Analysis
   dimension: contains_buzzword {
     view_label: "Aggregated Reviews"
+    hidden: yes
     label: "Contains Buzz Word (Communication)"
     description: "This field has been created to display all aggregated comments from different review channels (airbnb, Postcheckout, Postcheckout V2) which contain one of the defined buzzwords pertinent to overcommunication such as communication, text, email, etc."
     type: yesno
@@ -21,8 +23,8 @@ view: post_checkout_v2{
 
   dimension: aggregated_comments_all_clean {
     label: "Aggregated Comments (All)"
+    hidden: yes
     view_label: "Aggregated Reviews"
-    hidden: no
     description: "This will aggregate all review comments from different review channels (airbnb, Postcheckout, Postcheckout V2) into one block."
     type: string
     sql: ${TABLE}.aggregatedComments ;;
