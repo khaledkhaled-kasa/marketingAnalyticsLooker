@@ -83,7 +83,7 @@ view: financials {
 
   measure: adr {
     label: "ADR"
-    hidden: yes
+    hidden: no
     description: "Average daily rate: amount (excluding resort/parking fees) / reservation_night. This only applies to confirmed / checked-in bookings and filtered financial types (excluding resortFee, parkingFee, poolHeatingFee, damageWaiverFee, TripInsurancePayout, taxes & channel fees). Also, this includes extended bookings as a SEPARATE booking."
     type: number
     value_format: "$#,##0.00"
