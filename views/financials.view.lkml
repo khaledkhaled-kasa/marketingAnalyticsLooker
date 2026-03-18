@@ -75,8 +75,8 @@ view: financials {
     label: "Revenue (ADR)"
     hidden: yes
     description: "This is a revised version of the amount that will exclude resortFee, parkingFee, poolHeatingFee, damageWaiverFee, TripInsurancePayout to accurately depict ADR/revPAR values"
-    # type: sum_distinct
-    type: sum
+    type: sum_distinct
+    # type: sum
     value_format: "$#,##0.00"
     sql: ${TABLE}.revenueAmountAdr ;;
   }
