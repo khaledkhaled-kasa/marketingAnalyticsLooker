@@ -201,7 +201,7 @@ view: reservations {
     type:  number
     hidden: no
     group_label:"Reservation Summary"
-    sql: lengthOfStay  ;;
+    sql: ${TABLE}.lengthOfStay  ;;
   }
 
   dimension: preceding_cleaning_task {
