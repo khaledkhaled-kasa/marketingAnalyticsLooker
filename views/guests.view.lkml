@@ -792,6 +792,45 @@ view: guests {
     sql: ${TABLE}.numReservations ;;
   }
 
+  dimension: stay_cohort {
+    type: string
+    label: "Stay Cohort check"
+    description: "Grouped by Number of Lifetime Reservations"
+    case: {
+      when: {
+        sql: ${num_reservations} = 1 ;;
+        label: "1 stay"
+      }
+      when: {
+        sql: ${num_reservations} = 2 ;;
+        label: "2 stays"
+      }
+      when: {
+        sql: ${num_reservations} = 3 ;;
+        label: "3 stays"
+      }
+      when: {
+        sql: ${num_reservations} = 4 ;;
+        label: "4 stays"
+      }
+      when: {
+        sql: ${num_reservations} >= 5 AND ${num_reservations} <= 9 ;;
+        label: "5-9 stays"
+      }
+      when: {
+        sql: ${num_reservations} >= 10 AND ${num_reservations} <= 19 ;;
+        label: "10-19 stays"
+      }
+      when: {
+        sql: ${num_reservations} >= 20 AND ${num_reservations} <= 49 ;;
+        label: "20-49 stays"
+      }
+
+      else: "50+ stays"
+    }
+  }
+
+
   dimension: num_reservations_kasa {
     group_label: "Lifetime Stats"
     hidden: no
