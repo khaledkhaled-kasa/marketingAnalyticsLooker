@@ -794,7 +794,8 @@ view: guests {
 
   dimension: stay_cohort {
     type: string
-    label: "Stay Cohort check"
+    group_label: "Lifetime Stats"
+    label: "Stay Cohort"
     description: "Grouped by Number of Lifetime Reservations"
     case: {
       when: {
