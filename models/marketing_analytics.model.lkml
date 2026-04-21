@@ -231,6 +231,19 @@ explore: website_data {
     # type: left_outer
     sql_on: ${me_booking_attribution.confirmation_code} = ${reservations.confirmation_code} ;;
   }
+
+  join: airbnb_reviews {
+    view_label: ""
+    relationship:  one_to_one
+    sql_on: ${reservations.confirmation_code} = ${airbnb_reviews.reservation_code} ;;
+  }
+
+  join: post_checkout_v2 {
+    view_label: "Kasa Surveys"
+    relationship: one_to_one
+    sql_on:  ${post_checkout_v2.confirmationcode} = ${reservations.confirmation_code} ;;
+  }
+
   join: guests {
     view_label: "Guest Profile"
     sql_on: ${reservations.guest_id} = ${guests._id} ;;
