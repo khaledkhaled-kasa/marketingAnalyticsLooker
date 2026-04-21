@@ -7,7 +7,7 @@ view: me_ad_stats {
     sql: ${TABLE}.ad_campaign ;;
   }
   dimension: ad_channel {
-    hidden: yes
+    hidden: no
     type: string
     sql: ${TABLE}.ad_channel ;;
   }

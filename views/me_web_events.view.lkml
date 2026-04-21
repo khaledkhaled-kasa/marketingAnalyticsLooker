@@ -87,6 +87,10 @@ view: me_web_events {
     type: string
     sql: ${TABLE}.couponCode ;;
   }
+  dimension: session_source {
+    type: string
+    sql: ${TABLE}.sessionSource ;;
+  }
   # measure: count {
   #   hidden: yes
   #   type: count
