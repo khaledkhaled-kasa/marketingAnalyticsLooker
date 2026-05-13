@@ -213,6 +213,12 @@ explore: website_data {
     sql_on:  ${me_web_sessions.session_id} = ${me_web_session_event_flags.session_id} ;;
     relationship: one_to_one
   }
+  join: me_web_session_city {
+    view_label: "City Page"
+    sql_on: ${me_web_sessions.session_id} = ${me_web_session_city.session_id} ;;
+    relationship: one_to_one
+    type: left_outer
+  }
   # Filtered inline to canonical (attribution_model, lookback_window) =
   # ('Last Touch Non-Direct', 30). me_booking_attribution stores 15 rows per
   # booking (3 attribution_models x 5 lookback_windows); aggregating revenue
