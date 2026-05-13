@@ -1178,6 +1178,18 @@ view: guests {
     sql: ${TABLE}.repeatGuestType ;;
   }
 
+  dimension: new_vs_repeat {
+    label: "New vs Repeat"
+    description: "Binary classification: New Guest (first-time, including unknowns) or Repeat Guest. Derived from repeat_guest_type."
+    type: string
+    sql:
+      case
+        when ${repeat_guest_type} = 'First Time Guest' or ${repeat_guest_type} is null
+          then 'New Guest'
+        else 'Repeat Guest'
+      end ;;
+  }
+
   # dimension: guest_mapped_flag {
   #   type: yesno
   #   sql: case when ${guest_id} is not null then true end ;;
@@ -1198,13 +1210,13 @@ view: guests {
     hidden: no
     label: "Property Sub-Category Type"
     description: "Determine which property sub-category combination a guest has stayed with at Kasa.
-      Hotel Only
-      Apart-Hotel Only
-      Apartment Only
-      Hotel and Apart-Hotel
-      Hotel and Apartment
-      Apart-Hotel and Apartment
-      All Three
+    Hotel Only
+    Apart-Hotel Only
+    Apartment Only
+    Hotel and Apart-Hotel
+    Hotel and Apartment
+    Apart-Hotel and Apartment
+    All Three
     "
     type: string
     sql: ${TABLE}.propertySubCategoryType ;;
@@ -1348,8 +1360,8 @@ view: guests {
   measure: ltv {
     label: "LTV"
     type: number
-    sql: ${revenue_amount_total}/nullif(${num_reservations_count},0) ;;
-    # sql: ${financials.amount}/nullif(${reservations.num_reservations},0) ;;
+    description: "Lifetime Value: total revenue divided by the count of distinct guests."
+    sql: ${revenue_amount_total}/nullif(${guest_id_count},0) ;;
     value_format_name: usd
   }
 
@@ -1357,6 +1369,14 @@ view: guests {
     label: "# of GID (unique)"
     type: count_distinct
     sql: ${_id} ;;
+  }
+
+  measure: unique_new_guests {
+    label: "# of New Guests (unique)"
+    description: "Distinct guests whose lifetime reservation count = 1 (first-time guests). Use as the denominator for CAC."
+    type: count_distinct
+    sql: ${_id} ;;
+    filters: [repeat_guest_type: "First Time Guest"]
   }
 
   dimension: first_second_booking_same_month {

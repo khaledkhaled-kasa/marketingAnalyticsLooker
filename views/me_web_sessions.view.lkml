@@ -76,6 +76,12 @@ view: me_web_sessions {
     type: string
     sql: ${TABLE}.user_pseudo_id ;;
   }
+  dimension: session_identity_class {
+    label: "Session Identity Class"
+    description: "Identity classification for the session, computed upstream. Anonymous = browser cookie only, unreachable. Known (pre-booking) = identified user with no completed booking yet. Known (customer) = session after the user's first confirmed reservation."
+    type: string
+    sql: ${TABLE}.session_identity_class ;;
+  }
   dimension: user_session_ranking {
     type: number
     sql: ${TABLE}.user_session_ranking ;;
@@ -137,5 +143,65 @@ view: me_web_sessions {
     type: count_distinct
     sql_distinct_key: ${session_id} ;;
     sql: ${session_id} ;;
+  }
+  measure: sessions_with_location_view {
+    label: "# of Sessions (Location Viewed)"
+    description: "Sessions where the user viewed a location page (kasa.com/locations/<city>). Funnel stage 1."
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+    filters: [is_with_view_item_list: "Yes"]
+  }
+  measure: sessions_with_property_view {
+    label: "# of Sessions (Property Viewed)"
+    description: "Sessions where the user viewed a property page (kasa.com/properties/<property>). Funnel stage 2."
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+    filters: [is_with_view_item: "Yes"]
+  }
+  measure: sessions_with_checkout_start {
+    label: "# of Sessions (Checkout Started)"
+    description: "Sessions where the user started checkout. Funnel stage 3."
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+    filters: [is_with_begin_checkout: "Yes"]
+  }
+  measure: sessions_with_purchase {
+    label: "# of Sessions (Purchase)"
+    description: "Sessions that completed a purchase. Funnel stage 4 — terminal."
+    type: count_distinct
+    sql_distinct_key: ${session_id} ;;
+    sql: ${session_id} ;;
+    filters: [is_with_purchase: "Yes"]
+  }
+  measure: rate_location_to_property {
+    label: "% Location → Property"
+    description: "Rate of location-page viewers who went on to view a specific property page."
+    type: number
+    sql: ${sessions_with_property_view} / nullif(${sessions_with_location_view}, 0) ;;
+    value_format_name: percent_2
+  }
+  measure: rate_property_to_checkout {
+    label: "% Property → Checkout"
+    description: "Rate of property-page viewers who started checkout."
+    type: number
+    sql: ${sessions_with_checkout_start} / nullif(${sessions_with_property_view}, 0) ;;
+    value_format_name: percent_2
+  }
+  measure: rate_checkout_to_purchase {
+    label: "% Checkout → Purchase"
+    description: "Rate of checkout-starters who completed a purchase."
+    type: number
+    sql: ${sessions_with_purchase} / nullif(${sessions_with_checkout_start}, 0) ;;
+    value_format_name: percent_2
+  }
+  measure: rate_session_to_purchase {
+    label: "% Session → Purchase"
+    description: "Overall session-to-purchase conversion rate."
+    type: number
+    sql: ${sessions_with_purchase} / nullif(${session_count}, 0) ;;
+    value_format_name: percent_2
   }
 }

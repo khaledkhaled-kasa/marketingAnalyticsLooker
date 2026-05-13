@@ -106,31 +106,31 @@ explore: calendar_dates  {
   {% if calendar_dates.current_date_range._is_filtered %}
   {% condition calendar_dates.current_date_range %} ${event_raw} {% endcondition %}
 
-  {% if calendar_dates.previous_date_range._is_filtered or calendar_dates.compare_to._in_query %}
-  {% if calendar_dates.comparison_periods._parameter_value == "2" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
+    {% if calendar_dates.previous_date_range._is_filtered or calendar_dates.compare_to._in_query %}
+    {% if calendar_dates.comparison_periods._parameter_value == "2" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
 
-  {% elsif calendar_dates.comparison_periods._parameter_value == "3" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
-  or
-  ${event_raw} between ${period_3_start} and ${period_3_end}
+    {% elsif calendar_dates.comparison_periods._parameter_value == "3" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
+    or
+    ${event_raw} between ${period_3_start} and ${period_3_end}
 
 
-  {% elsif calendar_dates.comparison_periods._parameter_value == "4" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
-  or
-  ${event_raw} between ${period_3_start} and ${period_3_end}
-  or
-  ${event_raw} between ${period_4_start} and ${period_4_end}
+    {% elsif calendar_dates.comparison_periods._parameter_value == "4" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
+    or
+    ${event_raw} between ${period_3_start} and ${period_3_end}
+    or
+    ${event_raw} between ${period_4_start} and ${period_4_end}
 
-  {% else %} 1 = 1
-  {% endif %}
-  {% endif %}
-  {% else %} 1 = 1
-  {% endif %};;
+    {% else %} 1 = 1
+    {% endif %}
+    {% endif %}
+    {% else %} 1 = 1
+    {% endif %};;
 }
 
 # explore: website_data {
@@ -213,16 +213,30 @@ explore: website_data {
     sql_on:  ${me_web_sessions.session_id} = ${me_web_session_event_flags.session_id} ;;
     relationship: one_to_one
   }
+  # Filtered inline to canonical (attribution_model, lookback_window) =
+  # ('Last Touch Non-Direct', 30). me_booking_attribution stores 15 rows per
+  # booking (3 attribution_models x 5 lookback_windows); aggregating revenue
+  # through the join without this filter inflates revenue ~15x and is the
+  # root cause of the per-property revenue mismatches Stephanie observed
+  # (e.g. PIN April: $191K Google Ads vs $4.5M Looker).
+  # To compare attribution models, build a parameterized variant of this
+  # explore separately rather than removing this filter.
   join: me_booking_attribution {
     view_label: "Booking Attribution"
-    sql: LEFT JOIN (SELECT main.*, bcp.* FROM ${me_booking_attribution.SQL_TABLE_NAME} as main CROSS JOIN UNNEST(main.booking_conversion_path) as bcp) as me_booking_attribution ON ${me_web_sessions.session_id} = me_booking_attribution.session_id ;;
+    sql: LEFT JOIN (
+      SELECT main.*, bcp.*
+      FROM ${me_booking_attribution.SQL_TABLE_NAME} as main
+      CROSS JOIN UNNEST(main.booking_conversion_path) as bcp
+      WHERE main.attribution_model = 'Last Touch Non-Direct'
+        AND main.lookback_window = 30
+    ) as me_booking_attribution ON ${me_web_sessions.session_id} = me_booking_attribution.session_id ;;
     relationship: one_to_many
   }
   join: me_ad_stats {
     view_label: "Ad Spend"
     type: full_outer
     sql_on: ${me_web_sessions.session_id} = ${me_ad_stats.session_id}
-    ;;
+      ;;
     relationship: many_to_many
   }
   join: reservations {
@@ -400,12 +414,12 @@ explore: product_analysis {
   join: ga_sessions_struct__checkout_events  {
     # sql: INNER JOIN (ME_BI_prod.GA_sessions_struct INNER JOIN UNNEST(checkout_events) as ga_sessions_struct__checkout_events) ON ${ecom_products_struct__product_variants.guesty_id} = ga_sessions_struct__checkout_events.checkout_event_sku  ;;
     sql:  LEFT JOIN (ME_BI_prod.GA_sessions_struct LEFT JOIN UNNEST(checkout_events) as ga_sessions_struct__checkout_events) ON
-    if(${ecom_orders_struct.order_timestamp_date}<'2021-03-30',${ecom_products_struct__product_variants.guesty_id},${ecom_products_struct__product_variants.product_variant_category_id})
-    =
-    if(${ecom_orders_struct.order_timestamp_date}<'2021-03-30',${ga_sessions_struct__checkout_events.checkout_event_sku},${ga_sessions_struct__checkout_events.checkout_event_product_variant}) ;;
+          if(${ecom_orders_struct.order_timestamp_date}<'2021-03-30',${ecom_products_struct__product_variants.guesty_id},${ecom_products_struct__product_variants.product_variant_category_id})
+          =
+          if(${ecom_orders_struct.order_timestamp_date}<'2021-03-30',${ga_sessions_struct__checkout_events.checkout_event_sku},${ga_sessions_struct__checkout_events.checkout_event_product_variant}) ;;
     relationship: one_to_many
   }
- sql_always_where:
+  sql_always_where:
   ${ga_sessions_struct__product_events.product_event_timestamp_date} >= CAST({% date_start ga_sessions_struct__product_events.product_analysis_date %} as DATE) and
   ${ga_sessions_struct__product_events.product_event_timestamp_date} <= CAST({% date_end ga_sessions_struct__product_events.product_analysis_date %} as DATE) and
   ${ga_sessions_struct__checkout_events.checkout_event_timestamp_date} >= CAST({% date_start ga_sessions_struct__product_events.product_analysis_date %} as DATE) and
@@ -482,31 +496,31 @@ explore: new_attribution {
   {% if anal_utm_dates_crossjoin.current_date_range._is_filtered %}
   {% condition anal_utm_dates_crossjoin.current_date_range %} ${event_raw} {% endcondition %}
 
-  {% if anal_utm_dates_crossjoin.previous_date_range._is_filtered or anal_utm_dates_crossjoin.compare_to._in_query %}
-  {% if anal_utm_dates_crossjoin.comparison_periods._parameter_value == "2" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
+    {% if anal_utm_dates_crossjoin.previous_date_range._is_filtered or anal_utm_dates_crossjoin.compare_to._in_query %}
+    {% if anal_utm_dates_crossjoin.comparison_periods._parameter_value == "2" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
 
-  {% elsif anal_utm_dates_crossjoin.comparison_periods._parameter_value == "3" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
-  or
-  ${event_raw} between ${period_3_start} and ${period_3_end}
+    {% elsif anal_utm_dates_crossjoin.comparison_periods._parameter_value == "3" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
+    or
+    ${event_raw} between ${period_3_start} and ${period_3_end}
 
 
-  {% elsif anal_utm_dates_crossjoin.comparison_periods._parameter_value == "4" %}
-  or
-  ${event_raw} between ${period_2_start} and ${period_2_end}
-  or
-  ${event_raw} between ${period_3_start} and ${period_3_end}
-  or
-  ${event_raw} between ${period_4_start} and ${period_4_end}
+    {% elsif anal_utm_dates_crossjoin.comparison_periods._parameter_value == "4" %}
+    or
+    ${event_raw} between ${period_2_start} and ${period_2_end}
+    or
+    ${event_raw} between ${period_3_start} and ${period_3_end}
+    or
+    ${event_raw} between ${period_4_start} and ${period_4_end}
 
-  {% else %} 1 = 1
-  {% endif %}
-  {% endif %}
-  {% else %} 1 = 1
-  {% endif %};;
+    {% else %} 1 = 1
+    {% endif %}
+    {% endif %}
+    {% else %} 1 = 1
+    {% endif %};;
 }
 
 explore: external_hotels_attribution {
@@ -523,8 +537,8 @@ explore: conversion_paths_analysis {
   join: ecom_orders_struct {
     sql_on: ${anal_conversion_paths.transaction_order_id} = ${ecom_orders_struct.ga_matching_id} ;;
     relationship: many_to_one
-    }
   }
+}
 
 explore: website_sessions  {
   description: "This Exploer contain Data that have been collected form kasa.com through Segment(Front Side data)"
@@ -586,4 +600,4 @@ explore: website_sessions  {
 
 
 
-  }
+}
